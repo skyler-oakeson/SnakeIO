@@ -29,10 +29,9 @@ namespace Systems
         {
             Components.Movable movable = entity.GetComponent<Components.Movable>();
             Components.Positionable positionable = entity.GetComponent<Components.Positionable>();
-            TimeSpan diff = gameTime.ElapsedGameTime - movable.lastMoved;
             movable.velocity *= new Vector2(.85f, .85f);
 
-            Vector2 newPos = movable.facing * (movable.velocity * diff.Milliseconds) + positionable.pos;
+            Vector2 newPos = movable.facing * (movable.velocity * gameTime.ElapsedGameTime.Milliseconds) + positionable.pos;
             positionable.pos = newPos;
         }
     }
