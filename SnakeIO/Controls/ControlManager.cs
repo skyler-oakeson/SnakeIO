@@ -9,14 +9,14 @@ namespace Controls
 
     public class ControlManager
     {
-        private Dictionary<Scenes.SceneContext, Dictionary<ControlContext, Control>> controls {get; set;} =
+        private Dictionary<Scenes.SceneContext, Dictionary<ControlContext, Control>> controls { get; set; } =
             new Dictionary<Scenes.SceneContext, Dictionary<ControlContext, Control>>();
-        private Dictionary<Keys, ControlDelegate> delegates {get; set;} =
+        private Dictionary<Keys, ControlDelegate> delegates { get; set; } =
             new Dictionary<Keys, ControlDelegate>();
         private DataManager dataManager;
         private KeyboardState statePrevious;
 
-        public ControlManager(DataManager dm) 
+        public ControlManager(DataManager dm)
         {
             this.dataManager = dm;
             controls = dm.Load<Dictionary<Scenes.SceneContext, Dictionary<ControlContext, Control>>>(controls);
@@ -43,7 +43,7 @@ namespace Controls
                 controls.Add(sc, new Dictionary<ControlContext, Control>());
             }
         }
-        
+
         /// <summary>
         /// Changes the key used for a registered control and changes what key references the delegate associated with it.
         /// <summary>

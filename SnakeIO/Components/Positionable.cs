@@ -4,12 +4,19 @@ namespace Components
 {
     public class Positionable : Component
     {
-        public Vector2 pos {get; set;}
+        private Vector2 pos;
+        public Vector2 Pos
+        {
+            get { return pos; }
+            set { PrevPos = pos; pos = value; }
+        }
+
+        public Vector2 PrevPos { get; private set; }
 
         public Positionable(Vector2 pos)
         {
             this.pos = pos;
+            this.PrevPos = pos;
         }
-
     }
 }

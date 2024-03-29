@@ -1,16 +1,26 @@
-using System;
 using Microsoft.Xna.Framework;
 
 namespace Components
 {
     public class Movable : Component
     {
-        public Vector2 facing;
-        public Vector2 velocity;
-
-        public Movable(Vector2 facing, Vector2 velocity)
+        private Vector2 rotation { get; set; }
+        public Vector2 Rotation 
         {
-            this.facing = facing;
+            get { return rotation; }
+            set { rotation = value; }
+        }
+
+        private Vector2 velocity { get; set; }
+        public Vector2 Velocity
+        {
+            get { return velocity; }
+            set { velocity = value; }
+        }
+
+        public Movable(Vector2 rotation, Vector2 velocity)
+        {
+            this.rotation = rotation;
             this.velocity = velocity;
         }
 

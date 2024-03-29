@@ -2,6 +2,10 @@ using Microsoft.Xna.Framework;
 
 namespace Systems
 {
+    /// <summary>
+    /// This system is responsible for handling the keyboard input of any
+    /// entity with KeyboardControllable component.
+    /// </summary>
     public class KeyboardInput : System
     {
         Controls.ControlManager cm;

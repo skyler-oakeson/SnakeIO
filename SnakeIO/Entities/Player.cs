@@ -11,7 +11,10 @@ namespace Entities
         {
             Entity player = new Entity();
 
-            player.Add(new Components.Renderable(texture, Color.White, Color.Black));
+            int radius = texture.Width >= texture.Height ? texture.Width/2 : texture.Height/2;
+
+            player.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius-30)));
+            player.Add(new Components.Renderable(texture, Color.Red, Color.Black));
             player.Add(new Components.Positionable(pos));
             player.Add(new Components.Movable(new Vector2(0, 0), new Vector2(0, 0)));
             Components.Movable movable = player.GetComponent<Components.Movable>();
@@ -22,28 +25,25 @@ namespace Entities
                         (new Controls.Control(sc, Controls.ControlContext.MoveUp, Keys.W, false),
                          new Controls.ControlDelegate((GameTime gameTime, float value) =>
                          {
-                            movable.facing = new Vector2(0, -1);
-                            movable.velocity = new Vector2(1, 1);
+                            movable.Velocity += new Vector2(0, -.2f);
                          })),
                         (new Controls.Control(sc, Controls.ControlContext.MoveDown, Keys.S, false),
                          new Controls.ControlDelegate((GameTime gameTime, float value) =>
                          {
-                            movable.facing = new Vector2(0, 1);
-                            movable.velocity = new Vector2(1, 1);
+                            movable.Velocity += new Vector2(0, .2f);
                          })),
                         (new Controls.Control(sc, Controls.ControlContext.MoveRight, Keys.D, false),
                          new Controls.ControlDelegate((GameTime gameTime, float value) =>
                          {
-                            movable.facing = new Vector2(1, 0);
-                            movable.velocity = new Vector2(1, 1);
+                            movable.Velocity += new Vector2(.2f, 0);
                          })),
                         (new Controls.Control(sc, Controls.ControlContext.MoveLeft, Keys.A, false),
                          new Controls.ControlDelegate((GameTime gameTime, float value) =>
                          {
-                            movable.facing = new Vector2(-1, 0);
-                            movable.velocity = new Vector2(1, 1);
+                            movable.Velocity += new Vector2(-.2f, 0);
                          })),
                         }));
+
             return player;
         }
     }
