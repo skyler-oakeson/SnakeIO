@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Diagnostics;
 
 namespace Entities
 {
@@ -11,6 +12,7 @@ namespace Entities
             Entity food = new Entity();
 
             food.Add(new Components.Renderable(texture, Color.Blue, Color.Black));
+            Debug.WriteLine("Food Created");
             food.Add(new Components.Positionable(pos));
             food.Add(new Components.Consumable(typeof(Food), 1.0f));
             food.Add(new Components.Spawnable(TimeSpan.FromMilliseconds(5000), 10, typeof(Food)));

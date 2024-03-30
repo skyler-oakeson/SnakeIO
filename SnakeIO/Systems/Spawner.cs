@@ -27,7 +27,7 @@ namespace Systems
                 Components.Spawnable spawnable = entity.GetComponent<Components.Spawnable>();
                 if (!spawnTimes.ContainsKey(spawnable.type))
                 {
-                    spawnTimes[spawnable.type] = gameTime.TotalGameTime;
+                    spawnTimes[spawnable.type] = gameTime.TotalGameTime - spawnable.spawnRate; //spawn initial count
                 }
                 if (gameTime.TotalGameTime - spawnTimes[spawnable.type] >= spawnable.spawnRate)
                 {
@@ -50,8 +50,9 @@ namespace Systems
             MethodInfo createMethod = spawnableType.GetMethod("Create");
             for (int i = 0; i < spawnable.spawnCount; i++)
             { 
-                //There is probably a better way to do this with generics.
-                //Ensure Create Method exists, and then invoke it here.
+                // There is probably a better way to do this by designing an interface that has the Create() method, then forcing the type to be of that interface.
+                // https://learn.microsoft.com/en-us/dotnet/api/system.reflection.methodinfo.invoke?view=netframework-1.1
+                // Ensure Create Method exists, and then invoke it here.
                 entitiesToSpawn.Add((Entities.Entity)createMethod.Invoke(null, new object[] { renderable.Texture, new Vector2(random.Next(0, 800), random.Next(0, 480)) }));
             }
         }
