@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
@@ -21,30 +22,22 @@ namespace Systems
 
         public override void Update(GameTime gameTime)
         {
-
             foreach (var entity in entities.Values)
             {
-                if (entity.ContainsComponent<Components.Consumable>())
+                Components.Spawnable spawnable = entity.GetComponent<Components.Spawnable>();
+                if (!spawnTimes.ContainsKey(spawnable.type))
                 {
-                    Components.Consumable consumable = entity.GetComponent<Components.Consumable>();
-                    Components.Spawnable spawnable = entity.GetComponent<Components.Spawnable>();
-                    if (!spawnTimes.ContainsKey(consumable.type))
-                    {
-                        spawnTimes[consumable.type] = gameTime.TotalGameTime;
-                    }
-                    if (gameTime.TotalGameTime - spawnTimes[consumable.type] >= spawnable.spawnRate)
-                    {
-                        SpawnEntity(entity);
-                        spawnTimes[consumable.type] = gameTime.TotalGameTime;
-                    }
+                    spawnTimes[spawnable.type] = gameTime.TotalGameTime;
+                }
+                if (gameTime.TotalGameTime - spawnTimes[spawnable.type] >= spawnable.spawnRate)
+                {
+                    spawnTimes[spawnable.type] = gameTime.TotalGameTime + spawnable.spawnRate;
+                    SpawnEntity(entity);
                 }
             }
             foreach (var entity in entitiesToSpawn)
             {
-                if (!entities.ContainsKey(entity.id))
-                {
-                    this.Add(entity);
-                }
+                this.Add(entity);
             }
             entitiesToSpawn.Clear();
         }
@@ -53,10 +46,13 @@ namespace Systems
         {
             Components.Spawnable spawnable = entity.GetComponent<Components.Spawnable>();
             Components.Renderable renderable = entity.GetComponent<Components.Renderable>();
-            Components.Positionable positionable = entity.GetComponent<Components.Positionable>();
+            Type spawnableType = spawnable.type;
+            MethodInfo createMethod = spawnableType.GetMethod("Create");
             for (int i = 0; i < spawnable.spawnCount; i++)
-            {
-                entitiesToSpawn.Add(Entities.Food.Create(renderable.Texture, new Vector2(100 + (10 * i), 100 + (10 * i))));
+            { 
+                //There is probably a better way to do this with generics.
+                //Ensure Create Method exists, and then invoke it here.
+                entitiesToSpawn.Add((Entities.Entity)createMethod.Invoke(null, new object[] { renderable.Texture, new Vector2(random.Next(0, 800), random.Next(0, 480)) }));
             }
         }
     }

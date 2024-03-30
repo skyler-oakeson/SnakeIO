@@ -6,11 +6,13 @@ namespace Components
     {
         public TimeSpan spawnRate; // in milliseconds
         public int spawnCount; // number of entities to spawn
+        public Type type;
 
-        public Spawnable(TimeSpan spawnRate, int spawnCount)
+        public Spawnable(TimeSpan spawnRate, int spawnCount, Type type)
         {
             this.spawnRate = spawnRate;
             this.spawnCount = spawnCount;
+            this.type = type;
         }
     }
 }
