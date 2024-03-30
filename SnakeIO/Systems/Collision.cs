@@ -5,7 +5,8 @@ namespace Systems
 {
     /// <summary>
     /// This system is responsible for handling the collision of any
-    /// entity with Collidable, & Positionable components.
+    /// entities with Collidable, & Positionable components.
+    /// This system handles entites with Movable components (Not Required).
     /// </summary>
     public class Collision : System
     {
@@ -26,6 +27,8 @@ namespace Systems
                     bool res = DidCollide(e1, e2);
                     Components.Collidable e1Col = e1.GetComponent<Components.Collidable>();
                     Components.Collidable e2Col = e2.GetComponent<Components.Collidable>();
+
+                    // Check to see if state has changed so collision isn't handled multiple times
                     if (res != e1Col.Collided || res != e2Col.Collided)
                     {
                         e1Col.Collided = res;
@@ -62,14 +65,19 @@ namespace Systems
             Components.Positionable e2Pos = e1.GetComponent<Components.Positionable>();
             e1Pos.Pos = e1Pos.PrevPos;
 
-            //Movables - Non-Movables
+            if (e1.ContainsComponent<Components.Audible>())
+            {
+                e1.GetComponent<Components.Audible>().Play = true;
+            }
+
+            // Movables - Non-Movables
             if (e1.ContainsComponent<Components.Movable>() && !e2.ContainsComponent<Components.Movable>())
             {
                 Components.Movable e1Mov = e1.GetComponent<Components.Movable>();
                 e1Mov.Velocity = -e1Mov.Velocity;
             }
 
-            //Movables - Movables
+            // Movables - Movables
             if (e1.ContainsComponent<Components.Movable>() && e2.ContainsComponent<Components.Movable>())
             {
                 Components.Movable e1Mov = e1.GetComponent<Components.Movable>();

@@ -17,3 +17,27 @@
 /importer:TextureImporter
 /processor:TextureProcessor
 /build:images/player.png
+
+#begin Audio/bass-switch.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/bass-switch.wav
+
+#begin Audio/bass-hit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/bass-hit.wav
+
+#begin Audio/click.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/click.wav
+
+#begin Audio/negative.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/negative.wav
