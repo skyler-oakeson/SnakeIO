@@ -21,6 +21,7 @@ namespace Systems
             sb.GraphicsDevice.Clear(Color.Black);
             foreach (var entity in entities.Values)
             {
+                
                 RenderEntity(entity);
             }
         }
