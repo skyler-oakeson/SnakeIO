@@ -1,4 +1,4 @@
-
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -12,9 +12,9 @@ namespace Entities
 
             food.Add(new Components.Renderable(texture, Color.White, Color.Black));
             food.Add(new Components.Positionable(pos));
-            food.Add(new Components.Consumable(1.0f));
-            food.Add(new Components.Spawnable(1.0f));
-            //add collidable component
+            food.Add(new Components.Consumable(typeof(Food), 1.0f));
+            food.Add(new Components.Spawnable(TimeSpan.FromMilliseconds(5000), 10));
+            food.Add(new Components.Collidable(new Vector3(0, 0, 0)));
 
             return food;
         }

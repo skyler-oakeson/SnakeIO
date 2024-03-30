@@ -1,12 +1,16 @@
+using System;
+
 namespace Components
 {
     class Spawnable : Component
     {
-        public float spawnRate;
+        public TimeSpan spawnRate; // in milliseconds
+        public int spawnCount; // number of entities to spawn
 
-        public Spawnable(float spawnRate)
+        public Spawnable(TimeSpan spawnRate, int spawnCount)
         {
             this.spawnRate = spawnRate;
+            this.spawnCount = spawnCount;
         }
     }
 }
