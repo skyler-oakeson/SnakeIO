@@ -2,6 +2,9 @@ using Microsoft.Xna.Framework;
 
 namespace Components
 {
+    /// <summary>
+    /// This component is responsible for managing the state of Collidable entities.
+    /// </summary>
     public class Collidable : Component
     {
         private Vector3 hitBox { get; set; }

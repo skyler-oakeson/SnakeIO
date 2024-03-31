@@ -7,7 +7,7 @@ namespace Yew
         [STAThread]
         static void Main()
         {
-            using (var game = new SnakeIO())
+            using (var game = new SnakeIO.SnakeIO())
             {
                 game.Run();
             }

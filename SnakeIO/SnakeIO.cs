@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using Controls;
 using Scenes;
 
-namespace Yew 
+namespace SnakeIO 
 {
     public class SnakeIO : Game
     {

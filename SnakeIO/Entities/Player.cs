@@ -1,13 +1,13 @@
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Entities
 {
     public class Player
     {
-        public static Entity Create(Texture2D texture, Controls.ControlManager cm, Scenes.SceneContext sc, Vector2 pos)
+        public static Entity Create(Texture2D texture, SoundEffect sound, Controls.ControlManager cm, Scenes.SceneContext sc, Vector2 pos)
         {
             Entity player = new Entity();
 
@@ -17,6 +17,7 @@ namespace Entities
             player.Add(new Components.Renderable(texture, Color.Red, Color.Black));
             player.Add(new Components.Positionable(pos));
             player.Add(new Components.Movable(new Vector2(0, 0), new Vector2(0, 0)));
+            player.Add(new Components.Audible(sound));
             Components.Movable movable = player.GetComponent<Components.Movable>();
             player.Add(new Components.KeyboardControllable(
                         cm,

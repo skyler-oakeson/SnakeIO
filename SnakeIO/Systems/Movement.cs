@@ -30,6 +30,12 @@ namespace Systems
             Components.Movable movable = entity.GetComponent<Components.Movable>();
             Components.Positionable positionable = entity.GetComponent<Components.Positionable>();
 
+            // Don't have to update if velocity is 0
+            if (movable.Velocity.X == 0 && movable.Velocity.Y == 0)
+            {
+                return;
+            }
+
             // Cap velocity
             if (Math.Abs(movable.Velocity.X) > 1) { movable.Velocity = new Vector2(movable.Velocity.X > 0 ? 1 : -1, movable.Velocity.Y); }
             if (Math.Abs(movable.Velocity.Y) > 1) { movable.Velocity = new Vector2(movable.Velocity.X, movable.Velocity.Y > 0 ? 1 : -1); }
