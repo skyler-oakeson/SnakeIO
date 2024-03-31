@@ -18,6 +18,10 @@ namespace SnakeIO
         private Movement movement;
         private Collision collision;
         private Audio audio;
+        private Spawner spawner;
+
+        public delegate void AddDelegate(Entity entity);
+        private AddDelegate addEntity;
 
         private List<Entity> toRemove = new List<Entity>();
         private List<Entity> toAdd = new List<Entity>();
@@ -26,6 +30,7 @@ namespace SnakeIO
         {
             this.HEIGHT = height;
             this.WIDTH = width;
+            addEntity = AddEntity;
         }
 
         public void Initialize(Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager)
@@ -35,11 +40,13 @@ namespace SnakeIO
             this.renderer = new Renderer(spriteBatch);
             this.collision = new Collision();
             this.audio = new Audio();
+            this.spawner = new Spawner(addEntity);
 
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
             SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
             AddEntity(Player.Create(playerTex, playerSound, controlManager, Scenes.SceneContext.Game, new Vector2(0, 0)));
             AddEntity(Wall.Create(playerTex, new Vector2(100, 100)));
+            AddEntity(Food.Create(playerTex, new Vector2(200, 200)));
         }
 
         public void Update(GameTime gameTime)
@@ -48,6 +55,7 @@ namespace SnakeIO
             movement.Update(gameTime);
             collision.Update(gameTime);
             audio.Update(gameTime);
+            spawner.Update(gameTime);
         }
 
         public void Render(GameTime gameTime)
@@ -62,6 +70,7 @@ namespace SnakeIO
             movement.Add(entity);
             collision.Add(entity);
             audio.Add(entity);
+            spawner.Add(entity);
         }
 
         private void RemoveEntity(Entity entity)
@@ -71,6 +80,7 @@ namespace SnakeIO
             movement.Remove(entity.id);
             collision.Remove(entity.id);
             audio.Remove(entity.id);
+            spawner.Remove(entity.id);
         }
     }
 }

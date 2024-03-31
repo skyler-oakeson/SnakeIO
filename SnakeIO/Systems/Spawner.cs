@@ -11,13 +11,15 @@ namespace Systems
     {
         private Dictionary<Type, TimeSpan> spawnTimes = new Dictionary<Type, TimeSpan>();
         private List<Entities.Entity> entitiesToSpawn = new List<Entities.Entity>();
-        private Random random = new Random();
+        private MyRandom random = new MyRandom();
+        private SnakeIO.GameModel.AddDelegate addEntity;
 
-        public Spawner()
+        public Spawner(SnakeIO.GameModel.AddDelegate addEntity)
             : base(
                     typeof(Components.Spawnable),
                     typeof(Components.Positionable))
         {
+            this.addEntity = addEntity;
         }
 
         public override void Update(GameTime gameTime)
@@ -37,7 +39,7 @@ namespace Systems
             }
             foreach (var entity in entitiesToSpawn)
             {
-                this.Add(entity);
+                addEntity(entity);
             }
             entitiesToSpawn.Clear();
         }
@@ -53,7 +55,7 @@ namespace Systems
                 // There is probably a better way to do this by designing an interface that has the Create() method, then forcing the type to be of that interface.
                 // https://learn.microsoft.com/en-us/dotnet/api/system.reflection.methodinfo.invoke?view=netframework-1.1
                 // Ensure Create Method exists, and then invoke it here.
-                entitiesToSpawn.Add((Entities.Entity)createMethod.Invoke(null, new object[] { renderable.Texture, new Vector2(150, 150) }));
+                entitiesToSpawn.Add((Entities.Entity)createMethod.Invoke(null, new object[] { renderable.Texture, new Vector2((float) random.nextGaussian(100, 50), (float) random.nextGaussian(100, 50)) }));
             }
         }
     }
