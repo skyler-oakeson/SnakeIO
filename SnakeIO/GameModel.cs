@@ -41,12 +41,13 @@ namespace SnakeIO
             this.collision = new Collision();
             this.audio = new Audio();
             this.spawner = new Spawner(addEntity);
-
+            
+            Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
             SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
             AddEntity(Player.Create(playerTex, playerSound, controlManager, Scenes.SceneContext.Game, new Vector2(0, 0)));
             AddEntity(Wall.Create(playerTex, new Vector2(100, 100)));
-            AddEntity(Food.Create(playerTex, new Vector2(200, 200)));
+            AddEntity(Food.Create(foodTex, new Vector2(200, 200)));
         }
 
         public void Update(GameTime gameTime)

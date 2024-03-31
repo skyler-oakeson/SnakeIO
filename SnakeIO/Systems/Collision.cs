@@ -29,7 +29,7 @@ namespace Systems
                     Components.Collidable e2Col = e2.GetComponent<Components.Collidable>();
 
                     // Check to see if state has changed so collision isn't handled multiple times
-                    if (res != e1Col.Collided || res != e2Col.Collided)
+                    if (res != e1Col.Collided && res != e2Col.Collided)
                     {
                         e1Col.Collided = res;
                         e2Col.Collided = res;

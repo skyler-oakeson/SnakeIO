@@ -13,22 +13,17 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin images/player.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:images/player.png
+#begin Audio/bass-hit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/bass-hit.wav
 
 #begin Audio/bass-switch.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Audio/bass-switch.wav
-
-#begin Audio/bass-hit.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Audio/bass-hit.wav
 
 #begin Audio/click.wav
 /importer:WavImporter
@@ -41,3 +36,28 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Audio/negative.wav
+
+#begin images/food.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:images/food.png
+
+#begin images/player.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:images/player.png
+

@@ -12,17 +12,19 @@ namespace Entities
         {
             Entity food = new Entity();
 
-            int radius = texture.Width >= texture.Height ? texture.Width/2 : texture.Height/2;
-
             int r = random.Next(0, 255);
             int g = random.Next(0, 255);
             int b = random.Next(0, 255);
 
             food.Add(new Components.Renderable(texture, new Color(r, g, b), Color.White));
+            food.Add(new Components.Animatable(texture, new int[] { 100, 100, 100, 100, 100, 100 }));
             food.Add(new Components.Positionable(pos));
             food.Add(new Components.Consumable(typeof(Food), 1.0f));
-            food.Add(new Components.Spawnable(TimeSpan.FromMilliseconds(5000), 10, typeof(Food)));
-            food.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius-30)));
+            food.Add(new Components.Spawnable(TimeSpan.FromMilliseconds(5000), 5, typeof(Food)));
+
+            Components.Animatable animatable = food.GetComponent<Components.Animatable>();
+            int radius = animatable.subImageWidth >= animatable.spriteSheet.Height ? animatable.subImageWidth/2 : animatable.spriteSheet.Height/2;
+            food.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
 
             return food;
         }
