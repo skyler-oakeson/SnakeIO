@@ -45,21 +45,23 @@ namespace Entities
                             movable.Velocity += new Vector2(-.2f, 0);
                          })),
                         }));
-
-            player.Add(new Components.MouseControllable(
-                        cm,
-                        new (Controls.Control, Controls.ControlDelegatePosition)[1]
-                        {
-                        (new Controls.Control(sc, Controls.ControlContext.MoveTowards, Keys.None, false),
-                         new Controls.ControlDelegatePosition((GameTime gameTime, int x, int y) =>
-                         {
-                            Vector2 pos = player.GetComponent<Components.Positionable>().Pos;
-                            Vector2 dir = new Vector2(x, y) - pos;
-                            dir.Normalize();
-                            movable.Velocity += dir * .2f;
-                         })),
-                        }));
-
+            
+            //Remove if statement for mouse controls. We will want to check what the user selects in the real game
+            if (false) { 
+                player.Add(new Components.MouseControllable(
+                            cm,
+                            new (Controls.Control, Controls.ControlDelegatePosition)[1]
+                            {
+                            (new Controls.Control(sc, Controls.ControlContext.MoveTowards, Keys.None, false),
+                             new Controls.ControlDelegatePosition((GameTime gameTime, int x, int y) =>
+                                 {
+                                 Vector2 pos = player.GetComponent<Components.Positionable>().Pos;
+                                 Vector2 dir = new Vector2(x, y) - pos;
+                                 dir.Normalize();
+                                 movable.Velocity += dir * .2f; //direction * by speed
+                                 })),
+                            }));
+            }
             return player;
         }
     }

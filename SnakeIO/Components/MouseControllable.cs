@@ -1,7 +1,7 @@
 namespace Components
 {
     /// <summary>
-    /// This component is responsible for keeping keyboard control data of
+    /// This component is responsible for keeping mouse control data of
     /// entites that are controllable using a keyboard.
     /// </summary>
     public class MouseControllable : Component
