@@ -65,8 +65,8 @@ namespace Systems
             sb.Draw(
                     renderable.Texture,
                     new Rectangle(
-                        (int)positionable.Pos.X,
-                        (int)positionable.Pos.Y,
+                        (int)(positionable.Pos.X - renderable.Texture.Width/2),
+                        (int)(positionable.Pos.Y - renderable.Texture.Height/2),
                         renderable.Texture.Height,
                         renderable.Texture.Width
                         ),

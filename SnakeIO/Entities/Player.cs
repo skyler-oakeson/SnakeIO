@@ -13,7 +13,7 @@ namespace Entities
 
             int radius = texture.Width >= texture.Height ? texture.Width/2 : texture.Height/2;
 
-            player.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius-30)));
+            player.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
             player.Add(new Components.Renderable(texture, Color.Red, Color.Black));
             player.Add(new Components.Positionable(pos));
             player.Add(new Components.Movable(new Vector2(0, 0), new Vector2(0, 0)));
