@@ -20,21 +20,16 @@ namespace Systems
 
         public override void Update(GameTime gameTime)
         {
-            foreach (var e1 in entities.Values)
+            Entities.Entity[] entityArr = new Entities.Entity[entities.Values.Count];
+            entities.Values.CopyTo(entityArr, 0);
+            for (int i = 0; i < entityArr.Length; i++)
             {
-                foreach (var e2 in entities.Values)
+                Entities.Entity e1 = entityArr[i];
+                for (int j = i; j < entityArr.Length; j++)
                 {
+                    Entities.Entity e2 = entityArr[j];
                     bool res = DidCollide(e1, e2);
-                    Components.Collidable e1Col = e1.GetComponent<Components.Collidable>();
-                    Components.Collidable e2Col = e2.GetComponent<Components.Collidable>();
-
-                    // Check to see if state has changed so collision isn't handled multiple times
-                    if (res != e1Col.Collided && res != e2Col.Collided)
-                    {
-                        e1Col.Collided = res;
-                        e2Col.Collided = res;
-                        if (res) HandleCollision(e1, e2);
-                    }
+                    if (res) HandleCollision(e1, e2);
                 }
             }
         }
@@ -62,8 +57,12 @@ namespace Systems
         private void HandleCollision(Entities.Entity e1, Entities.Entity e2)
         {
             Components.Positionable e1Pos = e1.GetComponent<Components.Positionable>();
-            Components.Positionable e2Pos = e1.GetComponent<Components.Positionable>();
+            Components.Positionable e2Pos = e2.GetComponent<Components.Positionable>();
+            Vector2 n = (e1Pos.Pos - e2Pos.Pos);
+            n.Normalize();
+
             e1Pos.Pos = e1Pos.PrevPos;
+            e2Pos.Pos = e2Pos.PrevPos;
 
             if (e1.ContainsComponent<Components.Audible>())
             {
@@ -74,7 +73,7 @@ namespace Systems
             if (e1.ContainsComponent<Components.Movable>() && !e2.ContainsComponent<Components.Movable>())
             {
                 Components.Movable e1Mov = e1.GetComponent<Components.Movable>();
-                e1Mov.Velocity = -e1Mov.Velocity;
+                e1Mov.Velocity += n;
             }
 
             // Movables - Movables
@@ -82,8 +81,8 @@ namespace Systems
             {
                 Components.Movable e1Mov = e1.GetComponent<Components.Movable>();
                 Components.Movable e2Mov = e2.GetComponent<Components.Movable>();
-                e2Mov.Velocity = e1Mov.Velocity;
-                e1Mov.Velocity = -e1Mov.Velocity;
+                e2Mov.Velocity -= n*.5f;
+                e1Mov.Velocity += n*.5f;
             }
         }
     }

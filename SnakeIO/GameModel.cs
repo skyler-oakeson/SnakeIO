@@ -47,7 +47,8 @@ namespace SnakeIO
             SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
             AddEntity(Player.Create(playerTex, playerSound, controlManager, Scenes.SceneContext.Game, new Vector2(0, 0)));
             AddEntity(Wall.Create(playerTex, new Vector2(100, 100)));
-            AddEntity(Food.Create(foodTex, new Vector2(200, 200)));
+            AddEntity(Wall.Create(playerTex, new Vector2(200, 100)));
+            AddEntity(Food.Create(playerTex, new Vector2(200, 200)));
         }
 
         public void Update(GameTime gameTime)
