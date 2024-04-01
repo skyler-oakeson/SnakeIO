@@ -9,6 +9,7 @@ namespace Controls
         MoveRight,
         MoveUp,
         MoveDown,
+        MoveTowards,
         MenuUp,
         MenuDown,
     }
