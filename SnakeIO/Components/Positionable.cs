@@ -11,10 +11,10 @@ namespace Components
         public Vector2 Pos
         {
             get { return pos; }
-            set { PrevPos = pos; pos = value; }
+            set { pos = value; }
         }
 
-        public Vector2 PrevPos { get; private set; }
+        public Vector2 PrevPos { get; set; }
 
         public Positionable(Vector2 pos)
         {

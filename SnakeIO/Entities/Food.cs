@@ -23,6 +23,7 @@ namespace Entities
             food.Add(new Components.Consumable(typeof(Food), 1.0f));
             food.Add(new Components.Spawnable(TimeSpan.FromMilliseconds(5000), 10, typeof(Food)));
             food.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius-30)));
+            food.Add(new Components.Movable(new Vector2(0, 0), new Vector2(0, 0)));
 
             return food;
         }

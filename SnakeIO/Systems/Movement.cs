@@ -41,9 +41,10 @@ namespace Systems
             if (Math.Abs(movable.Velocity.Y) > 1) { movable.Velocity = new Vector2(movable.Velocity.X, movable.Velocity.Y > 0 ? 1 : -1); }
 
             Vector2 newPos = movable.Velocity * gameTime.ElapsedGameTime.Milliseconds + positionable.Pos;
+            positionable.PrevPos = positionable.Pos;
             positionable.Pos = newPos;
 
-            movable.Velocity *= new Vector2(.85f, .85f);
+            movable.Velocity *= new Vector2(.80f, .80f);
 
             // If Collidable update the hitbox position
             if (entity.ContainsComponent<Components.Collidable>())
