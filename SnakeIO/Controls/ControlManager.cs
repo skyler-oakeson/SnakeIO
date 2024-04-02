@@ -13,8 +13,8 @@ namespace Controls
             new Dictionary<Scenes.SceneContext, Dictionary<ControlContext, Control>>();
         private Dictionary<Keys, ControlDelegate> delegates { get; set; } =
             new Dictionary<Keys, ControlDelegate>();
-        private Dictionary<Keys, ControlDelegatePosition> delegatesPosition { get; set; } =
-            new Dictionary<Keys, ControlDelegatePosition>();
+        private Dictionary<Controls.MouseEvent, ControlDelegatePosition> delegatesPosition { get; set; } =
+            new Dictionary<Controls.MouseEvent, ControlDelegatePosition>();
         private DataManager dataManager;
         private KeyboardState statePrevious;
         private MouseState mouseStatePrevious;
@@ -36,9 +36,9 @@ namespace Controls
             // Loaded control will override the register so it will only be defaulted if it wasn't able to load
             con = controls[con.sc][con.cc];
             if (d is ControlDelegate)
-                delegates.Add(con.key, d as ControlDelegate);
+                delegates.Add((Keys)con.key, d as ControlDelegate);
             else if (d is ControlDelegatePosition)
-                delegatesPosition.Add(con.key, d as ControlDelegatePosition);
+                delegatesPosition.Add((Controls.MouseEvent)con.mouseEvent, d as ControlDelegatePosition);
         }
 
         private void RegisterScene(Scenes.SceneContext sc)
@@ -55,7 +55,7 @@ namespace Controls
         /// <summary>
         public void ChangeKey(Scenes.SceneContext sc, ControlContext cc, Keys key)
         {
-            Keys old = controls[sc][cc].key;
+            Keys old = (Keys)controls[sc][cc].key;
             controls[sc][cc].key = key;
             ControlDelegate ce = delegates[old];
             delegates.Remove(key);
@@ -68,7 +68,7 @@ namespace Controls
         /// <summary>
         public Keys GetKey(Scenes.SceneContext sc, ControlContext cc)
         {
-            return controls[sc][cc].key;
+            return (Keys)controls[sc][cc].key;
         }
 
         /// <summary>
@@ -90,17 +90,23 @@ namespace Controls
             MouseState mouseState = Mouse.GetState();
             foreach (Control control in sceneControls.Values)
             {
-                if (delegatesPosition.ContainsKey(control.key))
+                if (control.mouseEvent != null)
                 {
-                    delegatesPosition[control.key](gameTime, mouseState.X, mouseState.Y);
+                    if (delegatesPosition.ContainsKey((Controls.MouseEvent)control.mouseEvent))
+                    {
+                        delegatesPosition[(Controls.MouseEvent)control.mouseEvent](gameTime, mouseState.X, mouseState.Y);
+                    }
                 }
-                else if (delegates.ContainsKey(control.key) && !control.keyPressOnly && state.IsKeyDown(control.key))
+                if (control.key != null)
                 {
-                    delegates[control.key](gameTime, 1.0f);
-                }
-                else if (!control.keyPressOnly && state.IsKeyDown(control.key))
-                {
-                    delegates[control.key](gameTime, 1.0f);
+                    if (delegates.ContainsKey((Keys)control.key) && !control.keyPressOnly && state.IsKeyDown((Keys)control.key))
+                    {
+                        delegates[(Keys)control.key](gameTime, 1.0f);
+                    }
+                    else if (!control.keyPressOnly && state.IsKeyDown((Keys)control.key))
+                    {
+                        delegates[(Keys)control.key](gameTime, 1.0f);
+                    }
                 }
             }
 

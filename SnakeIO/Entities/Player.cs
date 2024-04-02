@@ -24,22 +24,22 @@ namespace Entities
                         cm,
                         new (Controls.Control, Controls.ControlDelegate)[4]
                         {
-                        (new Controls.Control(sc, Controls.ControlContext.MoveUp, Keys.W, false),
+                        (new Controls.Control(sc, Controls.ControlContext.MoveUp, Keys.W, null, false),
                          new Controls.ControlDelegate((GameTime gameTime, float value) =>
                          {
                             movable.Velocity += new Vector2(0, -.2f);
                          })),
-                        (new Controls.Control(sc, Controls.ControlContext.MoveDown, Keys.S, false),
+                        (new Controls.Control(sc, Controls.ControlContext.MoveDown, Keys.S, null, false),
                          new Controls.ControlDelegate((GameTime gameTime, float value) =>
                          {
                             movable.Velocity += new Vector2(0, .2f);
                          })),
-                        (new Controls.Control(sc, Controls.ControlContext.MoveRight, Keys.D, false),
+                        (new Controls.Control(sc, Controls.ControlContext.MoveRight, Keys.D, null, false),
                          new Controls.ControlDelegate((GameTime gameTime, float value) =>
                          {
                             movable.Velocity += new Vector2(.2f, 0);
                          })),
-                        (new Controls.Control(sc, Controls.ControlContext.MoveLeft, Keys.A, false),
+                        (new Controls.Control(sc, Controls.ControlContext.MoveLeft, Keys.A, null, false),
                          new Controls.ControlDelegate((GameTime gameTime, float value) =>
                          {
                             movable.Velocity += new Vector2(-.2f, 0);
@@ -52,7 +52,7 @@ namespace Entities
                             cm,
                             new (Controls.Control, Controls.ControlDelegatePosition)[1]
                             {
-                            (new Controls.Control(sc, Controls.ControlContext.MoveTowards, Keys.None, false),
+                            (new Controls.Control(sc, Controls.ControlContext.MoveTowards, null, Controls.MouseEvent.MouseMove, false),
                              new Controls.ControlDelegatePosition((GameTime gameTime, int x, int y) =>
                                  {
                                  Vector2 pos = player.GetComponent<Components.Positionable>().Pos;
