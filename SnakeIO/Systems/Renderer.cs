@@ -47,12 +47,12 @@ namespace Systems
                         animatable.subImageIndex = animatable.subImageIndex % animatable.spriteTime.Length;
                     }
                     RenderAnimatable(entity);
-                    RenderHitbox(entity);
+                    // RenderHitbox(entity);
                 }
                 else
                 {
                     RenderEntity(entity);
-                    RenderHitbox(entity);
+                    // RenderHitbox(entity);
                 }
             }
         }
@@ -63,12 +63,12 @@ namespace Systems
             Components.Renderable renderable = entity.GetComponent<Components.Renderable>();
             sb.Begin();
             sb.Draw(
-                    renderable.Texture,
+                    renderable.texture,
                     new Rectangle(
-                        (int)(positionable.Pos.X - renderable.Texture.Width/2),
-                        (int)(positionable.Pos.Y - renderable.Texture.Height/2),
-                        renderable.Texture.Height,
-                        renderable.Texture.Width
+                        (int)(positionable.pos.X - renderable.texture.Width/2),
+                        (int)(positionable.pos.Y - renderable.texture.Height/2),
+                        renderable.texture.Height,
+                        renderable.texture.Width
                         ),
                     renderable.color
                     );
@@ -84,13 +84,13 @@ namespace Systems
             sb.Draw(
                     animatable.spriteSheet,
                     new Rectangle(
-                        (int)positionable.Pos.X,
-                        (int)positionable.Pos.Y,
+                        (int)positionable.pos.X,
+                        (int)positionable.pos.Y,
                         animatable.subImageWidth,
                         animatable.spriteSheet.Height
                         ),
                     new Rectangle(animatable.subImageIndex * animatable.subImageWidth, 0, animatable.subImageWidth, animatable.spriteSheet.Height), // Source sub-texture
-                    renderable.Color,
+                    renderable.color,
                     0, // Angular rotation
                     new Vector2(animatable.subImageWidth / 2, animatable.spriteSheet.Height / 2), // Center point of rotation
                     SpriteEffects.None, 0);
@@ -106,7 +106,7 @@ namespace Systems
             for (int i = 0; i < 360; i++)
             {
                 indexCircleStrip[i] = i;
-                vertCircleStrip[i].Position = new Vector3(Convert.ToSingle(positionable.Pos.X + (collidable.HitBox.Z * Math.Cos((float)i / 180 * Math.PI))), Convert.ToSingle(positionable.Pos.Y + (collidable.HitBox.Z * Math.Sin((float)i / 180 * Math.PI))), 0);
+                vertCircleStrip[i].Position = new Vector3(Convert.ToSingle(positionable.pos.X + (collidable.hitBox.Z * Math.Cos((float)i / 180 * Math.PI))), Convert.ToSingle(positionable.pos.Y + (collidable.hitBox.Z * Math.Sin((float)i / 180 * Math.PI))), 0);
                 vertCircleStrip[i].Color = Color.Red;
             }
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)

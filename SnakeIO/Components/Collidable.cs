@@ -7,19 +7,8 @@ namespace Components
     /// </summary>
     public class Collidable : Component
     {
-        private Vector3 hitBox { get; set; }
-        public Vector3 HitBox
-        {
-            get { return hitBox; }
-            set { hitBox = value; }
-        }
-
-        private bool collided { get; set; }
-        public bool Collided
-        {
-            get { return collided; }
-            set { collided = value; }
-        }
+        public Vector3 hitBox { get; set; }
+        public bool collided { get; set; }
 
         public Collidable(Vector3 hitBox)
         {

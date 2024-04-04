@@ -9,26 +9,9 @@ namespace Components
     /// </summary>
     class Renderable : Component
     {
-        private Texture2D texture {get; set;}
-        public Texture2D Texture
-        {
-            get { return texture; }
-            set { texture = value; }
-        }
-
+        public Texture2D texture {get; set;}
         public Color color {get; set;}
-        public Color Color 
-        {
-            get { return color; }
-            set { color = value; }
-        }
-
         public Color stroke {get; set;}
-        public Color Stroke 
-        {
-            get { return stroke; }
-            set { stroke = value; }
-        }
 
         public Renderable(Texture2D texture, Color color, Color stroke)
         {

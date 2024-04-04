@@ -19,6 +19,7 @@ namespace SnakeIO
         private Collision collision;
         private Audio audio;
         private Spawner spawner;
+        private Linker linker;
 
         public delegate void AddDelegate(Entity entity);
         private AddDelegate addEntity;
@@ -41,6 +42,7 @@ namespace SnakeIO
             this.collision = new Collision();
             this.audio = new Audio();
             this.spawner = new Spawner(addEntity);
+            this.linker = new Linker();
             
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
@@ -58,6 +60,7 @@ namespace SnakeIO
             collision.Update(gameTime);
             audio.Update(gameTime);
             spawner.Update(gameTime);
+            linker.Update(gameTime);
         }
 
         public void Render(GameTime gameTime)
@@ -73,6 +76,7 @@ namespace SnakeIO
             collision.Add(entity);
             audio.Add(entity);
             spawner.Add(entity);
+            linker.Add(entity);
         }
 
         private void RemoveEntity(Entity entity)
@@ -83,6 +87,7 @@ namespace SnakeIO
             collision.Remove(entity.id);
             audio.Remove(entity.id);
             spawner.Remove(entity.id);
+            linker.Add(entity);
         }
     }
 }
