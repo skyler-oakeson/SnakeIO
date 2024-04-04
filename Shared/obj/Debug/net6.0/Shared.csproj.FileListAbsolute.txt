@@ -1,0 +1,6 @@
+C:\CS-classes\CS5410\FinalProject\SnakeIO\Shared\obj\Debug\net6.0\Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\CS-classes\CS5410\FinalProject\SnakeIO\Shared\obj\Debug\net6.0\Shared.AssemblyInfoInputs.cache
+C:\CS-classes\CS5410\FinalProject\SnakeIO\Shared\obj\Debug\net6.0\Shared.AssemblyInfo.cs
+C:\CS-classes\CS5410\FinalProject\SnakeIO\Shared\obj\Debug\net6.0\Shared.csproj.CoreCompileInputs.cache
+C:\CS-classes\CS5410\FinalProject\SnakeIO\Shared\obj\Debug\net6.0\Shared.sourcelink.json
+C:\CS-classes\CS5410\FinalProject\SnakeIO\Shared\obj\Debug\net6.0\Shared.csproj.AssemblyReference.cache

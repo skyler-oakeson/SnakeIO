@@ -3,7 +3,8 @@ namespace Shared.Messages
 {
     public class Input : Message
     {
-        public Input(uint entityId, List<Components.Input.Type> inputs, TimeSpan elapsedTime) : base(Messages.Type.Input)
+        //TODO: Research posibilities to handle Mouse controllable as well
+        public Input(uint entityId, List<Components.KeyboardControllable> inputs, TimeSpan elapsedTime) : base(Messages.Type.Input)
         {
             this.entityId = entityId;
             this.inputs = inputs;
@@ -13,11 +14,11 @@ namespace Shared.Messages
         public Input() : base(Messages.Type.Input)
         {
             this.elapsedTime = TimeSpan.Zero;
-            this.inputs = new List<Components.Input.Type>();
+            this.inputs = new List<Components.KeyboardControllable>();
         }
 
         public uint entityId { get; private set; }
-        public List<Components.Input.Type> inputs { get; private set; }
+        public List<Components.KeyboardControllable> inputs { get; private set; }
         public TimeSpan elapsedTime { get; private set; }
 
         public override byte[] serialize()
@@ -51,7 +52,7 @@ namespace Shared.Messages
 
             for (int i = 0; i < howMany; i++)
             {
-                var input = (Components.Input.Type)BitConverter.ToUInt16(data, offset);
+                var input = (Components.KeyboardControllable)BitConverter.ToUInt16(data, offset);
                 offset += sizeof(UInt16);
                 inputs.Add(input);
             }

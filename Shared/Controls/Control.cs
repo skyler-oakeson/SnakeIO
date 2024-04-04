@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework.Input;
 using System.Runtime.Serialization;
 
-namespace Controls
+namespace Shared.Controls
 {
     [DataContract(Name = "Control")]
     public class Control

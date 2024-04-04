@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 
-namespace Components
+namespace Shared.Components
 {
     /// <summary>
     /// This component is responsible for managing the state of Positionable entities.

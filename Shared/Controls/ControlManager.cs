@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Controls
+namespace Shared.Controls
 {
     public delegate void ControlDelegate(GameTime gameTime, float value);
     public delegate void ControlDelegatePosition(GameTime GameTime, int x, int y);

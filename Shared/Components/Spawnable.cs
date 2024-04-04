@@ -1,6 +1,6 @@
 using System;
 
-namespace Components
+namespace Shared.Components
 {
     class Spawnable : Component
     {

@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Components
+namespace Shared.Components
 {
     /// <summary>
     /// This component is responsible for keeping rendering data of

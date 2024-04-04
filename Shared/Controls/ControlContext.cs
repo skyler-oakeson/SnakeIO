@@ -1,6 +1,6 @@
 using System;
 
-namespace Controls
+namespace Shared.Controls
 {
     [Flags]
     public enum ControlContext 

@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework.Audio;
 
-namespace Components
+namespace Shared.Components
 {
     /// <summary>
     /// This component is responsible for containing soundeffect data of

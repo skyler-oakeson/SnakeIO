@@ -1,4 +1,4 @@
-namespace Components
+namespace Shared.Components
 {
     /// <summary>
     /// This component is responsible for keeping keyboard control data of

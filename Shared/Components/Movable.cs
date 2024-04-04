@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 
-namespace Components
+namespace Shared.Components
 {
     /// <summary>
     /// This component is responsible for keeping track of the state of movable entities.

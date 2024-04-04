@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Entities
+namespace Shared.Entities
 {
     public class Wall 
     {

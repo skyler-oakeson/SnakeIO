@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Components
+namespace Shared.Components
 {
     class Animatable : Component
     {

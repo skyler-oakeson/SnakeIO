@@ -2,8 +2,9 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
+using Shared.Entities;
 
-namespace Entities
+namespace Shared.Entities
 {
     public class Food
     {

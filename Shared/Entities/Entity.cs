@@ -1,10 +1,10 @@
-using Components;
+using Shared.Components;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Entities
+namespace Shared.Entities
 {
     /// <summary>
     /// A named entity that contains a collection of <see cref="Component"/> instances.
