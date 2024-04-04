@@ -7,7 +7,7 @@ namespace Components
     /// </summary>
     public class Positionable : Component
     {
-        public Vector2 pos;
+        public Vector2 pos { get; set; }
         public Vector2 prevPos { get; set; }
 
         public Positionable(Vector2 pos)

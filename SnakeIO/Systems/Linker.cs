@@ -16,6 +16,12 @@ namespace Systems
             this.chains = new Dictionary<string, List<uint>>();
         }
 
+        
+        /// <summary>
+        /// Overrides the system add function.
+        /// Takes an entity that is interested in the Linkable component.
+        /// Links it to the proper place in the proper chain depending on its properties.
+        /// </summary>
         override public bool Add(Entities.Entity entity)
         {
             bool interested = IsInterested(entity);
@@ -44,7 +50,9 @@ namespace Systems
                 // If position is Body check if there is a tail or not
                 else
                 {
-                    var chain = chains[link.chain];
+                    List<uint> chain = chains[link.chain];
+
+                    // Get last link in chain
                     Components.Linkable prevLink = entities[chain[chain.Count-1]].GetComponent<Components.Linkable>();
 
                     // If a tail is on the chain, link before tail
@@ -68,6 +76,8 @@ namespace Systems
             return interested;
         }
 
+        //TODO: Linker Remove link function
+
         override public void Update(GameTime gameTime)
         {
             foreach (var entity in entities.Values)
@@ -76,13 +86,16 @@ namespace Systems
             }
         }
 
+        /// <summary>
+        /// Runs the LinkDelegate function with itself and it's linked entity.
+        /// </summary>
         private void Link(Entities.Entity linkee)
         {
             Components.Linkable link = linkee.GetComponent<Components.Linkable>();
             if (link.linkId.HasValue)
             {
                 Entities.Entity linked = entities[(uint)link.linkId];
-                link.linkDelegate(linked);
+                link.linkDelegate(linkee, linked);
             }
         }
     }

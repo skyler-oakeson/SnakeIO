@@ -47,9 +47,10 @@ namespace SnakeIO
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
             SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
+
             AddEntity(Player.Create(playerTex, playerSound, controlManager, Scenes.SceneContext.Game, new Vector2(0, 0)));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100)));
-            AddEntity(Wall.Create(playerTex, new Vector2(200, 100)));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(800, 800), Color.Orange));
             AddEntity(Food.Create(foodTex, new Vector2(200, 200)));
         }
 
@@ -59,8 +60,8 @@ namespace SnakeIO
             movement.Update(gameTime);
             collision.Update(gameTime);
             audio.Update(gameTime);
-            spawner.Update(gameTime);
             linker.Update(gameTime);
+            spawner.Update(gameTime);
         }
 
         public void Render(GameTime gameTime)
@@ -75,8 +76,8 @@ namespace SnakeIO
             movement.Add(entity);
             collision.Add(entity);
             audio.Add(entity);
-            spawner.Add(entity);
             linker.Add(entity);
+            spawner.Add(entity);
         }
 
         private void RemoveEntity(Entity entity)
@@ -86,8 +87,8 @@ namespace SnakeIO
             movement.Remove(entity.id);
             collision.Remove(entity.id);
             audio.Remove(entity.id);
+            linker.Remove(entity.id);
             spawner.Remove(entity.id);
-            linker.Add(entity);
         }
     }
 }

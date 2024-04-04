@@ -6,8 +6,6 @@ namespace Components
     /// <summary>
     /// This component provides a one way link to some other component with the linkable component.
     /// The type of components that get linked will update the same type of component on the linked.
-    /// Allows for one component to be tied directly to some other component on another entity without affecting
-    /// the one it is linked to.
     /// If the linkedId is null that entity is linkable but not directly linked and affecting some other entity.
     /// This allows for other entities to link to it.
     /// </summary>
@@ -39,5 +37,5 @@ namespace Components
         Tail
     }
 
-    public delegate void LinkDelegate(Entities.Entity linked);
+    public delegate void LinkDelegate(Entities.Entity e1, Entities.Entity e2);
 }
