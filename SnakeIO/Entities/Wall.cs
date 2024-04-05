@@ -27,12 +27,10 @@ namespace Entities
                                 Components.Positionable e2Pos = e2.GetComponent<Components.Positionable>();
                                 Components.Movable e2Mov = e2.GetComponent<Components.Movable>();
 
-                                // Vector2 dir = e2Pos.pos - e1Pos.pos;
-                                // e1Mov.velocity = dir * .01f;
                                 Vector2 offset = e2Mov.velocity;
                                 offset = offset * radius;
                                 e1Pos.prevPos = e1Pos.pos;
-                                e1Pos.pos = e2Pos.prevPos + offset;
+                                e1Pos.pos = e2Pos.prevPos - offset;
                             })));
             return wall;
         }

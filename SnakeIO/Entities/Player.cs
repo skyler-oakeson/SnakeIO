@@ -48,7 +48,7 @@ namespace Entities
                         }));
             
             //Remove if statement for mouse controls. We will want to check what the user selects in the real game
-            if (true) { 
+            if (false) { 
                 player.Add(new Components.MouseControllable(
                             cm,
                             new (Controls.Control, Controls.ControlDelegatePosition)[1]
