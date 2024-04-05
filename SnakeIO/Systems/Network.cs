@@ -1,5 +1,4 @@
-﻿
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Shared.Components;
 using Shared.Messages;
 using System;
@@ -26,7 +25,7 @@ namespace Systems
         // that maps from message types to their handlers.
         /// </summary>
         public Network() :
-            base(typeof(Shared.Components.Position))
+            base(typeof(Shared.Components.Positionable))
         {
 
             registerHandler(Shared.Messages.Type.ConnectAck, (TimeSpan elapsedTime, Message message) =>
@@ -51,7 +50,7 @@ namespace Systems
         }
 
         // Have to implement this because it is abstract in the base class
-        public override void update(TimeSpan elapsedTime) { }
+        public override void Update(GameTime gameTime) { }
 
         /// <summary>
         /// Have our own version of update, because we need a list of messages to work with, and
@@ -80,29 +79,30 @@ namespace Systems
 
             // After processing all the messages, perform server reconciliation by
             // resimulating the inputs from any sent messages not yet acknowledged by the server.
-            var sent = MessageQueueClient.instance.getSendMessageHistory(m_lastMessageId);
+            var sent = SnakeIO.MessageQueueClient.instance.getSendMessageHistory(m_lastMessageId);
             while (sent.Count > 0)
             {
                 var message = (Shared.Messages.Input)sent.Dequeue();
                 if (message.type == Shared.Messages.Type.Input)
                 {
-                    var entity = m_entities[message.entityId];
+                    var entity = entities[message.entityId];
                     if (m_updatedEntities.Contains(entity.id))
                     {
                         foreach (var input in message.inputs)
                         {
-                            switch (input)
-                            {
-                                case Shared.Components.Input.Type.Thrust:
-                                    Shared.Entities.Utility.thrust(entity, message.elapsedTime);
-                                    break;
-                                case Shared.Components.Input.Type.RotateLeft:
-                                    Shared.Entities.Utility.rotateLeft(entity, message.elapsedTime);
-                                    break;
-                                case Shared.Components.Input.Type.RotateRight:
-                                    Shared.Entities.Utility.rotateRight(entity, message.elapsedTime);
-                                    break;
-                            }
+                            //TODO: Make this work for our input
+                            // switch (input)
+                            // {
+                            //     case Shared.Components.Input.Type.Thrust:
+                            //         Shared.Entities.Utility.thrust(entity, message.elapsedTime);
+                            //         break;
+                            //     case Shared.Components.Input.Type.RotateLeft:
+                            //         Shared.Entities.Utility.rotateLeft(entity, message.elapsedTime);
+                            //         break;
+                            //     case Shared.Components.Input.Type.RotateRight:
+                            //         Shared.Entities.Utility.rotateRight(entity, message.elapsedTime);
+                            //         break;
+                            // }
                         }
                     }
                 }
@@ -131,7 +131,7 @@ namespace Systems
         /// </summary>
         private void handleConnectAck(TimeSpan elapsedTime, ConnectAck message) 
         {
-            MessageQueueClient.instance.sendMessage(new Join());
+            SnakeIO.MessageQueueClient.instance.sendMessage(new Join());
         }
 
         /// <summary>
@@ -141,26 +141,26 @@ namespace Systems
         /// </summary>
         private void handleUpdateEntity(TimeSpan elapsedTime, UpdateEntity message) 
         { 
-            if (m_entities.ContainsKey(message.id))
+            if (entities.ContainsKey(message.id))
             {
-                var entity = m_entities[message.id];
-                if (entity.contains<Components.Goal>() && message.hasPosition)
+                var entity = entities[message.id];
+                if (message.hasPosition)
                 {
-                    var position = entity.get<Position>();
-                    var goal = entity.get<Components.Goal>();
-
-                    goal.updateWindow = message.updateWindow;
-                    goal.updatedTime = TimeSpan.Zero;
-                    goal.goalPosition = new Vector2(message.position.X, message.position.Y);
-                    goal.goalOrientation = message.orientation;
-
-                    goal.startPosition = position.position;
-                    goal.startOrientation = position.orientation;
+                    var position = entity.GetComponent<Positionable>();
+                    //TODO research was "goal" was in the original code
+                    // var goal = entity.GetComponent<Components.Goal>();
+                    //
+                    // goal.updateWindow = message.updateWindow;
+                    // goal.updatedTime = TimeSpan.Zero;
+                    // goal.goalPosition = new Vector2(message.position.X, message.position.Y);
+                    // goal.goalOrientation = message.orientation;
+                    //
+                    // goal.startPosition = position.position;
+                    // goal.startOrientation = position.orientation;
                 }
-                else if (entity.contains<Position>() && message.hasPosition)
+                else if (entity.ContainsComponent<Positionable>() && message.hasPosition)
                 {
-                    entity.get<Position>().position = message.position;
-                    entity.get<Position>().orientation = message.orientation;
+                    entity.GetComponent<Positionable>().Pos = message.position;
 
                     m_updatedEntities.Add(entity.id);
                 }
