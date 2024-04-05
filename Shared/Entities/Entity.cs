@@ -27,6 +27,11 @@ namespace Shared.Entities
         {
             id = nextId++;
         }
+        
+        public Entity(uint id)
+        {
+            this.id = id;
+        }
 
         /// <summary>
         /// Gets the unique ID of this entity.

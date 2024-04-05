@@ -14,8 +14,10 @@ namespace Shared.Messages
 
             if (entity.ContainsComponent<Shared.Components.Renderable>())
             {
-                this.hasAppearance = true;
+                this.hasRenderable = true;
                 this.texture = entity.GetComponent<Renderable>().Texture.Name;
+                this.color = entity.GetComponent<Renderable>().Color;
+                this.stroke = entity.GetComponent<Renderable>().Stroke;
             }
             else
             {
@@ -106,8 +108,10 @@ namespace Shared.Messages
         public uint id { get; private set; }
 
         // Appearance
-        public bool hasAppearance { get; private set; } = false;
+        public bool hasRenderable { get; private set; } = false;
         public string texture { get; private set; }
+        public Color color { get; private set; }
+        public Color stroke { get; private set; }
 
         // Position
         public bool hasPosition { get; private set; } = false;
@@ -139,6 +143,7 @@ namespace Shared.Messages
         public System.Type? consumableType { get; private set; }
 
         // Keyboard Input
+        // May have to change inputs to a dictionary that has the delegate with the control (we will)
         public bool hasInput { get; private set; } = false;
         public List<Shared.Controls.Control> inputs { get; private set; } = new List<Shared.Controls.Control>();
 
@@ -153,11 +158,17 @@ namespace Shared.Messages
             data.AddRange(base.serialize());
             data.AddRange(BitConverter.GetBytes(id));
 
-            data.AddRange(BitConverter.GetBytes(hasAppearance));
-            if (hasAppearance)
+            data.AddRange(BitConverter.GetBytes(hasRenderable));
+            if (hasRenderable)
             {
                 data.AddRange(BitConverter.GetBytes(texture.Length));
                 data.AddRange(Encoding.UTF8.GetBytes(texture));
+                data.AddRange(BitConverter.GetBytes(color.R));
+                data.AddRange(BitConverter.GetBytes(color.G));
+                data.AddRange(BitConverter.GetBytes(color.B));
+                data.AddRange(BitConverter.GetBytes(stroke.R));
+                data.AddRange(BitConverter.GetBytes(stroke.G));
+                data.AddRange(BitConverter.GetBytes(stroke.B));
             }
 
             data.AddRange(BitConverter.GetBytes(hasPosition));
@@ -251,14 +262,30 @@ namespace Shared.Messages
             this.id = BitConverter.ToUInt32(data, offset);
             offset += sizeof(uint);
 
-            this.hasAppearance = BitConverter.ToBoolean(data, offset);
+            this.hasRenderable = BitConverter.ToBoolean(data, offset);
             offset += sizeof(bool);
-            if (hasAppearance)
+            if (hasRenderable)
             {
                 int textureSize = BitConverter.ToInt32(data, offset);
                 offset += sizeof(Int32);
                 this.texture = Encoding.UTF8.GetString(data, offset, textureSize);
                 offset += textureSize;
+                //for color
+                byte r = data[offset];
+                offset += sizeof(byte);
+                byte g = data[offset];
+                offset += sizeof(byte);
+                byte b = data[offset];
+                offset += sizeof(byte);
+                this.color = new Color(r, g, b);
+                //for stroke
+                r = data[offset];
+                offset += sizeof(byte);
+                g = data[offset];
+                offset += sizeof(byte);
+                b = data[offset];
+                offset += sizeof(byte);
+                this.stroke = new Color(r, g, b);
             }
 
             this.hasPosition = BitConverter.ToBoolean(data, offset);
