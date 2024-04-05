@@ -1,14 +1,16 @@
 ﻿using Shared.Entities;
+using Microsoft.Xna.Framework;
 using Shared.Messages;
 
 namespace Systems
 {
-    public class Network : System
+    public class Network : Shared.Systems.System
+
     {
         public delegate void Handler(int clientId, TimeSpan elapsedTime, Shared.Messages.Message message);
         public delegate void JoinHandler(int clientId);
         public delegate void DisconnectHandler(int clientId);
-        public delegate void InputHandler(Entity entity, Shared.Components.Input.Type type, TimeSpan elapsedTime);
+        // public delegate void InputHandler(Entity entity, Shared.Components.Input.Type type, TimeSpan elapsedTime);
 
         private Dictionary<Shared.Messages.Type, Handler> m_commandMap = new Dictionary<Shared.Messages.Type, Handler>();
         private JoinHandler m_joinHandler;
@@ -22,12 +24,12 @@ namespace Systems
         /// </summary>
         public Network() :
             base(
-                typeof(Shared.Components.Movement),
-                typeof(Shared.Components.Position)
+                typeof(Shared.Components.Movable),
+                typeof(Shared.Components.Positionable)
             )
         {
             // Register our own join handler
-            registerHandler(Shared.Messages.Type.Join, (int clientId, TimeSpan elapsedTime, Shared.Messages.Message message) =>
+            registerHandler(Shared.Messages.Type.Join, (int clientId, GameTime elapsedTime, Shared.Messages.Message message) =>
             {
                 if (m_joinHandler != null)
                 {
@@ -36,7 +38,7 @@ namespace Systems
             });
 
             // Register our own disconnect handler
-            registerHandler(Shared.Messages.Type.Disconnect, (int clientId, TimeSpan elapsedTime, Shared.Messages.Message message) =>
+            registerHandler(Shared.Messages.Type.Disconnect, (int clientId, GameTime elapsedTime, Shared.Messages.Message message) =>
             {
                 if (m_disconnectHandler != null)
                 {
@@ -44,21 +46,22 @@ namespace Systems
                 }
             });
 
+            //TODO: Make work with our input
             // Register our own input handler
-            registerHandler(Shared.Messages.Type.Input, (int clientId, TimeSpan elapsedTime, Shared.Messages.Message message) =>
-            {
-                handleInput((Shared.Messages.Input)message);
-            });
+            // registerHandler(Shared.Messages.Type.Input, (int clientId, TimeSpan elapsedTime, Shared.Messages.Message message) =>
+            // {
+            //     handleInput((Shared.Messages.Input)message);
+            // });
         }
 
         // Have to implement this because it is abstract in the base class
-        public override void update(TimeSpan elapsedTime) { }
+        public override void Update(GameTime gameTime) { }
 
         /// <summary>
         /// Have our own version of update, because we need a list of messages to work with, and
         /// messages aren't entities.
         /// </summary>
-        public void update(TimeSpan elapsedTime, Queue<Tuple<int, Message>> messages)
+        public void update(GameTime elapsedTime, Queue<Tuple<int, Message>> messages)
         {
             if (messages != null)
             {
@@ -96,28 +99,29 @@ namespace Systems
         /// to the registered input handler.
         /// </summary>
         /// <param name="message"></param>
-        private void handleInput(Shared.Messages.Input message)
-        {
-            var entity = m_entities[message.entityId];
-            foreach (var input in message.inputs)
-            {
-                switch (input)
-                {
-                    case Shared.Components.Input.Type.Thrust:
-                        Shared.Entities.Utility.thrust(entity, message.elapsedTime);
-                        m_reportThese.Add(message.entityId);
-                        break;
-                    case Shared.Components.Input.Type.RotateLeft:
-                        Shared.Entities.Utility.rotateLeft(entity, message.elapsedTime);
-                        m_reportThese.Add(message.entityId);
-                        break;
-                    case Shared.Components.Input.Type.RotateRight:
-                        Shared.Entities.Utility.rotateRight(entity, message.elapsedTime);
-                        m_reportThese.Add(message.entityId);
-                        break;
-                }
-            }
-        }
+        // TODO: Make work with our input
+        // private void handleInput(Shared.Messages.Input message)
+        // {
+        //     var entity = m_entities[message.entityId];
+        //     foreach (var input in message.inputs)
+        //     {
+        //         switch (input)
+        //         {
+        //             case Shared.Components.Input.Type.Thrust:
+        //                 Shared.Entities.Utility.thrust(entity, message.elapsedTime);
+        //                 m_reportThese.Add(message.entityId);
+        //                 break;
+        //             case Shared.Components.Input.Type.RotateLeft:
+        //                 Shared.Entities.Utility.rotateLeft(entity, message.elapsedTime);
+        //                 m_reportThese.Add(message.entityId);
+        //                 break;
+        //             case Shared.Components.Input.Type.RotateRight:
+        //                 Shared.Entities.Utility.rotateRight(entity, message.elapsedTime);
+        //                 m_reportThese.Add(message.entityId);
+        //                 break;
+        //         }
+        //     }
+        // }
 
         /// <summary>
         /// For the entities that have updates, send those updates to all
@@ -127,7 +131,7 @@ namespace Systems
         {
             foreach (var entityId in m_reportThese)
             {
-                var entity = m_entities[entityId];
+                var entity = entities[entityId];
                 var message = new Shared.Messages.UpdateEntity(entity, elapsedTime);
                 MessageQueueServer.instance.broadcastMessageWithLastId(message);
             }

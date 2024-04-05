@@ -9,12 +9,12 @@ namespace Systems
     /// This system is responsible for handling playing soundeffects of any
     /// entity with an Audible component.
     /// </summary>
-    public class Audio : System
+    public class Audio : Shared.Systems.System
     {
         private Queue<SoundEffect> Sounds;
         public Audio()
             : base(
-                    typeof(Components.Audible)
+                    typeof(Shared.Components.Audible)
                     )
         {
         }
@@ -27,9 +27,9 @@ namespace Systems
             }
         }
 
-        private void PlaySound(Entities.Entity entity)
+        private void PlaySound(Shared.Entities.Entity entity)
         {
-            Components.Audible audible = entity.GetComponent<Components.Audible>();
+            Shared.Components.Audible audible = entity.GetComponent<Shared.Components.Audible>();
             if (audible.Play)
             {
                 audible.Sound.Play();

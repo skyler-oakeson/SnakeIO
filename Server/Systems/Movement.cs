@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using System;
+using Shared.Components;
 
 namespace Systems
 {
@@ -7,12 +8,12 @@ namespace Systems
     /// This system is responsible for handling the movement of any
     /// entity with a Movable & Positionable components.
     /// </summary>
-    class Movement : System
+    class Movement : Shared.Systems.System
     {
         public Movement()
             : base(
-                    typeof(Components.Movable),
-                    typeof(Components.Positionable)
+                    typeof(Shared.Components.Movable),
+                    typeof(Shared.Components.Positionable)
                   )
         {
         }
@@ -25,10 +26,10 @@ namespace Systems
             }
         }
 
-        private void MoveEntity(Entities.Entity entity, GameTime gameTime)
+        private void MoveEntity(Shared.Entities.Entity entity, GameTime gameTime)
         {
-            Components.Movable movable = entity.GetComponent<Components.Movable>();
-            Components.Positionable positionable = entity.GetComponent<Components.Positionable>();
+            Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
+            Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
 
             // Don't have to update if velocity is 0
             if (movable.Velocity.X == 0 && movable.Velocity.Y == 0)
@@ -47,9 +48,9 @@ namespace Systems
             movable.Velocity *= new Vector2(.80f, .80f);
 
             // If Collidable update the hitbox position
-            if (entity.ContainsComponent<Components.Collidable>())
+            if (entity.ContainsComponent<Shared.Components.Collidable>())
             {
-                Components.Collidable col = entity.GetComponent<Components.Collidable>();
+                Shared.Components.Collidable col = entity.GetComponent<Shared.Components.Collidable>();
                 col.HitBox = new Vector3(newPos.X, newPos.Y, col.HitBox.Z);
             }
         }

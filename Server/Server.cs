@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using Microsoft.Xna.Framework;
 
 namespace Server
 {
@@ -64,7 +65,7 @@ namespace Server
             TimeSpan SIMULATION_UPDATE_RATE_MS = TimeSpan.FromMilliseconds(33);
 
             GameModel model = new GameModel();
-            bool running = model.initialize();
+            bool running = model.Initialize();
 
             DateTime previousTime = DateTime.Now;
             while (running)
@@ -86,7 +87,7 @@ namespace Server
                 // Now, after having slept for a bit, now compute the elapsed time and perform
                 // the game model update.
                 elapsedTime += (sleepTime > TimeSpan.Zero ? sleepTime : TimeSpan.Zero);
-                model.update(elapsedTime);
+                model.Update(elapsedTime);
             }
 
             model.shutdown();
