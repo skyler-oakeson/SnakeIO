@@ -9,6 +9,7 @@ namespace Shared.Controls
         MoveRight,
         MoveUp,
         MoveDown,
+        MoveTowards,
         MenuUp,
         MenuDown,
     }
