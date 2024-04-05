@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Systems
 {
-    class Renderer : System
+    class Renderer : Shared.Systems.System
     {
         public SpriteBatch sb;
         public VertexPositionColor[] vertCircleStrip;
@@ -13,8 +13,8 @@ namespace Systems
 
         public Renderer(SpriteBatch sb)
             : base(
-                    typeof(Components.Renderable),
-                    typeof(Components.Positionable))
+                    typeof(Shared.Components.Renderable),
+                    typeof(Shared.Components.Positionable))
         {
             this.sb = sb;
 
@@ -36,9 +36,9 @@ namespace Systems
             sb.GraphicsDevice.Clear(Color.Black);
             foreach (var entity in entities.Values)
             {
-                if (entity.ContainsComponent<Components.Animatable>())
+                if (entity.ContainsComponent<Shared.Components.Animatable>())
                 {
-                    Components.Animatable animatable = entity.GetComponent<Components.Animatable>();
+                    Shared.Components.Animatable animatable = entity.GetComponent<Shared.Components.Animatable>();
                     animatable.timeSinceLastFrame += gameTime.ElapsedGameTime;
                     if (animatable.timeSinceLastFrame > TimeSpan.FromMilliseconds(animatable.spriteTime[animatable.subImageIndex]))
                     {
@@ -57,10 +57,10 @@ namespace Systems
             }
         }
 
-        private void RenderEntity(Entities.Entity entity)
+        private void RenderEntity(Shared.Entities.Entity entity)
         {
-            Components.Positionable positionable = entity.GetComponent<Components.Positionable>();
-            Components.Renderable renderable = entity.GetComponent<Components.Renderable>();
+            Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
+            Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
             sb.Begin();
             sb.Draw(
                     renderable.Texture,
@@ -75,11 +75,11 @@ namespace Systems
             sb.End();
         }
 
-        private void RenderAnimatable(Entities.Entity entity)
+        private void RenderAnimatable(Shared.Entities.Entity entity)
         {
-            Components.Positionable positionable = entity.GetComponent<Components.Positionable>();
-            Components.Renderable renderable = entity.GetComponent<Components.Renderable>();
-            Components.Animatable animatable = entity.GetComponent<Components.Animatable>();
+            Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
+            Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
+            Shared.Components.Animatable animatable = entity.GetComponent<Shared.Components.Animatable>();
             sb.Begin();
             sb.Draw(
                     animatable.spriteSheet,
@@ -97,10 +97,10 @@ namespace Systems
             sb.End();
         }
 
-        private void RenderHitbox(Entities.Entity entity)
+        private void RenderHitbox(Shared.Entities.Entity entity)
         {
-            Components.Collidable collidable = entity.GetComponent<Components.Collidable>();
-            Components.Positionable positionable = entity.GetComponent<Components.Positionable>();
+            Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
+            Shared.Components.Collidable collidable = entity.GetComponent<Shared.Components.Collidable>();
             indexCircleStrip = new int[360];
             vertCircleStrip = new VertexPositionColor[360];
             for (int i = 0; i < 360; i++)

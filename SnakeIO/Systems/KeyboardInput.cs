@@ -6,13 +6,13 @@ namespace Systems
     /// This system is responsible for handling the keyboard input of any
     /// entity with KeyboardControllable component.
     /// </summary>
-    public class KeyboardInput : System
+    public class KeyboardInput : Shared.Systems.System
     {
-        Controls.ControlManager cm;
+        Shared.Controls.ControlManager cm;
         Scenes.SceneContext sc;
-        public KeyboardInput(Controls.ControlManager cm, Scenes.SceneContext sc)
+        public KeyboardInput(Shared.Controls.ControlManager cm, Scenes.SceneContext sc)
             : base(
-                   typeof(Components.KeyboardControllable)
+                   typeof(Shared.Components.KeyboardControllable)
                    )
         {
             this.cm = cm;

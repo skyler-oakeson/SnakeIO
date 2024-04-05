@@ -11,9 +11,9 @@ namespace Scenes
         protected GraphicsDeviceManager graphics;
         protected int screenWidth;
         protected int screenHeight;
-        protected Controls.ControlManager controlManager;
+        protected Shared.Controls.ControlManager controlManager;
 
-        public void Initialize(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Controls.ControlManager controlManager)
+        public void Initialize(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
         {
             this.graphics = graphics;
             this.screenWidth = graphics.PreferredBackBufferWidth;

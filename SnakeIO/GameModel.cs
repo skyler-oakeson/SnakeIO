@@ -15,10 +15,7 @@ namespace SnakeIO
 
         private Renderer renderer;
         private KeyboardInput keyboardInput;
-        private Movement movement;
-        private Collision collision;
-        private Audio audio;
-        private Spawner spawner;
+        private Network network;
 
         public delegate void AddDelegate(Entity entity);
         private AddDelegate addEntity;
@@ -36,11 +33,7 @@ namespace SnakeIO
         public void Initialize(Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager)
         {
             this.keyboardInput = new Systems.KeyboardInput(controlManager, Scenes.SceneContext.Game);
-            this.movement = new Movement();
             this.renderer = new Renderer(spriteBatch);
-            this.collision = new Collision();
-            this.audio = new Audio();
-            this.spawner = new Spawner(addEntity);
             
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
@@ -54,10 +47,6 @@ namespace SnakeIO
         public void Update(GameTime gameTime)
         {
             keyboardInput.Update(gameTime);
-            movement.Update(gameTime);
-            collision.Update(gameTime);
-            audio.Update(gameTime);
-            spawner.Update(gameTime);
         }
 
         public void Render(GameTime gameTime)
@@ -69,20 +58,12 @@ namespace SnakeIO
         {
             renderer.Add(entity);
             keyboardInput.Add(entity);
-            movement.Add(entity);
-            collision.Add(entity);
-            audio.Add(entity);
-            spawner.Add(entity);
         }
 
         private void RemoveEntity(Entity entity)
         {
             renderer.Remove(entity.id);
             keyboardInput.Remove(entity.id);
-            movement.Remove(entity.id);
-            collision.Remove(entity.id);
-            audio.Remove(entity.id);
-            spawner.Remove(entity.id);
         }
     }
 }

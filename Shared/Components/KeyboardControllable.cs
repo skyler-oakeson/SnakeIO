@@ -6,6 +6,7 @@ namespace Shared.Components
     /// </summary>
     public class KeyboardControllable : Component
     {
+        public (Controls.Control, Controls.ControlDelegate)[] actions;
         public KeyboardControllable(
                 Controls.ControlManager cm,
                 (Controls.Control, Controls.ControlDelegate)[] actions
@@ -15,6 +16,7 @@ namespace Shared.Components
             {
                 cm.RegisterControl(con, del);
             }
+            this.actions = actions;
         }
     }
 }

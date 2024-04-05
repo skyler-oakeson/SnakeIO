@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Net.Mail;
 using System.Runtime.InteropServices;
 
-namespace Client.Systems
+namespace Systems
 {
     public class Network : Shared.Systems.System
     {

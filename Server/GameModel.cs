@@ -8,102 +8,110 @@ namespace Server
 {
     public class GameModel
     {
-        private HashSet<int> m_clients = new HashSet<int>();
-        private Dictionary<uint, Entity> m_entities = new Dictionary<uint, Entity>();
-        private Dictionary<int, uint> m_clientToEntityId = new Dictionary<int, uint>();
+        public int HEIGHT { get; private set; }
+        public int WIDTH { get; private set; }
 
-        Systems.Network m_systemNetwork = new Server.Systems.Network();
+        private HashSet<int> clients = new HashSet<int>();
+        //private Dictionary<uint, Entity> entities = new Dictionary<uint, Entity>();
+        private Dictionary<int, uint> clientToEntityId = new Dictionary<int, uint>();
 
-        /// <summary>
-        /// This is where the server-side simulation takes place.  Messages
-        /// from the network are processed and then any necessary client
-        /// updates are sent out.
-        /// </summary>
-        public void update(TimeSpan elapsedTime)
+        private Network systemNetwork;
+
+        private Renderer renderer;
+        private KeyboardInput keyboardInput;
+        private Movement movement;
+        private Collision collision;
+        private Audio audio;
+        private Spawner spawner;
+
+        public delegate void AddDelegate(Entity entity);
+        private AddDelegate addEntity;
+
+        private List<Entity> toRemove = new List<Entity>();
+        private List<Entity> toAdd = new List<Entity>();
+
+        public GameModel(int height, int width)
         {
-            m_systemNetwork.update(elapsedTime, MessageQueueServer.instance.getMessages());
+            this.HEIGHT = height;
+            this.WIDTH = width;
+            addEntity = AddEntity;
         }
 
-        /// <summary>
-        /// Setup notifications for when new clients connect.
-        /// </summary>
-        public bool initialize()
+        public void Initialize(Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager)
         {
-            m_systemNetwork.registerJoinHandler(handleJoin);
-            m_systemNetwork.registerDisconnectHandler(handleDisconnect);
+            this.keyboardInput = new Systems.KeyboardInput(controlManager, Scenes.SceneContext.Game);
+            this.movement = new Movement();
+            this.renderer = new Renderer(spriteBatch);
+            this.collision = new Collision();
+            this.audio = new Audio();
+            this.spawner = new Spawner(addEntity);
+            this.systemNetwork = new Network();
 
+            systemNetwork.registerJoinHandler(handleJoin);
+            systemNetwork.registerDisconnectHandler(handleDisconnect);
             MessageQueueServer.instance.registerConnectHandler(handleConnect);
 
-            return true;
+            Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
+            Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
+            SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
+            AddEntity(Player.Create(playerTex, playerSound, controlManager, Scenes.SceneContext.Game, new Vector2(0, 0)));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100)));
+            AddEntity(Wall.Create(playerTex, new Vector2(200, 100)));
+            AddEntity(Food.Create(foodTex, new Vector2(200, 200)));
         }
 
-        /// <summary>
-        /// Give everything a chance to gracefully shutdown.
-        /// </summary>
-        public void shutdown()
+        public void Update(GameTime gameTime)
         {
-
+            keyboardInput.Update(gameTime);
+            movement.Update(gameTime);
+            collision.Update(gameTime);
+            audio.Update(gameTime);
+            spawner.Update(gameTime);
+            systemNetwork.update(elapsedTime, MessageQueueServer.instance.getMessages());
         }
 
-        /// <summary>
-        /// Upon connection of a new client, create a player entity and
-        /// send that info back to the client, along with adding it to
-        /// the server simulation.
-        /// </summary>
+        public void Render(GameTime gameTime)
+        {
+            renderer.Update(gameTime);
+        }
+
+        private void AddEntity(Entity entity)
+        {
+            renderer.Add(entity);
+            keyboardInput.Add(entity);
+            movement.Add(entity);
+            collision.Add(entity);
+            audio.Add(entity);
+            spawner.Add(entity);
+            systemNetwork.Add(entity);
+        }
+
+        private void RemoveEntity(Entity entity)
+        {
+            renderer.Remove(entity.id);
+            keyboardInput.Remove(entity.id);
+            movement.Remove(entity.id);
+            collision.Remove(entity.id);
+            audio.Remove(entity.id);
+            spawner.Remove(entity.id);
+            systemNetwork.Remove(entity.id);
+        }
+
         private void handleConnect(int clientId)
         {
-            m_clients.Add(clientId);
-
+            clients.Add(clientId);
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.ConnectAck());
         }
 
-        /// <summary>
-        /// When a client disconnects, need to tell all the other clients
-        /// of the disconnect.
-        /// </summary>
-        /// <param name="clientId"></param>
         private void handleDisconnect(int clientId)
         {
-            m_clients.Remove(clientId);
-
+            clients.Remove(clientId);
             Message message = new Shared.Messages.RemoveEntity(m_clientToEntityId[clientId]);
             MessageQueueServer.instance.broadcastMessage(message);
-
-            removeEntity(m_clientToEntityId[clientId]);
-
-            m_clientToEntityId.Remove(clientId);
+            removeEntity(clientToEntityId[clientId]);
+            clientToEntityId.Remove(clientId);
         }
 
-        /// <summary>
-        /// As entities are added to the game model, they are run by the systems
-        /// to see if they are interested in knowing about them during their
-        /// updates.
-        /// </summary>
-        private void addEntity(Entity entity)
-        {
-            if (entity == null)
-            {
-                return;
-            }
-
-            m_entities[entity.id] = entity;
-            m_systemNetwork.add(entity);
-        }
-
-        /// <summary>
-        /// All entity lists for the systems must be given a chance to remove
-        /// the entity.
-        /// </summary>
-        private void removeEntity(uint id)
-        {
-            m_entities.Remove(id);
-            m_systemNetwork.remove(id);
-        }
-
-        /// <summary>
-        /// For the indicated client, sends messages for all other entities
-        /// currently in the game simulation.
-        /// </summary>
         private void reportAllEntities(int clientId)
         {
             foreach (var item in m_entities)
@@ -112,34 +120,15 @@ namespace Server
             }
         }
 
-        /// <summary>
-        /// Handler for the Join message.  It gets a player entity created,
-        /// added to the server game model, and notifies the requesting client
-        /// of the player.
-        /// </summary>
         private void handleJoin(int clientId)
         {
-            // Step 1: Tell the newly connected player about all other entities
             reportAllEntities(clientId);
 
-            // Step 2: Create an entity for the newly joined player and sent it
-            //         to the newly joined client
             Entity player = Shared.Entities.Player.create("Textures/playerShip1_blue", new Vector2(100, 100), 50, 0.1f, (float)Math.PI / 1000);
-            addEntity(player);
+            AddEntity(player);
             m_clientToEntityId[clientId] = player.id;
 
-            // Step 3: Send the new player entity to the newly joined client
             MessageQueueServer.instance.sendMessage(clientId, new NewEntity(player));
-
-
-            // Step 4: Let all other clients know about this new player entity
-
-            // We change the appearance for a player ship entity for all other clients to a different texture
-            player.remove<Appearance>();
-            player.add(new Appearance("Textures/playerShip1_red"));
-
-            // Remove components not needed for "other" players
-            player.remove<Shared.Components.Input>();
 
             Message message = new NewEntity(player);
             foreach (int otherId in m_clients)

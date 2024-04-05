@@ -1,6 +1,6 @@
 namespace Shared.Controls
 {
-    public enum MouseEvent
+    public enum MouseEvent : UInt16 
     {
         MouseClick,
         MouseDown,

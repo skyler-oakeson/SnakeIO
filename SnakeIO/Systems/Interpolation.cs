@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Shared.Entities;
 using System;
 
-namespace Client.Systems
+namespace Systems
 {
     public class Interpolation : Shared.Systems.System
     {

@@ -6,7 +6,7 @@ namespace Scenes
 {
     public interface IScene 
     {
-        protected void Initialize(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Controls.ControlManager controlManager);
+        protected void Initialize(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager);
         public void LoadContent(ContentManager contentManager);
         public SceneContext ProcessInput(GameTime gameTime);
         public void Update(GameTime gameTime);

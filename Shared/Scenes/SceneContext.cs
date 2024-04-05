@@ -3,7 +3,7 @@ using System;
 namespace Scenes
 {
     [Flags]
-    public enum SceneContext 
+    public enum SceneContext : UInt16
     {
         MainMenu,
         Game,

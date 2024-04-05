@@ -1,9 +1,9 @@
-using Entities;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using Shared.Entities;
 
-namespace Systems
+namespace Shared.Systems
 {
     /// <summary>
     /// The base class for all systems in this ECS environment.

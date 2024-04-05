@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Shared.Components
 {
-    class Animatable : Component
+    public class Animatable : Component
     {
         public Texture2D spriteSheet;
         public int[] spriteTime;

@@ -11,13 +11,11 @@ namespace Shared.Messages
         {
             this.id = entity.id;
 
-            if (entity.contains<Position>())
+            if (entity.ContainsComponent<Positionable>())
             {
                 this.hasPosition = true;
-                this.position = entity.get<Position>().position;
-                this.orientation = entity.get<Position>().orientation;
+                this.position = entity.GetComponent<Positionable>().Pos;
             }
-
             this.updateWindow = updateWindow;
         }
 

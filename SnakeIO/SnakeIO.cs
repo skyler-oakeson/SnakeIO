@@ -2,18 +2,17 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Controls;
 using Scenes;
 
-namespace SnakeIO 
+namespace SnakeIO
 {
     public class SnakeIO : Game
     {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
-        private DataManager dataManager;
-        private ControlManager controlManager;
-        private ControlManager contentManager;
+        private Shared.DataManager dataManager;
+        private Shared.Controls.ControlManager controlManager;
+        private Shared.Controls.ControlManager contentManager;
         private GameScene gameView;
 
         public SnakeIO()
@@ -21,8 +20,8 @@ namespace SnakeIO
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            dataManager = new DataManager();
-            controlManager = new ControlManager(dataManager);
+            dataManager = new Shared.DataManager();
+            controlManager = new Shared.Controls.ControlManager(dataManager);
         }
 
         protected override void Initialize()
@@ -35,12 +34,15 @@ namespace SnakeIO
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             gameView.LoadContent(this.Content);
+            MessageQueueClient.instance.initialize("localhost", 3000);
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
+                MessageQueueClient.instance.sendMessage(new Shared.Messages.Disconnect());
+                MessageQueueClient.instance.shutdown();
                 Exit();
             }
 

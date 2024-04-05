@@ -1,9 +1,9 @@
 ﻿using Shared.Entities;
 using Shared.Messages;
 
-namespace Server.Systems
+namespace Systems
 {
-    public class Network : Shared.Systems.System
+    public class Network : System
     {
         public delegate void Handler(int clientId, TimeSpan elapsedTime, Shared.Messages.Message message);
         public delegate void JoinHandler(int clientId);

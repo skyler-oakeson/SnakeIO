@@ -6,11 +6,13 @@ namespace Shared.Components
     /// </summary>
     public class MouseControllable : Component
     {
+        public (Shared.Controls.Control, Shared.Controls.ControlDelegatePosition)[] actions;
         public MouseControllable(
                 Shared.Controls.ControlManager cm,
                 (Shared.Controls.Control, Shared.Controls.ControlDelegatePosition)[] actions
                 )
         {
+            this.actions = actions;
             foreach ((Shared.Controls.Control con, Shared.Controls.ControlDelegatePosition del) in actions)
             {
                 cm.RegisterControl(con, del);

@@ -7,7 +7,7 @@ namespace Scenes
     public class GameScene : Scene
     {
         private SnakeIO.GameModel gameModel;
-        public GameScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Controls.ControlManager controlManager)
+        public GameScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
             this.gameModel = new SnakeIO.GameModel(screenHeight, screenWidth);

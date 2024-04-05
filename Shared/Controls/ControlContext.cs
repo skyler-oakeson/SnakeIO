@@ -3,7 +3,7 @@ using System;
 namespace Shared.Controls
 {
     [Flags]
-    public enum ControlContext 
+    public enum ControlContext : UInt16
     {
         MoveLeft,
         MoveRight,
