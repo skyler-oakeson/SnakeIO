@@ -48,9 +48,38 @@ namespace SnakeIO
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
             SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
 
-            AddEntity(Player.Create(playerTex, playerSound, controlManager, Scenes.SceneContext.Game, new Vector2(0, 0)));
+            AddEntity(Player.Create(playerTex, playerSound, controlManager, Scenes.SceneContext.Game, new Vector2(100, 100)));
+            AddEntity(Tail.Create(playerTex, new Vector2(800, 800), Color.OrangeRed));
             AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(800, 800), Color.Orange));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
             AddEntity(Food.Create(foodTex, new Vector2(200, 200)));
         }
 

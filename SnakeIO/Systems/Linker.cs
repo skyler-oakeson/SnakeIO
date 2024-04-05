@@ -33,7 +33,7 @@ namespace Systems
                 // If position is Head create a new chain with this entity id as the head.
                 if (link.linkPos == Components.LinkPosition.Head)
                 {
-                    var chain = new List<uint>();
+                    List<uint> chain = new List<uint>();
                     chain.Add(entity.id);
                     chains.Add(link.chain, chain);
                 }
@@ -41,7 +41,7 @@ namespace Systems
                 // If position is Tail add the tail to already created chain
                 else if (link.linkPos == Components.LinkPosition.Tail)
                 {
-                    var chain = chains[link.chain];
+                    List<uint> chain = chains[link.chain];
                     uint id = chain[chain.Count-1];
                     link.linkId = id;
                     chain.Add(entity.id);
@@ -53,14 +53,14 @@ namespace Systems
                     List<uint> chain = chains[link.chain];
 
                     // Get last link in chain
-                    Components.Linkable prevLink = entities[chain[chain.Count-1]].GetComponent<Components.Linkable>();
+                    Components.Linkable lastLink = entities[chain[chain.Count-1]].GetComponent<Components.Linkable>();
 
                     // If a tail is on the chain, link before tail
-                    if (prevLink.linkPos == Components.LinkPosition.Tail)
+                    if (lastLink.linkPos == Components.LinkPosition.Tail)
                     {
-                        chain.Insert(chain.Count-2, entity.id);
-                        link.linkId = prevLink.linkId;
-                        prevLink.linkId = entity.id;
+                        chain.Insert(chain.Count-1, entity.id);
+                        link.linkId = lastLink.linkId;
+                        lastLink.linkId = entity.id;
                     }
 
                     // If no tail is on the chain, link to the end
