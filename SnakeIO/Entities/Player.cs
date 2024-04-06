@@ -1,60 +1,63 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using System.Diagnostics;
+using Controls;
 
 namespace Entities
 {
     public class Player
     {
-        public static Entity Create(Texture2D texture, SoundEffect sound, Controls.ControlManager cm, Scenes.SceneContext sc, Vector2 pos)
+        public static Entity Create(Texture2D texture, string name, Color color, SoundEffect sound, ControlManager cm, Vector2 pos)
         {
             Entity player = new Entity();
 
             int radius = texture.Width >= texture.Height ? texture.Width / 2 : texture.Height / 2;
 
-            player.Add(new Components.Linkable("player"));
+            player.Add(new Components.Linkable(name, Components.LinkPosition.Head));
             player.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
-            player.Add(new Components.Renderable(texture, Color.Red, Color.Black));
+            player.Add(new Components.Renderable<Texture2D>(texture, color, Color.Black));
             player.Add(new Components.Positionable(pos));
             player.Add(new Components.Movable(new Vector2(0, 0), new Vector2(0, 0)));
             player.Add(new Components.Audible(sound));
             Components.Movable movable = player.GetComponent<Components.Movable>();
             player.Add(new Components.KeyboardControllable(
-                        cm,
-                        new (Controls.Control, Controls.ControlDelegate)[4]
-                        {
-                        (new Controls.Control(sc, Controls.ControlContext.MoveUp, Keys.W, null, false),
-                         new Controls.ControlDelegate((GameTime gameTime, float value) =>
-                         {
-                            movable.velocity += new Vector2(0, -.2f);
-                         })),
-                        (new Controls.Control(sc, Controls.ControlContext.MoveDown, Keys.S, null, false),
-                         new Controls.ControlDelegate((GameTime gameTime, float value) =>
-                         {
-                            movable.velocity += new Vector2(0, .2f);
-                         })),
-                        (new Controls.Control(sc, Controls.ControlContext.MoveRight, Keys.D, null, false),
-                         new Controls.ControlDelegate((GameTime gameTime, float value) =>
-                         {
-                            movable.velocity += new Vector2(.2f, 0);
-                         })),
-                        (new Controls.Control(sc, Controls.ControlContext.MoveLeft, Keys.A, null, false),
-                         new Controls.ControlDelegate((GameTime gameTime, float value) =>
-                         {
-                            movable.velocity += new Vector2(-.2f, 0);
-                         })),
-                        }));
-            
+                cm,
+                new (ControlContext, Controls.ControlDelegate)[4]
+                {
+                (ControlContext.MoveUp,
+                     new Controls.ControlDelegate((GameTime gameTime, float value) =>
+                     {
+                     movable.velocity += new Vector2(0, -.2f);
+                     })),
+                (ControlContext.MoveDown,
+                     new Controls.ControlDelegate((GameTime gameTime, float value) =>
+                     {
+                     movable.velocity += new Vector2(0, .2f);
+                     })),
+                (ControlContext.MoveRight,
+                     new Controls.ControlDelegate((GameTime gameTime, float value) =>
+                     {
+                     movable.velocity += new Vector2(.2f, 0);
+                     })),
+                (ControlContext.MoveLeft,
+                     new Controls.ControlDelegate((GameTime gameTime, float value) =>
+                     {
+                     movable.velocity += new Vector2(-.2f, 0);
+                     })),
+                }));
+
             //Remove if statement for mouse controls. We will want to check what the user selects in the real game
-            if (false) { 
+            if (false)
+            {
                 player.Add(new Components.MouseControllable(
                             cm,
-                            new (Controls.Control, Controls.ControlDelegatePosition)[1]
+                            new (ControlContext, ControlDelegatePosition)[1]
                             {
-                            (new Controls.Control(sc, Controls.ControlContext.MoveTowards, null, Controls.MouseEvent.MouseMove, false),
-                             new Controls.ControlDelegatePosition((GameTime gameTime, int x, int y) =>
+                            (ControlContext.MouseMove,
+                             new ControlDelegatePosition((GameTime gameTime, int x, int y) =>
                                  {
                                  Vector2 pos = player.GetComponent<Components.Positionable>().pos;
                                  Vector2 dir = new Vector2(x, y) - pos;

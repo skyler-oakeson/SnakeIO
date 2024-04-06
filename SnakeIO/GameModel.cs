@@ -13,8 +13,9 @@ namespace SnakeIO
         public int HEIGHT { get; private set; }
         public int WIDTH { get; private set; }
 
-        private Renderer renderer;
+        private Renderer<Texture2D> renderer;
         private KeyboardInput keyboardInput;
+        private MouseInput mouseInput;
         private Movement movement;
         private Collision collision;
         private Audio audio;
@@ -36,9 +37,10 @@ namespace SnakeIO
 
         public void Initialize(Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager)
         {
-            this.keyboardInput = new Systems.KeyboardInput(controlManager, Scenes.SceneContext.Game);
+            this.keyboardInput = new Systems.KeyboardInput(controlManager);
+            this.mouseInput = new Systems.MouseInput(controlManager);
             this.movement = new Movement();
-            this.renderer = new Renderer(spriteBatch);
+            this.renderer = new Renderer<Texture2D>(spriteBatch);
             this.collision = new Collision();
             this.audio = new Audio();
             this.spawner = new Spawner(addEntity);
@@ -48,44 +50,19 @@ namespace SnakeIO
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
             SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
 
-            AddEntity(Player.Create(playerTex, playerSound, controlManager, Scenes.SceneContext.Game, new Vector2(100, 100)));
-            AddEntity(Tail.Create(playerTex, new Vector2(800, 800), Color.OrangeRed));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue));
+            AddEntity(Player.Create(playerTex, "1", Color.Red, playerSound, controlManager, new Vector2(100, 100)));
+            AddEntity(Tail.Create(playerTex,"1", new Vector2(800, 800), Color.OrangeRed));
+            AddEntity(Wall.Create(playerTex,"1", new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex,"1", new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex,"1", new Vector2(100, 100), Color.Blue));
+            AddEntity(Wall.Create(playerTex,"1", new Vector2(100, 100), Color.Blue));
             AddEntity(Food.Create(foodTex, new Vector2(200, 200)));
         }
 
         public void Update(GameTime gameTime)
         {
             keyboardInput.Update(gameTime);
+            mouseInput.Update(gameTime);
             movement.Update(gameTime);
             collision.Update(gameTime);
             audio.Update(gameTime);
@@ -102,6 +79,7 @@ namespace SnakeIO
         {
             renderer.Add(entity);
             keyboardInput.Add(entity);
+            mouseInput.Add(entity);
             movement.Add(entity);
             collision.Add(entity);
             audio.Add(entity);
@@ -113,6 +91,7 @@ namespace SnakeIO
         {
             renderer.Remove(entity.id);
             keyboardInput.Remove(entity.id);
+            mouseInput.Remove(entity.id);
             movement.Remove(entity.id);
             collision.Remove(entity.id);
             audio.Remove(entity.id);

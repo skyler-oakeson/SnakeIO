@@ -11,18 +11,13 @@ namespace Components
     /// </summary>
     public class Linkable : Component
     {
-        public uint? linkId = null;
-        public LinkDelegate? linkDelegate = null;
-        public LinkPosition linkPos;
-        public string chain;
+        public Entities.Entity? nextEntity { get; set; } = null;
+        public Entities.Entity? prevEntity { get; set; } = null;
+        public LinkPosition linkPos { get; set; }
+        public LinkDelegate? linkDelegate { get; set; }
+        public string chain { get; set; }
 
-        public Linkable(string chain)
-        {
-            this.linkPos = LinkPosition.Head;
-            this.chain = chain;
-        }
-
-        public Linkable(string chain, LinkPosition linkPos, LinkDelegate? linkDelegate)
+        public Linkable(string chain, LinkPosition linkPos, LinkDelegate? linkDelegate = null)
         {
             this.linkPos = linkPos;
             this.chain = chain;
@@ -37,5 +32,5 @@ namespace Components
         Tail
     }
 
-    public delegate void LinkDelegate(Entities.Entity e1, Entities.Entity e2);
+    public delegate void LinkDelegate(Entities.Entity root);
 }

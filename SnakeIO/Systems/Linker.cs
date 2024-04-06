@@ -6,17 +6,16 @@ namespace Systems
 {
     public class Linker : System
     {
-        private Dictionary<string, List<uint>> chains;
+        private Dictionary<string, List<uint>> chainHooks;
 
         public Linker()
             : base(
                     typeof(Components.Linkable)
                     )
         {
-            this.chains = new Dictionary<string, List<uint>>();
+            this.chainHooks = new Dictionary<string, List<uint>>();
         }
 
-        
         /// <summary>
         /// Overrides the system add function.
         /// Takes an entity that is interested in the Linkable component.
@@ -28,52 +27,71 @@ namespace Systems
             if (interested)
             {
                 entities.Add(entity.id, entity);
-                Components.Linkable link = entity.GetComponent<Components.Linkable>();
-
-                // If position is Head create a new chain with this entity id as the head.
-                if (link.linkPos == Components.LinkPosition.Head)
-                {
-                    List<uint> chain = new List<uint>();
-                    chain.Add(entity.id);
-                    chains.Add(link.chain, chain);
-                }
-
-                // If position is Tail add the tail to already created chain
-                else if (link.linkPos == Components.LinkPosition.Tail)
-                {
-                    List<uint> chain = chains[link.chain];
-                    uint id = chain[chain.Count-1];
-                    link.linkId = id;
-                    chain.Add(entity.id);
-                }
-
-                // If position is Body check if there is a tail or not
-                else
-                {
-                    List<uint> chain = chains[link.chain];
-
-                    // Get last link in chain
-                    Components.Linkable lastLink = entities[chain[chain.Count-1]].GetComponent<Components.Linkable>();
-
-                    // If a tail is on the chain, link before tail
-                    if (lastLink.linkPos == Components.LinkPosition.Tail)
-                    {
-                        chain.Insert(chain.Count-1, entity.id);
-                        link.linkId = lastLink.linkId;
-                        lastLink.linkId = entity.id;
-                    }
-
-                    // If no tail is on the chain, link to the end
-                    else
-                    {
-                        uint id = chain[chain.Count-1];
-                        link.linkId = id;
-                        chain.Add(entity.id);
-                    }
-                }
+                Link(entity);
             }
 
             return interested;
+        }
+
+        /// <summary>
+        /// Links entity to its proper spot in its designated chain.
+        /// </summary>
+        private void Link(Entities.Entity entity)
+        {
+            Components.Linkable currLink = entity.GetComponent<Components.Linkable>();
+
+            // Create chain
+            if (!chainHooks.ContainsKey(currLink.chain))
+            {
+                List<uint> newChain = new List<uint>();
+                chainHooks.Add(currLink.chain, newChain);
+            }
+
+
+            List<uint> chain = chainHooks[currLink.chain];
+
+            // Link is Head
+            if (currLink.linkPos == Components.LinkPosition.Head)
+            {
+                chain.Add(entity.id);
+            }
+
+            // Link is Tail 
+            else if (currLink.linkPos == Components.LinkPosition.Tail)
+            {
+                Entities.Entity head = entities[chain[0]];
+                Components.Linkable headLink = head.GetComponent<Components.Linkable>();
+                headLink.prevEntity = entity;
+                headLink.nextEntity = entity;
+                currLink.nextEntity = head;
+                currLink.prevEntity = entities[chain[chain.Count - 1]];
+                chain.Add(entity.id);
+            }
+
+            // Link is Body
+            else
+            {
+                Components.Linkable nextLink = entities[chain[chain.Count - 1]].GetComponent<Components.Linkable>();
+                Components.Linkable prevLink = entities[chain[chain.Count - 2]].GetComponent<Components.Linkable>();
+
+                // Tail is on the chain
+                if (nextLink.linkPos == Components.LinkPosition.Tail)
+                {
+                    chain.Insert(chain.Count - 1, entity.id);
+                    currLink.prevEntity = nextLink.prevEntity;
+                    currLink.nextEntity = prevLink.nextEntity;
+                    nextLink.prevEntity = entity;
+                    prevLink.nextEntity = entity;
+                }
+                else
+                {
+                    uint prevId = chain[chain.Count - 1];
+                    chain.Add(entity.id);
+                    currLink.prevEntity = prevLink.nextEntity;
+                    nextLink.nextEntity = entity;
+                }
+            }
+
         }
 
         //TODO: Linker Remove link function
@@ -82,20 +100,19 @@ namespace Systems
         {
             foreach (var entity in entities.Values)
             {
-                Link(entity);
+                LinkDelegate(entity);
             }
         }
 
         /// <summary>
         /// Runs the LinkDelegate function with itself and it's linked entity.
         /// </summary>
-        private void Link(Entities.Entity linkee)
+        private void LinkDelegate(Entities.Entity root)
         {
-            Components.Linkable link = linkee.GetComponent<Components.Linkable>();
-            if (link.linkId.HasValue)
+            Components.Linkable rootLink = root.GetComponent<Components.Linkable>();
+            if (rootLink.linkDelegate != null)
             {
-                Entities.Entity linked = entities[(uint)link.linkId];
-                link.linkDelegate(linkee, linked);
+                rootLink.linkDelegate(root);
             }
         }
     }

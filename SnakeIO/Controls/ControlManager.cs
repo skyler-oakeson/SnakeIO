@@ -9,66 +9,50 @@ namespace Controls
 
     public class ControlManager
     {
-        private Dictionary<Scenes.SceneContext, Dictionary<ControlContext, Control>> controls { get; set; } =
-            new Dictionary<Scenes.SceneContext, Dictionary<ControlContext, Control>>();
-        private Dictionary<Keys, ControlDelegate> delegates { get; set; } =
-            new Dictionary<Keys, ControlDelegate>();
-        private Dictionary<Controls.MouseEvent, ControlDelegatePosition> delegatesPosition { get; set; } =
-            new Dictionary<Controls.MouseEvent, ControlDelegatePosition>();
+        private Dictionary<ControlContext, Control> controls { get; set; } = new Dictionary<ControlContext, Control>();
         private DataManager dataManager;
-        private KeyboardState statePrevious;
-        private MouseState mouseStatePrevious;
 
         public ControlManager(DataManager dm)
         {
             this.dataManager = dm;
-            controls = dm.Load<Dictionary<Scenes.SceneContext, Dictionary<ControlContext, Control>>>(controls);
+            // controls = dm.Load<Dictionary<ControlContext, Control>>(controls);
+            if (controls.Values.Count <= 0)
+            {
+                InitializeControls();
+            }
         }
 
-        public void RegisterControl<T>(Control con, T d)
+        public void InitializeControls()
         {
-            RegisterScene(con.sc);
-            // If the control hasn't been loaded register it
-            if (!controls[con.sc].ContainsKey(con.cc))
-            {
-                controls[con.sc].Add(con.cc, con);
-            }
-            // Loaded control will override the register so it will only be defaulted if it wasn't able to load
-            con = controls[con.sc][con.cc];
-            if (d is ControlDelegate)
-                delegates.Add((Keys)con.key, d as ControlDelegate);
-            else if (d is ControlDelegatePosition)
-                delegatesPosition.Add((Controls.MouseEvent)con.mouseEvent, d as ControlDelegatePosition);
-        }
-
-        private void RegisterScene(Scenes.SceneContext sc)
-        {
-            // If Scene hasn't been registered or wasn't loaded
-            if (!controls.ContainsKey(sc))
-            {
-                controls.Add(sc, new Dictionary<ControlContext, Control>());
-            }
+            controls.Add(ControlContext.MenuUp, new Control(ControlContext.MenuUp, Keys.W, true));
+            controls.Add(ControlContext.MenuDown, new Control(ControlContext.MenuDown, Keys.S, true));
+            controls.Add(ControlContext.MoveUp, new Control(ControlContext.MoveUp, Keys.W, false));
+            controls.Add(ControlContext.MoveDown, new Control(ControlContext.MoveDown, Keys.S, false));
+            controls.Add(ControlContext.MoveLeft, new Control(ControlContext.MoveLeft, Keys.A, false));
+            controls.Add(ControlContext.MoveRight, new Control(ControlContext.MoveRight, Keys.D, false));
+            controls.Add(ControlContext.Confirm, new Control(ControlContext.Confirm, Keys.Enter, true));
+            controls.Add(ControlContext.MouseUp, new Control(ControlContext.MouseUp, mouseEvent: MouseEvent.MouseUp));
+            controls.Add(ControlContext.MouseDown, new Control(ControlContext.MouseDown, mouseEvent: MouseEvent.MouseDown));
+            controls.Add(ControlContext.MouseMove, new Control(ControlContext.MouseMove, mouseEvent: MouseEvent.MouseMove));
+            controls.Add(ControlContext.MouseClick, new Control(ControlContext.MouseClick, mouseEvent: MouseEvent.MouseClick));
+            SaveKeys();
         }
 
         /// <summary>
         /// Changes the key used for a registered control and changes what key references the delegate associated with it.
         /// <summary>
-        public void ChangeKey(Scenes.SceneContext sc, ControlContext cc, Keys key)
+        public void ChangeKey(ControlContext cc, Keys key)
         {
-            Keys old = (Keys)controls[sc][cc].key;
-            controls[sc][cc].key = key;
-            ControlDelegate ce = delegates[old];
-            delegates.Remove(key);
-            delegates.Add(key, ce);
+            controls[cc].key = key;
             SaveKeys();
         }
 
         /// <summary>
         /// Returns a key based on the scene and the control context provided.
         /// <summary>
-        public Keys GetKey(Scenes.SceneContext sc, ControlContext cc)
+        public Control GetControl(ControlContext cc)
         {
-            return (Keys)controls[sc][cc].key;
+            return controls[cc];
         }
 
         /// <summary>
@@ -76,53 +60,9 @@ namespace Controls
         /// <summary>
         public void SaveKeys()
         {
-            dataManager.Save<Dictionary<Scenes.SceneContext, Dictionary<ControlContext, Control>>>(controls);
+            dataManager.Save<Dictionary<ControlContext, Control>>(controls);
         }
 
-        /// <summary>
-        /// Goes through all the registered commands and invokes the callbacks if they
-        /// are active.
-        /// </summary>
-        public void Update(GameTime gameTime, Scenes.SceneContext sc)
-        {
-            Dictionary<ControlContext, Control> sceneControls = controls[sc];
-            KeyboardState state = Keyboard.GetState();
-            MouseState mouseState = Mouse.GetState();
-            foreach (Control control in sceneControls.Values)
-            {
-                if (control.mouseEvent != null)
-                {
-                    if (delegatesPosition.ContainsKey((Controls.MouseEvent)control.mouseEvent))
-                    {
-                        delegatesPosition[(Controls.MouseEvent)control.mouseEvent](gameTime, mouseState.X, mouseState.Y);
-                    }
-                }
-                if (control.key != null)
-                {
-                    if (delegates.ContainsKey((Keys)control.key) && !control.keyPressOnly && state.IsKeyDown((Keys)control.key))
-                    {
-                        delegates[(Keys)control.key](gameTime, 1.0f);
-                    }
-                    else if (!control.keyPressOnly && state.IsKeyDown((Keys)control.key))
-                    {
-                        delegates[(Keys)control.key](gameTime, 1.0f);
-                    }
-                }
-            }
-
-            //
-            // Move the current state to the previous state for the next time around
-            statePrevious = state;
-            mouseStatePrevious = mouseState;
-        }
-
-        /// <summary>
-        /// Checks to see if a key was newly pressed.
-        /// </summary>
-        private bool KeyPressed(Keys key)
-        {
-            return (Keyboard.GetState().IsKeyDown(key) && !statePrevious.IsKeyDown(key));
-        }
     }
 
 }

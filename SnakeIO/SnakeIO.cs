@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -13,8 +14,8 @@ namespace SnakeIO
         private SpriteBatch spriteBatch;
         private DataManager dataManager;
         private ControlManager controlManager;
-        private ControlManager contentManager;
-        private GameScene gameView;
+        private Dictionary<SceneContext, Scene> scenes = new Dictionary<SceneContext, Scene>();
+        private Scene currScene;
 
         public SnakeIO()
         {
@@ -27,14 +28,25 @@ namespace SnakeIO
 
         protected override void Initialize()
         {
-            gameView = new GameScene(graphics.GraphicsDevice, graphics, controlManager);
+            scenes.Add(SceneContext.Game, new GameScene(graphics.GraphicsDevice, graphics, controlManager));
+            scenes.Add(SceneContext.MainMenu, new MainMenuScene(graphics.GraphicsDevice, graphics, controlManager));
+
+            foreach (Scene scene in scenes.Values)
+            {
+                scene.Initialize(graphics.GraphicsDevice, graphics, controlManager);
+            }
+
+            currScene = scenes[SceneContext.Game];
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            gameView.LoadContent(this.Content);
+            foreach (Scene scene in scenes.Values)
+            {
+                scene.LoadContent(this.Content);
+            }
         }
 
         protected override void Update(GameTime gameTime)
@@ -44,18 +56,13 @@ namespace SnakeIO
                 Exit();
             }
 
-            gameView.Update(gameTime);
-
-
-            // TODO: Add your update logic here
-
+            currScene.Update(gameTime);
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            gameView.Render(gameTime);
-
+            currScene.Render(gameTime);
             base.Draw(gameTime);
         }
     }

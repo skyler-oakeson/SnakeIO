@@ -47,7 +47,7 @@ namespace Systems
         private void SpawnEntity(Entities.Entity entity)
         {
             Components.Spawnable spawnable = entity.GetComponent<Components.Spawnable>();
-            Components.Renderable renderable = entity.GetComponent<Components.Renderable>();
+            Components.Renderable<Texture2D> renderable = entity.GetComponent<Components.Renderable<Texture2D>>();
             Type spawnableType = spawnable.type;
             MethodInfo createMethod = spawnableType.GetMethod("Create");
             for (int i = 0; i < spawnable.spawnCount; i++)

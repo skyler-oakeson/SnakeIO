@@ -61,3 +61,16 @@
 /processorParam:TextureFormat=Color
 /build:images/player.png
 
+#begin Fonts/Micro5.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Color
+/build:Fonts/Micro5-100.spritefont
+
+#begin Fonts/Micro5.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Color
+/build:Fonts/Micro5-50.spritefont

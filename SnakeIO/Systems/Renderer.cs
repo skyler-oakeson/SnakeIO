@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Systems
 {
-    class Renderer : System
+    class Renderer<T> : System
     {
         public SpriteBatch sb;
         public VertexPositionColor[] vertCircleStrip;
@@ -13,7 +13,7 @@ namespace Systems
 
         public Renderer(SpriteBatch sb)
             : base(
-                    typeof(Components.Renderable),
+                    typeof(Components.Renderable<T>),
                     typeof(Components.Positionable))
         {
             this.sb = sb;
@@ -36,7 +36,7 @@ namespace Systems
             sb.GraphicsDevice.Clear(Color.Black);
             foreach (var entity in entities.Values)
             {
-                if (entity.ContainsComponent<Components.Animatable>())
+                if (entity.ContainsComponent<Components.Animatable>() && typeof(T) == typeof(Texture2D))
                 {
                     Components.Animatable animatable = entity.GetComponent<Components.Animatable>();
                     animatable.timeSinceLastFrame += gameTime.ElapsedGameTime;
@@ -51,7 +51,14 @@ namespace Systems
                 }
                 else
                 {
-                    RenderEntity(entity);
+                    if (typeof(T) == typeof(Texture2D))
+                    {
+                        RenderEntity(entity);
+                    }
+                    else if (typeof(T) == typeof(SpriteFont))
+                    {
+                        RenderText(entity);
+                    }
                     // RenderHitbox(entity);
                 }
             }
@@ -60,25 +67,36 @@ namespace Systems
         private void RenderEntity(Entities.Entity entity)
         {
             Components.Positionable positionable = entity.GetComponent<Components.Positionable>();
-            Components.Renderable renderable = entity.GetComponent<Components.Renderable>();
+            Components.Renderable<Texture2D> renderable = entity.GetComponent<Components.Renderable<Texture2D>>();
+            {
+                sb.Begin();
+                sb.Draw(
+                        renderable.texture,
+                        new Rectangle(
+                            (int)(positionable.pos.X - renderable.texture.Width/2),
+                            (int)(positionable.pos.Y - renderable.texture.Height/2),
+                            renderable.texture.Height,
+                            renderable.texture.Width
+                            ),
+                        renderable.color
+                       );
+                sb.End();
+            }
+        }
+
+        private void RenderText(Entities.Entity entity)
+        {
+            Components.Renderable<SpriteFont> renderable = entity.GetComponent<Components.Renderable<SpriteFont>>();
+            Components.Positionable posistionable = entity.GetComponent<Components.Positionable>();
             sb.Begin();
-            sb.Draw(
-                    renderable.texture,
-                    new Rectangle(
-                        (int)(positionable.pos.X - renderable.texture.Width/2),
-                        (int)(positionable.pos.Y - renderable.texture.Height/2),
-                        renderable.texture.Height,
-                        renderable.texture.Width
-                        ),
-                    renderable.color
-                    );
+            DrawOutlineText(sb, renderable.texture, renderable.label, renderable.stroke, renderable.color, 4, posistionable.pos, 1.0f);
             sb.End();
         }
 
         private void RenderAnimatable(Entities.Entity entity)
         {
             Components.Positionable positionable = entity.GetComponent<Components.Positionable>();
-            Components.Renderable renderable = entity.GetComponent<Components.Renderable>();
+            Components.Renderable<Texture2D> renderable = entity.GetComponent<Components.Renderable<Texture2D>>();
             Components.Animatable animatable = entity.GetComponent<Components.Animatable>();
             sb.Begin();
             sb.Draw(
@@ -119,6 +137,24 @@ namespace Systems
                         );
             }
 
+        }
+
+        private static void DrawOutlineText(SpriteBatch spriteBatch, SpriteFont font, string text, Color outlineColor, Color frontColor, int pixelOffset, Vector2 position, float scale)
+        {
+            // outline
+            spriteBatch.DrawString(font, text, position - new Vector2(pixelOffset * scale, 0), outlineColor, 0, Vector2.Zero, scale, SpriteEffects.None, 1f);
+            spriteBatch.DrawString(font, text, position + new Vector2(pixelOffset * scale, 0), outlineColor, 0, Vector2.Zero, scale, SpriteEffects.None, 1f);
+            spriteBatch.DrawString(font, text, position - new Vector2(0, pixelOffset * scale), outlineColor, 0, Vector2.Zero, scale, SpriteEffects.None, 1f);
+            spriteBatch.DrawString(font, text, position + new Vector2(0, pixelOffset * scale), outlineColor, 0, Vector2.Zero, scale, SpriteEffects.None, 1f);
+
+            // outline corners
+            spriteBatch.DrawString(font, text, position - new Vector2(pixelOffset * scale, pixelOffset * scale), outlineColor, 0, Vector2.Zero, scale, SpriteEffects.None, 1f);
+            spriteBatch.DrawString(font, text, position + new Vector2(pixelOffset * scale, pixelOffset * scale), outlineColor, 0, Vector2.Zero, scale, SpriteEffects.None, 1f);
+            spriteBatch.DrawString(font, text, position - new Vector2(-(pixelOffset * scale), pixelOffset * scale), outlineColor, 0, Vector2.Zero, scale, SpriteEffects.None, 1f);
+            spriteBatch.DrawString(font, text, position + new Vector2(-(pixelOffset * scale), pixelOffset * scale), outlineColor, 0, Vector2.Zero, scale, SpriteEffects.None, 1f);
+
+            // inside
+            spriteBatch.DrawString(font, text, position, frontColor, 0, Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
     }
 }

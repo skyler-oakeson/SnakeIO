@@ -1,5 +1,5 @@
+#nullable enable
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Components
 {
@@ -7,17 +7,19 @@ namespace Components
     /// This component is responsible for keeping rendering data of
     /// entites that are renderable on the screen.
     /// </summary>
-    class Renderable : Component
+    class Renderable<T> : Component
     {
-        public Texture2D texture {get; set;}
-        public Color color {get; set;}
-        public Color stroke {get; set;}
+        public T texture { get; set; }
+        public Color color { get; set; }
+        public Color stroke { get; set; }
+        public string? label { get; set; }
 
-        public Renderable(Texture2D texture, Color color, Color stroke)
+        public Renderable(T texture, Color color, Color stroke, string? label = null)
         {
             this.texture = texture;
             this.color = color;
             this.stroke = stroke;
+            this.label = label;
         }
     }
 }

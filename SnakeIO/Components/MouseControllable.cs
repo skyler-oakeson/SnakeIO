@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using Controls;
+
 namespace Components
 {
     /// <summary>
@@ -6,14 +9,15 @@ namespace Components
     /// </summary>
     public class MouseControllable : Component
     {
+        public Dictionary<ControlContext, ControlDelegatePosition> controls = new Dictionary<ControlContext, ControlDelegatePosition>();
         public MouseControllable(
                 Controls.ControlManager cm,
-                (Controls.Control, Controls.ControlDelegatePosition)[] actions
+                (Controls.ControlContext, ControlDelegatePosition)[] actions
                 )
         {
-            foreach ((Controls.Control con, Controls.ControlDelegatePosition del) in actions)
+            foreach ((ControlContext con, ControlDelegatePosition del) in actions)
             {
-                cm.RegisterControl(con, del);
+                controls.Add(con, del);
             }
         }
     }
