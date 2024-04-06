@@ -91,18 +91,6 @@ namespace Systems
                         foreach (var input in message.inputs)
                         {
                             //TODO: Make this work for our input
-                            // switch (input)
-                            // {
-                            //     case Shared.Components.Input.Type.Thrust:
-                            //         Shared.Entities.Utility.thrust(entity, message.elapsedTime);
-                            //         break;
-                            //     case Shared.Components.Input.Type.RotateLeft:
-                            //         Shared.Entities.Utility.rotateLeft(entity, message.elapsedTime);
-                            //         break;
-                            //     case Shared.Components.Input.Type.RotateRight:
-                            //         Shared.Entities.Utility.rotateRight(entity, message.elapsedTime);
-                            //         break;
-                            // }
                         }
                     }
                 }
@@ -147,16 +135,7 @@ namespace Systems
                 if (message.hasPosition)
                 {
                     var position = entity.GetComponent<Positionable>();
-                    //TODO research was "goal" was in the original code
-                    // var goal = entity.GetComponent<Components.Goal>();
-                    //
-                    // goal.updateWindow = message.updateWindow;
-                    // goal.updatedTime = TimeSpan.Zero;
-                    // goal.goalPosition = new Vector2(message.position.X, message.position.Y);
-                    // goal.goalOrientation = message.orientation;
-                    //
-                    // goal.startPosition = position.position;
-                    // goal.startOrientation = position.orientation;
+                    //TODO: Implement
                 }
                 else if (entity.ContainsComponent<Positionable>() && message.hasPosition)
                 {

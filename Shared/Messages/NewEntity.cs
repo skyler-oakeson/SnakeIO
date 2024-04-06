@@ -23,7 +23,6 @@ namespace Shared.Messages
             }
 
             // Spawnable and consumable Components
-
             if (entity.ContainsComponent<Shared.Components.Spawnable>())
             {
                 this.hasSpawnable = true;
@@ -271,7 +270,6 @@ namespace Shared.Messages
                 this.texturePath = Encoding.UTF8.GetString(data, offset, textureSize);
                 offset += textureSize;
                 //for color
-                // TODO: Figure out where I am missing bytes. Please
                 int colorR = data[offset];
                 offset += sizeof(int);
                 int colorG = data[offset];
@@ -305,6 +303,7 @@ namespace Shared.Messages
             }
 
             this.hasAudio = BitConverter.ToBoolean(data, offset);
+            offset += sizeof(bool);
             if (hasAudio)
             {
                 int audioSize = BitConverter.ToInt32(data, offset);
@@ -326,11 +325,10 @@ namespace Shared.Messages
                 float rotationY = BitConverter.ToSingle(data, offset);
                 offset += sizeof(Single);
                 this.velocity = new Vector2(velocityX, velocityY);
-                offset += sizeof(Single);
                 this.rotation = new Vector2(rotationX, rotationY);
-                offset += sizeof(Single);
             }
-
+            
+            // Currently being handled elsewhere, but it would be nice to do here.
             this.hasCollision = BitConverter.ToBoolean(data, offset);
             offset += sizeof(bool);
             if (hasCollision)
@@ -344,7 +342,6 @@ namespace Shared.Messages
                 float hitBoxZ = BitConverter.ToSingle(data, offset);
                 offset += sizeof(Single);
                 this.hitBox = new Vector3(hitBoxX, hitBoxY, hitBoxZ);
-                offset += sizeof(Single);
             }
 
             this.hasSpawnable = BitConverter.ToBoolean(data, offset);
@@ -361,12 +358,19 @@ namespace Shared.Messages
                 offset += spawnTypeSize;
             }
 
+            this.hasConsumable = BitConverter.ToBoolean(data, offset);
+            offset += sizeof(bool);
+            if (hasConsumable)
+            {
+                //TODO: implement
+            }
+
             this.hasInput = BitConverter.ToBoolean(data, offset);
             offset += sizeof(bool);
             if (hasInput)
             {
                 int inputCount = BitConverter.ToInt32(data, offset);
-                offset += sizeof(UInt32);
+                offset += sizeof(int);
                 for (int i = 0; i < inputCount; i++)
                 {
                     Scenes.SceneContext sc = (Scenes.SceneContext)BitConverter.ToUInt16(data, offset); //scene context comes first

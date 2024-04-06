@@ -21,7 +21,7 @@ namespace SnakeIO
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             dataManager = new Shared.DataManager();
-            controlManager = new Shared.Controls.ControlManager(dataManager);
+            this.controlManager = new Shared.Controls.ControlManager(dataManager);
         }
 
         protected override void Initialize()

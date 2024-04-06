@@ -102,25 +102,6 @@ namespace Systems
         // TODO: Make work with our input
         // private void handleInput(Shared.Messages.Input message)
         // {
-        //     var entity = m_entities[message.entityId];
-        //     foreach (var input in message.inputs)
-        //     {
-        //         switch (input)
-        //         {
-        //             case Shared.Components.Input.Type.Thrust:
-        //                 Shared.Entities.Utility.thrust(entity, message.elapsedTime);
-        //                 m_reportThese.Add(message.entityId);
-        //                 break;
-        //             case Shared.Components.Input.Type.RotateLeft:
-        //                 Shared.Entities.Utility.rotateLeft(entity, message.elapsedTime);
-        //                 m_reportThese.Add(message.entityId);
-        //                 break;
-        //             case Shared.Components.Input.Type.RotateRight:
-        //                 Shared.Entities.Utility.rotateRight(entity, message.elapsedTime);
-        //                 m_reportThese.Add(message.entityId);
-        //                 break;
-        //         }
-        //     }
         // }
 
         /// <summary>

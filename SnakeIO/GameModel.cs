@@ -23,6 +23,7 @@ namespace SnakeIO
         private Interpolation interpolation;
 
         private ContentManager contentManager;
+        private Shared.Controls.ControlManager controlManager;
 
         public delegate void AddDelegate(Entity entity);
         private AddDelegate addEntity;
@@ -43,6 +44,7 @@ namespace SnakeIO
             this.renderer = new Renderer(spriteBatch);
             this.network = new Network();
             this.interpolation = new Interpolation();
+            this.controlManager = controlManager;
             this.contentManager = contentManager;
             network.registerNewEntityHandler(handleNewEntity);
             network.registerRemoveEntityHandler(handleRemoveEntity);
@@ -50,10 +52,6 @@ namespace SnakeIO
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
             SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
-            // AddEntity(Player.Create(playerTex, playerSound, controlManager, Scenes.SceneContext.Game, new Vector2(0, 0)));
-            // AddEntity(Wall.Create(playerTex, new Vector2(100, 100)));
-            // AddEntity(Wall.Create(playerTex, new Vector2(200, 100)));
-            // AddEntity(Food.Create(foodTex, new Vector2(200, 200)));
         }
 
         public void Update(TimeSpan elapsedTime)
@@ -64,7 +62,7 @@ namespace SnakeIO
             {
                 keyboardInput.Update(elapsedTime);
             }
-            catch 
+            catch
             {
                 Console.WriteLine("Skill Issue");
             }
@@ -146,10 +144,46 @@ namespace SnakeIO
             {
                 entity.Add(new Shared.Components.Movable(new Vector2(message.rotation.X, message.rotation.Y), new Vector2(message.velocity.X, message.velocity.Y)));
             }
-            
+
+            if (message.hasSpawnable)
+            {
+                entity.Add(new Shared.Components.Spawnable(message.spawnRate, message.spawnCount, message.spawnType));
+            }
+
+            //TODO: update NewEntity message and here to hold all needed components
+
             //TODO: do input
             if (message.hasInput)
             {
+                foreach (var input in message.inputs)
+                {
+                    entity.Add(new Shared.Components.KeyboardControllable(
+                                controlManager,
+                                new (Shared.Controls.Control, Shared.Controls.ControlDelegate)[4]
+                                {
+                                (new Shared.Controls.Control(input.sc, input.cc, input.key, null, input.keyPressOnly),
+                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
+                                     {
+                                     entity.GetComponent<Shared.Components.Movable>().Velocity += new Vector2(0, -.2f);
+                                     })),
+                                (new Shared.Controls.Control(input.sc, input.cc, input.key, null, input.keyPressOnly),
+                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
+                                     {
+                                     entity.GetComponent<Shared.Components.Movable>().Velocity += new Vector2(0, .2f);
+                                     })),
+                                (new Shared.Controls.Control(input.sc, input.cc, input.key, null, input.keyPressOnly),
+                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
+                                     {
+                                     entity.GetComponent<Shared.Components.Movable>().Velocity += new Vector2(-.2f, 0);
+                                     })),
+                                (new Shared.Controls.Control(input.sc, input.cc, input.key, null, input.keyPressOnly),
+                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
+                                     {
+                                     entity.GetComponent<Shared.Components.Movable>().Velocity += new Vector2(.2f, 0);
+                                     }))
+                                }
+                    ));
+                }
             }
 
             return entity;
