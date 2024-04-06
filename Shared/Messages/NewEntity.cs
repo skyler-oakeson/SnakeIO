@@ -161,12 +161,14 @@ namespace Shared.Messages
             {
                 data.AddRange(BitConverter.GetBytes(texturePath.Length));
                 data.AddRange(Encoding.UTF8.GetBytes(texturePath));
-                data.AddRange(BitConverter.GetBytes(color.R));
-                data.AddRange(BitConverter.GetBytes(color.G));
-                data.AddRange(BitConverter.GetBytes(color.B));
-                data.AddRange(BitConverter.GetBytes(stroke.R));
-                data.AddRange(BitConverter.GetBytes(stroke.G));
-                data.AddRange(BitConverter.GetBytes(stroke.B));
+                data.AddRange(BitConverter.GetBytes((int)color.R));
+                data.AddRange(BitConverter.GetBytes((int)color.G));
+                data.AddRange(BitConverter.GetBytes((int)color.B));
+                data.AddRange(BitConverter.GetBytes((int)color.A));
+                data.AddRange(BitConverter.GetBytes((int)stroke.R));
+                data.AddRange(BitConverter.GetBytes((int)stroke.G));
+                data.AddRange(BitConverter.GetBytes((int)stroke.B));
+                data.AddRange(BitConverter.GetBytes((int)stroke.A));
             }
 
             data.AddRange(BitConverter.GetBytes(hasPosition));
@@ -270,21 +272,25 @@ namespace Shared.Messages
                 offset += textureSize;
                 //for color
                 // TODO: Figure out where I am missing bytes. Please
-                byte colorR = data[offset];
-                offset += sizeof(byte);
-                byte colorG = data[offset];
-                offset += sizeof(byte);
-                byte colorB = data[offset];
-                offset += sizeof(byte);
-                this.color = new Color(colorR, colorG, colorB); 
+                int colorR = data[offset];
+                offset += sizeof(int);
+                int colorG = data[offset];
+                offset += sizeof(int);
+                int colorB = data[offset];
+                offset += sizeof(int);
+                int colorA = data[offset];
+                offset += sizeof(int);
+                this.color = new Color(colorR, colorG, colorB, colorA); 
                 //for stroke
-                byte strokeR = data[offset];
-                offset += sizeof(byte);
-                byte strokeG = data[offset];
-                offset += sizeof(byte);
-                byte strokeB = data[offset];
-                offset += sizeof(byte);
-                this.stroke = new Color(strokeR, strokeG, strokeB);
+                int strokeR = data[offset];
+                offset += sizeof(int);
+                int strokeG = data[offset];
+                offset += sizeof(int);
+                int strokeB = data[offset];
+                offset += sizeof(int);
+                int strokeA = data[offset];
+                offset += sizeof(int);
+                this.stroke = new Color(strokeR, strokeG, strokeB, strokeA);
             }
 
             this.hasPosition = BitConverter.ToBoolean(data, offset);

@@ -121,7 +121,6 @@ namespace SnakeIO
         private Entity createEntity(Shared.Messages.NewEntity message)
         {
             Entity entity = new Entity(message.id);
-            Debug.WriteLine(message.hasAppearance);
 
             if (message.hasAppearance)
             {
@@ -133,7 +132,6 @@ namespace SnakeIO
             {
                 entity.Add(new Shared.Components.Positionable(new Vector2(message.position.X, message.position.Y)));
             }
-            Debug.WriteLine(message.hasPosition);
 
             //TODO: find other ways to handle collidable. Maybe we specify what the radius is so that we don't have to calculate it. 
             //There is no guaruntee that if it has position and has appearance that it will be collidable

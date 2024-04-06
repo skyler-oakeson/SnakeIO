@@ -35,7 +35,6 @@ namespace Systems
         public override void Update(TimeSpan elapsedTime)
         {
             sb.GraphicsDevice.Clear(Color.Black);
-            Debug.WriteLine(entities.Count);
             foreach (var entity in entities.Values)
             {
                 if (entity.ContainsComponent<Shared.Components.Animatable>())
@@ -64,7 +63,6 @@ namespace Systems
             Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
             Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
             sb.Begin();
-            Debug.WriteLine(renderable.color);
             sb.Draw(
                     renderable.Texture,
                     new Rectangle(
