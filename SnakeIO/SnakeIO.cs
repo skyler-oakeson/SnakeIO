@@ -15,6 +15,8 @@ namespace SnakeIO
         private DataManager dataManager;
         private ControlManager controlManager;
         private Dictionary<SceneContext, Scene> scenes = new Dictionary<SceneContext, Scene>();
+        private SceneContext nextScene;
+        private SceneContext currSceneContext;
         private Scene currScene;
 
         public SnakeIO()
@@ -36,7 +38,9 @@ namespace SnakeIO
                 scene.Initialize(graphics.GraphicsDevice, graphics, controlManager);
             }
 
-            currScene = scenes[SceneContext.Game];
+            currSceneContext = SceneContext.Game;
+            currScene = scenes[currSceneContext];
+            nextScene = currSceneContext;
             base.Initialize();
         }
 
@@ -51,11 +55,18 @@ namespace SnakeIO
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            // if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            // {
+            //     Exit();
+            // }
+
+            if (currSceneContext != nextScene)
             {
-                Exit();
+                currScene = scenes[nextScene];
+                currSceneContext = nextScene;
             }
 
+            nextScene = currScene.ProcessInput(gameTime);
             currScene.Update(gameTime);
             base.Update(gameTime);
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
@@ -53,16 +54,19 @@ namespace Systems
             // Link is Head
             if (currLink.linkPos == Components.LinkPosition.Head)
             {
+                Console.WriteLine("HEAD");
                 chain.Add(entity.id);
+                currLink.nextEntity = entity;
+                currLink.prevEntity = entity;
             }
 
             // Link is Tail 
             else if (currLink.linkPos == Components.LinkPosition.Tail)
             {
+                Console.WriteLine("TAIL");
                 Entities.Entity head = entities[chain[0]];
                 Components.Linkable headLink = head.GetComponent<Components.Linkable>();
                 headLink.prevEntity = entity;
-                headLink.nextEntity = entity;
                 currLink.nextEntity = head;
                 currLink.prevEntity = entities[chain[chain.Count - 1]];
                 chain.Add(entity.id);
@@ -71,24 +75,25 @@ namespace Systems
             // Link is Body
             else
             {
-                Components.Linkable nextLink = entities[chain[chain.Count - 1]].GetComponent<Components.Linkable>();
-                Components.Linkable prevLink = entities[chain[chain.Count - 2]].GetComponent<Components.Linkable>();
+                Entities.Entity lastEntity = entities[chain[chain.Count - 1]];
+                Components.Linkable lastLink = lastEntity.GetComponent<Components.Linkable>();
 
                 // Tail is on the chain
-                if (nextLink.linkPos == Components.LinkPosition.Tail)
+                if (lastLink.linkPos == Components.LinkPosition.Tail)
                 {
-                    chain.Insert(chain.Count - 1, entity.id);
-                    currLink.prevEntity = nextLink.prevEntity;
-                    currLink.nextEntity = prevLink.nextEntity;
-                    nextLink.prevEntity = entity;
+                    Components.Linkable prevLink = lastLink.prevEntity.GetComponent<Components.Linkable>();
+                    Entities.Entity prevEntity = lastLink.prevEntity;
+                    currLink.nextEntity = lastEntity;
+                    currLink.prevEntity = prevEntity;
                     prevLink.nextEntity = entity;
+                    lastLink.prevEntity = entity;
+                    chain.Insert(chain.Count-1, entity.id);
                 }
                 else
                 {
-                    uint prevId = chain[chain.Count - 1];
+                    lastLink.nextEntity = entity;
+                    currLink.prevEntity = lastEntity;
                     chain.Add(entity.id);
-                    currLink.prevEntity = prevLink.nextEntity;
-                    nextLink.nextEntity = entity;
                 }
             }
 

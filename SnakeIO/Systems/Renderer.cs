@@ -88,9 +88,17 @@ namespace Systems
         {
             Components.Renderable<SpriteFont> renderable = entity.GetComponent<Components.Renderable<SpriteFont>>();
             Components.Positionable posistionable = entity.GetComponent<Components.Positionable>();
-            sb.Begin();
-            DrawOutlineText(sb, renderable.texture, renderable.label, renderable.stroke, renderable.color, 4, posistionable.pos, 1.0f);
-            sb.End();
+            if (entity.ContainsComponent<Components.Selectable>())
+            {
+                Components.Selectable selectable = entity.GetComponent<Components.Selectable>();
+                sb.Begin();
+                DrawOutlineText(sb, renderable.texture, renderable.label, selectable.highlighted ? Color.White : renderable.stroke, renderable.color, 4, posistionable.pos, 1.0f);
+                sb.End();
+            }
+            else
+            {
+
+            }
         }
 
         private void RenderAnimatable(Entities.Entity entity)

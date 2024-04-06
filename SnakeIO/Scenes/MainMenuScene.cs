@@ -12,6 +12,7 @@ namespace Scenes
     {
         private Renderer<SpriteFont> renderer;
         private KeyboardInput keyboardInput;
+        private Selector selector;
         private Audio audio;
         private Linker linker;
 
@@ -21,6 +22,7 @@ namespace Scenes
 
             this.controlManager = controlManager;
             this.keyboardInput = new Systems.KeyboardInput(controlManager);
+            this.selector = new Systems.Selector(SceneContext.MainMenu);
             this.renderer = new Renderer<SpriteFont>(spriteBatch);
             this.audio = new Audio();
             this.linker = new Linker();
@@ -30,9 +32,9 @@ namespace Scenes
         {
             SpriteFont font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
-            AddEntity(MenuItem.Create(font, "Test", true, new Vector2(50, 50), sound, Components.LinkPosition.Head, controlManager));
-            AddEntity(MenuItem.Create(font, "Check", false, new Vector2(100, 100), sound, Components.LinkPosition.Tail, controlManager));
-            AddEntity(MenuItem.Create(font, "Check", false, new Vector2(100, 100), sound, Components.LinkPosition.Body, controlManager));
+            AddEntity(MenuItem.Create(font, SceneContext.Game, "main", true, new Vector2(50, 50), sound, Components.LinkPosition.Head, controlManager));
+            AddEntity(MenuItem.Create(font, SceneContext.Options, "main", false, new Vector2(50, 100), sound, Components.LinkPosition.Body, controlManager));
+            AddEntity(MenuItem.Create(font, SceneContext.Exit, "main",  false, new Vector2(50, 150), sound, Components.LinkPosition.Tail, controlManager));
         }
 
         override public SceneContext ProcessInput(GameTime gameTime)
@@ -56,6 +58,7 @@ namespace Scenes
         private void AddEntity(Entity entity)
         {
             renderer.Add(entity);
+            selector.Add(entity);
             keyboardInput.Add(entity);
             audio.Add(entity);
             linker.Add(entity);
@@ -64,6 +67,7 @@ namespace Scenes
         private void RemoveEntity(Entity entity)
         {
             renderer.Remove(entity.id);
+            selector.Remove(entity.id);
             keyboardInput.Remove(entity.id);
             audio.Remove(entity.id);
             linker.Remove(entity.id);
