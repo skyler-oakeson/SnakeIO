@@ -6,6 +6,15 @@ namespace Scenes
 {
     public class MainMenuScene : Scene
     {
+        private enum menuState
+        {
+            NewGame,
+            HighScores,
+            Controls,
+            Credits,
+            Exit
+        }
+
         public MainMenuScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Controls.ControlManager controlManager)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
