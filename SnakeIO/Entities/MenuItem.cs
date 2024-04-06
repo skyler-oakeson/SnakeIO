@@ -10,7 +10,7 @@ namespace Entities
 {
     public class MenuItem
     {
-        public static Entity Create(SpriteFont font, string label, bool selected, Vector2 pos, SoundEffect sound, Components.LinkPosition linkPos, Controls.ControlManager cm, Scenes.SceneContext sc)
+        public static Entity Create(SpriteFont font, string label, bool selected, Vector2 pos, SoundEffect sound, Components.LinkPosition linkPos, Controls.ControlManager cm)
         {
             Entity menuItem = new Entity();
             menuItem.Add(new Selectable(selected));

@@ -4,19 +4,22 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using System.Diagnostics;
-using Controls;
 
 namespace Entities
 {
     public class Player
     {
-        public static Entity Create(Texture2D texture, string name, Color color, SoundEffect sound, ControlManager cm, Vector2 pos)
+        public static Entity Create(Texture2D texture, Color color, SoundEffect sound, Controls.ControlManager cm, Vector2 pos, string chain = null)
         {
             Entity player = new Entity();
 
             int radius = texture.Width >= texture.Height ? texture.Width / 2 : texture.Height / 2;
 
-            player.Add(new Components.Linkable(name, Components.LinkPosition.Head));
+            if (chain != null)
+            {
+                player.Add(new Components.Linkable(chain, Components.LinkPosition.Head));
+            }
+
             player.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
             player.Add(new Components.Renderable<Texture2D>(texture, color, Color.Black));
             player.Add(new Components.Positionable(pos));
@@ -25,24 +28,24 @@ namespace Entities
             Components.Movable movable = player.GetComponent<Components.Movable>();
             player.Add(new Components.KeyboardControllable(
                 cm,
-                new (ControlContext, Controls.ControlDelegate)[4]
+                new (Controls.ControlContext, Controls.ControlDelegate)[4]
                 {
-                (ControlContext.MoveUp,
+                (Controls.ControlContext.MoveUp,
                      new Controls.ControlDelegate((GameTime gameTime, float value) =>
                      {
                      movable.velocity += new Vector2(0, -.2f);
                      })),
-                (ControlContext.MoveDown,
+                (Controls.ControlContext.MoveDown,
                      new Controls.ControlDelegate((GameTime gameTime, float value) =>
                      {
                      movable.velocity += new Vector2(0, .2f);
                      })),
-                (ControlContext.MoveRight,
+                (Controls.ControlContext.MoveRight,
                      new Controls.ControlDelegate((GameTime gameTime, float value) =>
                      {
                      movable.velocity += new Vector2(.2f, 0);
                      })),
-                (ControlContext.MoveLeft,
+                (Controls.ControlContext.MoveLeft,
                      new Controls.ControlDelegate((GameTime gameTime, float value) =>
                      {
                      movable.velocity += new Vector2(-.2f, 0);
@@ -54,10 +57,10 @@ namespace Entities
             {
                 player.Add(new Components.MouseControllable(
                             cm,
-                            new (ControlContext, ControlDelegatePosition)[1]
+                            new (Controls.ControlContext, Controls.ControlDelegatePosition)[1]
                             {
-                            (ControlContext.MouseMove,
-                             new ControlDelegatePosition((GameTime gameTime, int x, int y) =>
+                            (Controls.ControlContext.MouseMove,
+                             new Controls.ControlDelegatePosition((GameTime gameTime, int x, int y) =>
                                  {
                                  Vector2 pos = player.GetComponent<Components.Positionable>().pos;
                                  Vector2 dir = new Vector2(x, y) - pos;

@@ -30,9 +30,9 @@ namespace Scenes
         {
             SpriteFont font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
-            AddEntity(MenuItem.Create(font, "Test", true, new Vector2(50, 50), sound, Components.LinkPosition.Head, controlManager, SceneContext.MainMenu));
-            AddEntity(MenuItem.Create(font, "Check", false, new Vector2(100, 100), sound, Components.LinkPosition.Tail, controlManager, SceneContext.MainMenu));
-            AddEntity(MenuItem.Create(font, "Check", false, new Vector2(100, 100), sound, Components.LinkPosition.Body, controlManager, SceneContext.MainMenu));
+            AddEntity(MenuItem.Create(font, "Test", true, new Vector2(50, 50), sound, Components.LinkPosition.Head, controlManager));
+            AddEntity(MenuItem.Create(font, "Check", false, new Vector2(100, 100), sound, Components.LinkPosition.Tail, controlManager));
+            AddEntity(MenuItem.Create(font, "Check", false, new Vector2(100, 100), sound, Components.LinkPosition.Body, controlManager));
         }
 
         override public SceneContext ProcessInput(GameTime gameTime)
