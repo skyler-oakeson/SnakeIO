@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Microsoft.Xna.Framework.Content;
 
 namespace Scenes
@@ -22,12 +23,12 @@ namespace Scenes
             return SceneContext.MainMenu;
         }
 
-        override public void Render(GameTime gameTime)
+        override public void Render(TimeSpan elapsedTime)
         {
 
         }
 
-        override public void Update(GameTime gameTime)
+        override public void Update(TimeSpan elapsedTime)
         {
 
         }

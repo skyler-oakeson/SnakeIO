@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using System;
 
 namespace Systems
 {
@@ -19,9 +20,9 @@ namespace Systems
             this.sc = sc;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(TimeSpan elapsedTime)
         {
-            cm.Update(gameTime, sc);
+            cm.Update(elapsedTime, sc);
         }
 
     }

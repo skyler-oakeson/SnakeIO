@@ -4,8 +4,8 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Shared.Controls
 {
-    public delegate void ControlDelegate(GameTime gameTime, float value);
-    public delegate void ControlDelegatePosition(GameTime GameTime, int x, int y);
+    public delegate void ControlDelegate(TimeSpan ElapsedTime, float value);
+    public delegate void ControlDelegatePosition(TimeSpan ElapsedTime, int x, int y);
 
     public class ControlManager
     {
@@ -83,7 +83,7 @@ namespace Shared.Controls
         /// Goes through all the registered commands and invokes the callbacks if they
         /// are active.
         /// </summary>
-        public void Update(GameTime gameTime, Scenes.SceneContext sc)
+        public void Update(TimeSpan elapsedTime, Scenes.SceneContext sc)
         {
             Dictionary<ControlContext, Control> sceneControls = controls[sc];
             KeyboardState state = Keyboard.GetState();
@@ -94,18 +94,18 @@ namespace Shared.Controls
                 {
                     if (delegatesPosition.ContainsKey((Controls.MouseEvent)control.mouseEvent))
                     {
-                        delegatesPosition[(Controls.MouseEvent)control.mouseEvent](gameTime, mouseState.X, mouseState.Y);
+                        delegatesPosition[(Controls.MouseEvent)control.mouseEvent](elapsedTime, mouseState.X, mouseState.Y);
                     }
                 }
                 if (control.key != null)
                 {
                     if (delegates.ContainsKey((Keys)control.key) && !control.keyPressOnly && state.IsKeyDown((Keys)control.key))
                     {
-                        delegates[(Keys)control.key](gameTime, 1.0f);
+                        delegates[(Keys)control.key](elapsedTime, 1.0f);
                     }
                     else if (!control.keyPressOnly && state.IsKeyDown((Keys)control.key))
                     {
-                        delegates[(Keys)control.key](gameTime, 1.0f);
+                        delegates[(Keys)control.key](elapsedTime, 1.0f);
                     }
                 }
             }

@@ -74,6 +74,6 @@ namespace Shared.Systems
         /// Derived classes must override this method to perform update logic specific to their type of system.
         /// </summary>
         /// <param name="gameTime">The current game time.</param>
-        public abstract void Update(GameTime gameTime);
+        public abstract void Update(TimeSpan elapsedTime);
     }
 }

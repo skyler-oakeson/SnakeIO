@@ -50,7 +50,7 @@ namespace Systems
         }
 
         // Have to implement this because it is abstract in the base class
-        public override void Update(GameTime gameTime) { }
+        public override void Update(TimeSpan elapsedTime) { }
 
         /// <summary>
         /// Have our own version of update, because we need a list of messages to work with, and

@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using System;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
@@ -23,14 +24,14 @@ namespace Scenes
             return SceneContext.Game;
         }
 
-        override public void Render(GameTime gameTime)
+        override public void Render(TimeSpan elapsedTime)
         {
-            gameModel.Render(gameTime);
+            gameModel.Render(elapsedTime);
         }
 
-        override public void Update(GameTime gameTime)
+        override public void Update(TimeSpan elapsedTime)
         {
-            gameModel.Update(gameTime);
+            gameModel.Update(elapsedTime);
         }
     }
 }

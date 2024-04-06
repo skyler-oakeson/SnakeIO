@@ -12,17 +12,24 @@ namespace Shared.Messages
         {
             this.id = entity.id;
 
-            if (entity.ContainsComponent<Shared.Components.Renderable>())
-            {
-                this.hasRenderable = true;
-                this.texture = entity.GetComponent<Renderable>().Texture.Name;
-                this.color = entity.GetComponent<Renderable>().Color;
-                this.stroke = entity.GetComponent<Renderable>().Stroke;
+            if (entity.ContainsComponent<Shared.Components.Appearance>()) {
+                this.hasAppearance = true;
+                this.texturePath = entity.GetComponent<Appearance>().texturePath;
+            } else {
+                this.texturePath = "";
             }
-            else
-            {
-                this.texture = "";
-            }
+
+            // if (entity.ContainsComponent<Shared.Components.Renderable>())
+            // {
+            //     this.hasRenderable = true;
+            //     this.texture = entity.GetComponent<Renderable>().Texture.Name;
+            //     this.color = entity.GetComponent<Renderable>().Color;
+            //     this.stroke = entity.GetComponent<Renderable>().Stroke;
+            // }
+            // else
+            // {
+            //     this.texture = "";
+            // }
 
             // Spawnable and consumable Components
 
@@ -108,6 +115,10 @@ namespace Shared.Messages
         public uint id { get; private set; }
 
         // Appearance
+        public bool hasAppearance { get; private set; } = false;
+        public string texturePath { get; private set; }
+
+        // Renderable
         public bool hasRenderable { get; private set; } = false;
         public string texture { get; private set; }
         public Color color { get; private set; }
@@ -157,6 +168,13 @@ namespace Shared.Messages
 
             data.AddRange(base.serialize());
             data.AddRange(BitConverter.GetBytes(id));
+
+            data.AddRange(BitConverter.GetBytes(hasAppearance));
+            if (hasAppearance)
+            {
+                data.AddRange(BitConverter.GetBytes(texturePath.Length));
+                data.AddRange(Encoding.UTF8.GetBytes(texturePath));
+            }
 
             data.AddRange(BitConverter.GetBytes(hasRenderable));
             if (hasRenderable)
@@ -261,6 +279,16 @@ namespace Shared.Messages
 
             this.id = BitConverter.ToUInt32(data, offset);
             offset += sizeof(uint);
+
+            this.hasAppearance = BitConverter.ToBoolean(data, offset);
+            offset += sizeof(bool);
+            if (hasAppearance)
+            {
+                int textureSize = BitConverter.ToInt32(data, offset);
+                offset += sizeof(Int32);
+                this.texturePath = Encoding.UTF8.GetString(data, offset, textureSize);
+                offset += textureSize;
+            }
 
             this.hasRenderable = BitConverter.ToBoolean(data, offset);
             offset += sizeof(bool);

@@ -46,7 +46,7 @@ namespace SnakeIO
                 Exit();
             }
 
-            gameView.Update(gameTime);
+            gameView.Update(gameTime.ElapsedGameTime);
 
 
             // TODO: Add your update logic here
@@ -56,7 +56,7 @@ namespace SnakeIO
 
         protected override void Draw(GameTime gameTime)
         {
-            gameView.Render(gameTime);
+            gameView.Render(gameTime.ElapsedGameTime);
 
             base.Draw(gameTime);
         }

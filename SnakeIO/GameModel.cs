@@ -1,4 +1,5 @@
 using Systems;
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -48,20 +49,20 @@ namespace SnakeIO
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
             SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
-            AddEntity(Player.Create(playerTex, playerSound, controlManager, Scenes.SceneContext.Game, new Vector2(0, 0)));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100)));
-            AddEntity(Wall.Create(playerTex, new Vector2(200, 100)));
-            AddEntity(Food.Create(foodTex, new Vector2(200, 200)));
+            // AddEntity(Player.Create(playerTex, playerSound, controlManager, Scenes.SceneContext.Game, new Vector2(0, 0)));
+            // AddEntity(Wall.Create(playerTex, new Vector2(100, 100)));
+            // AddEntity(Wall.Create(playerTex, new Vector2(200, 100)));
+            // AddEntity(Food.Create(foodTex, new Vector2(200, 200)));
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(TimeSpan elapsedTime)
         {
-            keyboardInput.Update(gameTime);
+            keyboardInput.Update(elapsedTime);
         }
 
-        public void Render(GameTime gameTime)
+        public void Render(TimeSpan elapsedTime)
         {
-            renderer.Update(gameTime);
+            renderer.Update(elapsedTime);
         }
 
         private void AddEntity(Entity entity)
@@ -110,6 +111,12 @@ namespace SnakeIO
         private Entity createEntity(Shared.Messages.NewEntity message)
         {
             Entity entity = new Entity(message.id);
+
+            if (message.hasAppearance)
+            {
+                Texture2D texture = contentManager.Load<Texture2D>(message.texturePath);
+                entity.Add(new Shared.Components.Renderable(texture, message.color, message.color));
+            }
 
             if (message.hasRenderable)
             {

@@ -6,7 +6,7 @@ namespace Shared.Components
     /// This component is responsible for containing soundeffect data of
     /// entites with audio features.
     /// </summary>
-    class Audible : Component
+    public class Audible : Component
     {
         private SoundEffect sound { get; set; }
         public SoundEffect Sound 

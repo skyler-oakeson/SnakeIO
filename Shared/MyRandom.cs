@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 /// </summary>
 namespace Shared
 {
-    class MyRandom : Random
+    public class MyRandom : Random
     {
 
         /// <summary>

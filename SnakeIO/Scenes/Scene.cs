@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using System;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
@@ -25,8 +26,8 @@ namespace Scenes
 
         public abstract void LoadContent(ContentManager contentManager);
         public abstract SceneContext ProcessInput(GameTime gameTime);
-        public abstract void Render(GameTime gameTime);
-        public abstract void Update(GameTime gameTime);
+        public abstract void Render(TimeSpan elapsedTime);
+        public abstract void Update(TimeSpan elapsedTime);
 
         protected static void DrawOutlineText(SpriteBatch spriteBatch, SpriteFont font, string text, Color outlineColor, Color frontColor, int pixelOffset, Vector2 position, float scale)
         {

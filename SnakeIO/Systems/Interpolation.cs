@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using Shared.Entities;
 
 namespace Systems
@@ -13,7 +14,7 @@ namespace Systems
         {
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(TimeSpan elapsedTime)
         {
             foreach (var entity in entities.Values)
             {

@@ -2,7 +2,7 @@ using System;
 
 namespace Shared.Components
 {
-    class Spawnable : Component
+    public class Spawnable : Component
     {
         public TimeSpan spawnRate; // in milliseconds
         public int spawnCount; // number of entities to spawn

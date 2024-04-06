@@ -31,7 +31,7 @@ namespace Systems
 
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(TimeSpan elapsedTime)
         {
             sb.GraphicsDevice.Clear(Color.Black);
             foreach (var entity in entities.Values)
@@ -39,7 +39,7 @@ namespace Systems
                 if (entity.ContainsComponent<Shared.Components.Animatable>())
                 {
                     Shared.Components.Animatable animatable = entity.GetComponent<Shared.Components.Animatable>();
-                    animatable.timeSinceLastFrame += gameTime.ElapsedGameTime;
+                    animatable.timeSinceLastFrame += elapsedTime;
                     if (animatable.timeSinceLastFrame > TimeSpan.FromMilliseconds(animatable.spriteTime[animatable.subImageIndex]))
                     {
                         animatable.timeSinceLastFrame -= TimeSpan.FromMilliseconds(animatable.spriteTime[animatable.subImageIndex]);
