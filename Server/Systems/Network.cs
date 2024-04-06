@@ -29,7 +29,7 @@ namespace Systems
             )
         {
             // Register our own join handler
-            registerHandler(Shared.Messages.Type.Join, (int clientId, GameTime elapsedTime, Shared.Messages.Message message) =>
+            registerHandler(Shared.Messages.Type.Join, (int clientId, TimeSpan elapsedTime, Shared.Messages.Message message) =>
             {
                 if (m_joinHandler != null)
                 {
@@ -38,7 +38,7 @@ namespace Systems
             });
 
             // Register our own disconnect handler
-            registerHandler(Shared.Messages.Type.Disconnect, (int clientId, GameTime elapsedTime, Shared.Messages.Message message) =>
+            registerHandler(Shared.Messages.Type.Disconnect, (int clientId, TimeSpan elapsedTime, Shared.Messages.Message message) =>
             {
                 if (m_disconnectHandler != null)
                 {
@@ -55,13 +55,13 @@ namespace Systems
         }
 
         // Have to implement this because it is abstract in the base class
-        public override void Update(GameTime gameTime) { }
+        public override void Update(TimeSpan elapsedTime) { }
 
         /// <summary>
         /// Have our own version of update, because we need a list of messages to work with, and
         /// messages aren't entities.
         /// </summary>
-        public void update(GameTime elapsedTime, Queue<Tuple<int, Message>> messages)
+        public void update(TimeSpan elapsedTime, Queue<Tuple<int, Message>> messages)
         {
             if (messages != null)
             {
@@ -133,7 +133,7 @@ namespace Systems
             {
                 var entity = entities[entityId];
                 var message = new Shared.Messages.UpdateEntity(entity, elapsedTime);
-                MessageQueueServer.instance.broadcastMessageWithLastId(message);
+                Server.MessageQueueServer.instance.broadcastMessageWithLastId(message);
             }
 
             m_reportThese.Clear();

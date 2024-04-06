@@ -18,15 +18,15 @@ namespace Systems
         {
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(TimeSpan elapsedTime)
         {
             foreach (var entity in entities.Values)
             {
-                MoveEntity(entity, gameTime);
+                MoveEntity(entity, elapsedTime);
             }
         }
 
-        private void MoveEntity(Shared.Entities.Entity entity, GameTime gameTime)
+        private void MoveEntity(Shared.Entities.Entity entity, TimeSpan elapsedTime)
         {
             Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
             Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
@@ -41,7 +41,7 @@ namespace Systems
             if (Math.Abs(movable.Velocity.X) > 1) { movable.Velocity = new Vector2(movable.Velocity.X > 0 ? 1 : -1, movable.Velocity.Y); }
             if (Math.Abs(movable.Velocity.Y) > 1) { movable.Velocity = new Vector2(movable.Velocity.X, movable.Velocity.Y > 0 ? 1 : -1); }
 
-            Vector2 newPos = movable.Velocity * gameTime.ElapsedGameTime.Milliseconds + positionable.Pos;
+            Vector2 newPos = movable.Velocity * elapsedTime.Milliseconds + positionable.Pos;
             positionable.PrevPos = positionable.Pos;
             positionable.Pos = newPos;
 

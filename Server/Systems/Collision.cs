@@ -19,7 +19,7 @@ namespace Systems
         {
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(TimeSpan elapsedTime)
         {
             Shared.Entities.Entity[] entityArr = new Shared.Entities.Entity[entities.Values.Count];
             entities.Values.CopyTo(entityArr, 0);

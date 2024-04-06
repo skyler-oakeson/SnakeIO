@@ -9,6 +9,7 @@ namespace Server
     {
         public static int Main(string[] args)
         {
+            Console.WriteLine("Server starting...");
             if (readArgs(args, out ushort port))
             {
                 if (MessageQueueServer.instance.initialize(port))

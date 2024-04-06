@@ -22,20 +22,21 @@ namespace Systems
             this.addEntity = addEntity;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(TimeSpan elapsedTime)
         {
             foreach (var entity in entities.Values)
             {
                 Shared.Components.Spawnable spawnable = entity.GetComponent<Shared.Components.Spawnable>();
-                if (!spawnTimes.ContainsKey(spawnable.type))
-                {
-                    spawnTimes[spawnable.type] = gameTime.TotalGameTime - spawnable.spawnRate; //spawn initial count
-                }
-                if (gameTime.TotalGameTime - spawnTimes[spawnable.type] >= spawnable.spawnRate)
-                {
-                    spawnTimes[spawnable.type] = gameTime.TotalGameTime + spawnable.spawnRate;
-                    SpawnEntity(entity);
-                }
+                //TODO: fix to use elapsedTime
+                // if (!spawnTimes.ContainsKey(spawnable.type))
+                // {
+                //     spawnTimes[spawnable.type] = gameTime.TotalGameTime - spawnable.spawnRate; //spawn initial count
+                // }
+                // if (gameTime.TotalGameTime - spawnTimes[spawnable.type] >= spawnable.spawnRate)
+                // {
+                //     spawnTimes[spawnable.type] = gameTime.TotalGameTime + spawnable.spawnRate;
+                //     SpawnEntity(entity);
+                // }
             }
             foreach (var entity in entitiesToSpawn)
             {

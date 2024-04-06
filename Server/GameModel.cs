@@ -1,11 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-using Shared.Components;
-using Shared.Entities;
-using Shared.Messages;
 using Microsoft.Xna.Framework.Audio;
-using Shared.Controls;
 
 namespace Server
 {
@@ -15,11 +11,10 @@ namespace Server
         public int WIDTH { get; private set; }
 
         private HashSet<int> clients = new HashSet<int>();
-        private Dictionary<uint, Entity> entities = new Dictionary<uint, Entity>(); // may not need
+        private Dictionary<uint, Shared.Entities.Entity> entities = new Dictionary<uint, Shared.Entities.Entity>(); // may not need
         private Dictionary<int, uint> clientToEntityId = new Dictionary<int, uint>();
 
 
-        // private Systems.Renderer renderer;
         // private Systems.KeyboardInput keyboardInput;
         private Systems.Network systemNetwork;
         private Systems.Movement movement;
@@ -27,52 +22,49 @@ namespace Server
         private Systems.Audio audio;
         private Systems.Spawner spawner;
 
-        public delegate void AddDelegate(Entity entity);
+        public delegate void AddDelegate(Shared.Entities.Entity entity);
         private AddDelegate addEntity;
 
-        private List<Entity> toRemove = new List<Entity>();
-        private List<Entity> toAdd = new List<Entity>();
+        private List<Shared.Entities.Entity> toRemove = new List<Shared.Entities.Entity>();
+        private List<Shared.Entities.Entity> toAdd = new List<Shared.Entities.Entity>();
 
         public GameModel()
         {
             addEntity = AddEntity;
         }
 
-        public void Initialize(Shared.Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager)
+        public bool Initialize()
         {
             //this.keyboardInput = new Systems.KeyboardInput(controlManager, Scenes.SceneContext.Game);
             this.movement = new Systems.Movement();
-            //this.renderer = new Renderer(spriteBatch);
             this.collision = new Systems.Collision();
             this.audio = new Systems.Audio();
             this.spawner = new Systems.Spawner(addEntity);
             this.systemNetwork = new Systems.Network();
-            this.controlManager = controlManager;
 
             systemNetwork.registerJoinHandler(handleJoin);
             systemNetwork.registerDisconnectHandler(handleDisconnect);
             MessageQueueServer.instance.registerConnectHandler(handleConnect);
 
+            return true;
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(TimeSpan elapsedTime)
         {
             //keyboardInput.Update(gameTime);
-            movement.Update(gameTime);
-            collision.Update(gameTime);
-            audio.Update(gameTime);
-            spawner.Update(gameTime);
-            systemNetwork.update(gameTime, MessageQueueServer.instance.getMessages());
+            movement.Update(elapsedTime);
+            collision.Update(elapsedTime);
+            audio.Update(elapsedTime);
+            spawner.Update(elapsedTime);
+            systemNetwork.update(elapsedTime, MessageQueueServer.instance.getMessages());
         }
 
         public void Render(GameTime gameTime)
         {
-            //renderer.Update(gameTime);
         }
 
-        private void AddEntity(Entity entity)
+        private void AddEntity(Shared.Entities.Entity entity)
         {
-            //renderer.Add(entity);
             //keyboardInput.Add(entity);
             movement.Add(entity);
             collision.Add(entity);
@@ -82,9 +74,8 @@ namespace Server
             entities[entity.id] = entity;
         }
 
-        private void RemoveEntity(Entity entity)
+        private void RemoveEntity(Shared.Entities.Entity entity)
         {
-            //renderer.Remove(entity.id);
             //keyboardInput.Remove(entity.id);
             movement.Remove(entity.id);
             collision.Remove(entity.id);
@@ -99,6 +90,11 @@ namespace Server
             entities.Remove(id);
         }
 
+        public void shutdown()
+        {
+
+        }
+
         private void handleConnect(int clientId)
         {
             clients.Add(clientId);
@@ -108,7 +104,7 @@ namespace Server
         private void handleDisconnect(int clientId)
         {
             clients.Remove(clientId);
-            Message message = new Shared.Messages.RemoveEntity(clientToEntityId[clientId]);
+            Shared.Messages.Message message = new Shared.Messages.RemoveEntity(clientToEntityId[clientId]);
             MessageQueueServer.instance.broadcastMessage(message);
             RemoveEntity(clientToEntityId[clientId]);
             clientToEntityId.Remove(clientId);
@@ -126,13 +122,12 @@ namespace Server
         {
             reportAllEntities(clientId);
 
-            Entity player = Shared.Entities.Player.Create(this.playerTex, this.playerSound, this.controlManager, Scenes.SceneContext.Game, new Vector2(0, 0));
+            Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/player", "Audio/bass-switch", new Shared.Controls.ControlManager(new Shared.DataManager()), Scenes.SceneContext.Game, new Vector2(0, 0));
             clientToEntityId[clientId] = player.id;
 
-            MessageQueueServer.instance.sendMessage(clientId, new NewEntity(player));
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
 
-
-            Message message = new NewEntity(player);
+            Shared.Messages.Message message = new Shared.Messages.NewEntity(player);
             foreach (int otherId in clients)
             {
                 if (otherId != clientId)
