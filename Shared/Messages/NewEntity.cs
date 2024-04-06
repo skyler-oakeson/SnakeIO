@@ -3,6 +3,7 @@ using Shared.Components;
 using Shared.Entities;
 using System.Text;
 using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
 
 namespace Shared.Messages
 {
@@ -15,21 +16,11 @@ namespace Shared.Messages
             if (entity.ContainsComponent<Shared.Components.Appearance>()) {
                 this.hasAppearance = true;
                 this.texturePath = entity.GetComponent<Appearance>().texturePath;
+                this.color = entity.GetComponent<Appearance>().color;
+                this.stroke = entity.GetComponent<Appearance>().stroke;
             } else {
                 this.texturePath = "";
             }
-
-            // if (entity.ContainsComponent<Shared.Components.Renderable>())
-            // {
-            //     this.hasRenderable = true;
-            //     this.texture = entity.GetComponent<Renderable>().Texture.Name;
-            //     this.color = entity.GetComponent<Renderable>().Color;
-            //     this.stroke = entity.GetComponent<Renderable>().Stroke;
-            // }
-            // else
-            // {
-            //     this.texture = "";
-            // }
 
             // Spawnable and consumable Components
 
@@ -107,9 +98,9 @@ namespace Shared.Messages
         }
         public NewEntity() : base(Type.NewEntity)
         {
-            this.texture = "";
             this.inputs = new List<Shared.Controls.Control>();
             this.audio = "";
+            this.texturePath = "";
         }
 
         public uint id { get; private set; }
@@ -117,10 +108,6 @@ namespace Shared.Messages
         // Appearance
         public bool hasAppearance { get; private set; } = false;
         public string texturePath { get; private set; }
-
-        // Renderable
-        public bool hasRenderable { get; private set; } = false;
-        public string texture { get; private set; }
         public Color color { get; private set; }
         public Color stroke { get; private set; }
 
@@ -174,13 +161,6 @@ namespace Shared.Messages
             {
                 data.AddRange(BitConverter.GetBytes(texturePath.Length));
                 data.AddRange(Encoding.UTF8.GetBytes(texturePath));
-            }
-
-            data.AddRange(BitConverter.GetBytes(hasRenderable));
-            if (hasRenderable)
-            {
-                data.AddRange(BitConverter.GetBytes(texture.Length));
-                data.AddRange(Encoding.UTF8.GetBytes(texture));
                 data.AddRange(BitConverter.GetBytes(color.R));
                 data.AddRange(BitConverter.GetBytes(color.G));
                 data.AddRange(BitConverter.GetBytes(color.B));
@@ -288,32 +268,23 @@ namespace Shared.Messages
                 offset += sizeof(Int32);
                 this.texturePath = Encoding.UTF8.GetString(data, offset, textureSize);
                 offset += textureSize;
-            }
-
-            this.hasRenderable = BitConverter.ToBoolean(data, offset);
-            offset += sizeof(bool);
-            if (hasRenderable)
-            {
-                int textureSize = BitConverter.ToInt32(data, offset);
-                offset += sizeof(Int32);
-                this.texture = Encoding.UTF8.GetString(data, offset, textureSize);
-                offset += textureSize;
                 //for color
-                byte r = data[offset];
+                // TODO: Figure out where I am missing bytes. Please
+                byte colorR = data[offset];
                 offset += sizeof(byte);
-                byte g = data[offset];
+                byte colorG = data[offset];
                 offset += sizeof(byte);
-                byte b = data[offset];
+                byte colorB = data[offset];
                 offset += sizeof(byte);
-                this.color = new Color(r, g, b);
+                this.color = new Color(colorR, colorG, colorB); 
                 //for stroke
-                r = data[offset];
+                byte strokeR = data[offset];
                 offset += sizeof(byte);
-                g = data[offset];
+                byte strokeG = data[offset];
                 offset += sizeof(byte);
-                b = data[offset];
+                byte strokeB = data[offset];
                 offset += sizeof(byte);
-                this.stroke = new Color(r, g, b);
+                this.stroke = new Color(strokeR, strokeG, strokeB);
             }
 
             this.hasPosition = BitConverter.ToBoolean(data, offset);
@@ -325,7 +296,6 @@ namespace Shared.Messages
                 float positionY = BitConverter.ToSingle(data, offset);
                 offset += sizeof(Single);
                 this.position = new Vector2(positionX, positionY);
-                offset += sizeof(Single);
             }
 
             this.hasAudio = BitConverter.ToBoolean(data, offset);

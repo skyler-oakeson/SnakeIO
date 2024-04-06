@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Audio;
 using Shared.Entities;
+using System.Diagnostics;
 
 namespace SnakeIO
 {
@@ -57,7 +58,16 @@ namespace SnakeIO
 
         public void Update(TimeSpan elapsedTime)
         {
-            keyboardInput.Update(elapsedTime);
+            network.update(elapsedTime, MessageQueueClient.instance.getMessages());
+            renderer.Update(elapsedTime);
+            try
+            {
+                keyboardInput.Update(elapsedTime);
+            }
+            catch 
+            {
+                Console.WriteLine("Skill Issue");
+            }
         }
 
         public void Render(TimeSpan elapsedTime)
@@ -111,28 +121,35 @@ namespace SnakeIO
         private Entity createEntity(Shared.Messages.NewEntity message)
         {
             Entity entity = new Entity(message.id);
+            Debug.WriteLine(message.hasAppearance);
 
             if (message.hasAppearance)
             {
                 Texture2D texture = contentManager.Load<Texture2D>(message.texturePath);
-                entity.Add(new Shared.Components.Renderable(texture, message.color, message.color));
-            }
-
-            if (message.hasRenderable)
-            {
-                Texture2D texture = contentManager.Load<Texture2D>(message.texture);
-                entity.Add(new Shared.Components.Renderable(texture, message.color, message.color));
+                entity.Add(new Shared.Components.Renderable(texture, new Color(message.color.R, message.color.G, message.color.B), new Color(message.stroke.R, message.stroke.G, message.stroke.B)));
             }
 
             if (message.hasPosition)
             {
                 entity.Add(new Shared.Components.Positionable(new Vector2(message.position.X, message.position.Y)));
             }
+            Debug.WriteLine(message.hasPosition);
+
+            //TODO: find other ways to handle collidable. Maybe we specify what the radius is so that we don't have to calculate it. 
+            //There is no guaruntee that if it has position and has appearance that it will be collidable
+            if (message.hasPosition && message.hasAppearance)
+            {
+                Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
+                int radius = renderable.Texture.Width >= renderable.Texture.Height ? renderable.Texture.Width / 2 : renderable.Texture.Height / 2;
+                entity.Add(new Shared.Components.Collidable(new Vector3(message.position.X, message.position.Y, radius)));
+            }
 
             if (message.hasMovement)
             {
+                entity.Add(new Shared.Components.Movable(new Vector2(message.rotation.X, message.rotation.Y), new Vector2(message.velocity.X, message.velocity.Y)));
             }
-
+            
+            //TODO: do input
             if (message.hasInput)
             {
             }

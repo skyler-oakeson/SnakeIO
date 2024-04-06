@@ -12,6 +12,8 @@ namespace Shared.Entities
         {
             Entity player = new Entity();
 
+            player.Add(new Components.Appearance(texturePath, Color.Red, Color.Black));
+
             // int radius = texture.Width >= texture.Height ? texture.Width / 2 : texture.Height / 2;
 
             // player.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));

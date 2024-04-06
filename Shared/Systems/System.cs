@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using Shared.Entities;
+using System.Diagnostics;
 
 namespace Shared.Systems
 {
@@ -35,8 +36,12 @@ namespace Shared.Systems
         /// <param name="entity">The entity to be checked for interest.</param>
         protected virtual bool IsInterested(Entity entity)
         {
+            Debug.WriteLine(entity.ContainsComponent<Shared.Components.Renderable>());
             foreach (Type type in ComponentTypes)
             {
+                Debug.WriteLine(type);
+                Debug.WriteLine(entity.ContainsComponent(type));
+                Debug.WriteLine(entity.ContainsComponent<Shared.Components.Renderable>());
                 if (!entity.ContainsComponent(type))
                 {
                     return false;
@@ -54,6 +59,7 @@ namespace Shared.Systems
             bool interested = IsInterested(entity);
             if (interested)
             {
+                Debug.WriteLine(interested);
                 entities.Add(entity.id, entity);
             }
 
