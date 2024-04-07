@@ -50,11 +50,10 @@ namespace SnakeIO
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
             SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
 
-            AddEntity(Player.Create(playerTex, Color.Red, playerSound, controlManager, new Vector2(100, 100), "1"));
             AddEntity(Wall.Create(playerTex, new Vector2(400, 100), Color.Blue));
-            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue, "1", Components.LinkPosition.Tail));
+            AddEntity(Player.Create(playerTex, Color.Red, playerSound, controlManager, new Vector2(100, 100), "1"));
             AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Blue, "1", Components.LinkPosition.Body));
-            AddEntity(Food.Create(foodTex, new Vector2(200, 200)));
+            AddEntity(Wall.Create(playerTex, new Vector2(100, 100), Color.Yellow, "1", Components.LinkPosition.Tail));
         }
 
         public void Update(GameTime gameTime)

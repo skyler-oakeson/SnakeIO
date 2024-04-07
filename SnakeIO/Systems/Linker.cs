@@ -39,64 +39,92 @@ namespace Systems
         /// </summary>
         private void Link(Entities.Entity entity)
         {
-            Components.Linkable currLink = entity.GetComponent<Components.Linkable>();
+            Components.Linkable entityLink = entity.GetComponent<Components.Linkable>();
 
             // Create chain
-            if (!chainHooks.ContainsKey(currLink.chain))
+            if (!chainHooks.ContainsKey(entityLink.chain))
             {
                 List<uint> newChain = new List<uint>();
-                chainHooks.Add(currLink.chain, newChain);
+                chainHooks.Add(entityLink.chain, newChain);
             }
 
+            List<uint> chain = chainHooks[entityLink.chain];
 
-            List<uint> chain = chainHooks[currLink.chain];
-
-            // Link is Head
-            if (currLink.linkPos == Components.LinkPosition.Head)
+            if (chain.Count <= 0)
             {
-                Console.WriteLine("HEAD");
-                chain.Add(entity.id);
-                currLink.nextEntity = entity;
-                currLink.prevEntity = entity;
-            }
-
-            // Link is Tail 
-            else if (currLink.linkPos == Components.LinkPosition.Tail)
-            {
-                Console.WriteLine("TAIL");
-                Entities.Entity head = entities[chain[0]];
-                Components.Linkable headLink = head.GetComponent<Components.Linkable>();
-                headLink.prevEntity = entity;
-                currLink.nextEntity = head;
-                currLink.prevEntity = entities[chain[chain.Count - 1]];
                 chain.Add(entity.id);
             }
-
-            // Link is Body
-            else
+            else if (entityLink.linkPos == Components.LinkPosition.Body)
             {
-                Entities.Entity lastEntity = entities[chain[chain.Count - 1]];
-                Components.Linkable lastLink = lastEntity.GetComponent<Components.Linkable>();
-
-                // Tail is on the chain
-                if (lastLink.linkPos == Components.LinkPosition.Tail)
+                Entities.Entity end = entities[chain[chain.Count-1]];
+                // Insert before Tail
+                if( end.GetComponent<Components.Linkable>().linkPos == Components.LinkPosition.Tail )
                 {
-                    Components.Linkable prevLink = lastLink.prevEntity.GetComponent<Components.Linkable>();
-                    Entities.Entity prevEntity = lastLink.prevEntity;
-                    currLink.nextEntity = lastEntity;
-                    currLink.prevEntity = prevEntity;
-                    prevLink.nextEntity = entity;
-                    lastLink.prevEntity = entity;
-                    chain.Insert(chain.Count-1, entity.id);
+                    Entities.Entity tail = end;
+                    Components.Linkable tailLink = end.GetComponent<Components.Linkable>();
+                    entityLink.prevEntity = tailLink.prevEntity;
+                    entityLink.nextEntity = tail;
+                    tailLink.prevEntity = entity;
+                    chain.Add(entity.id);
                 }
                 else
                 {
-                    lastLink.nextEntity = entity;
-                    currLink.prevEntity = lastEntity;
+                    Components.Linkable endLink = end.GetComponent<Components.Linkable>();
+                    endLink.nextEntity = entity;
+                    entityLink.prevEntity = end;
                     chain.Add(entity.id);
                 }
             }
 
+            else if (entityLink.linkPos == Components.LinkPosition.Head)
+            {
+                Debug.Assert(entities[chain[0]].GetComponent<Components.Linkable>().linkPos != Components.LinkPosition.Head, "Head already attatched");
+                Entities.Entity end = entities[chain[chain.Count-1]];
+                // Link Head to Tail
+                if (end.GetComponent<Components.Linkable>().linkPos == Components.LinkPosition.Tail)
+                {
+                    Entities.Entity next = entities[chain[0]];
+                    Components.Linkable nextLink = next.GetComponent<Components.Linkable>();
+                    Components.Linkable endLink = end.GetComponent<Components.Linkable>();
+                    nextLink.prevEntity = entity;
+                    entityLink.nextEntity = next;
+                    entityLink.prevEntity = end;
+                    endLink.nextEntity = entity;
+                }
+                else
+                {
+                    Entities.Entity next = entities[chain[0]];
+                    Components.Linkable nextLink = next.GetComponent<Components.Linkable>();
+                    nextLink.prevEntity = entity;
+                    entityLink.nextEntity = next;
+                }
+                chain.Insert(0, entity.id);
+            }
+
+            else if (entityLink.linkPos == Components.LinkPosition.Tail)
+            {
+                Debug.Assert(entities[chain[chain.Count-1]].GetComponent<Components.Linkable>().linkPos != Components.LinkPosition.Tail, "Tail already attatched");
+                Entities.Entity start = entities[chain[0]];
+                // Link Tail to Head
+                if (start.GetComponent<Components.Linkable>().linkPos == Components.LinkPosition.Head)
+                {
+                    Entities.Entity prev = entities[chain[chain.Count-1]];
+                    Components.Linkable prevLink = prev.GetComponent<Components.Linkable>();
+                    Components.Linkable startLink = start.GetComponent<Components.Linkable>();
+                    entityLink.nextEntity = start;
+                    entityLink.prevEntity = prev;
+                    prevLink.nextEntity = entity;
+                    startLink.prevEntity = entity;
+                }
+                else
+                {
+                    Entities.Entity prev = entities[chain[chain.Count-1]];
+                    Components.Linkable prevLink = prev.GetComponent<Components.Linkable>();
+                    prevLink.nextEntity = entity;
+                    entityLink.prevEntity = prev;
+                    chain.Add(entity.id);
+                }
+            }
         }
 
         //TODO: Linker Remove link function

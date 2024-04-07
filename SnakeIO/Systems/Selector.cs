@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -28,15 +29,14 @@ namespace Systems
 
         /// <summary>
         /// </summary>
-        public Scenes.SceneContext Select(Entities.Entity entity, GameTime gameTime)
+        public void Select(Entities.Entity entity, GameTime gameTime)
         {
             Components.Selectable sel = entity.GetComponent<Components.Selectable>();
-            if (sel.selected)
+            if (sel.interacted)
             {
-                sel.selected = false;
-                return sel.selectionDelegate();
+                sel.interacted = false;
+                sel.selectionDelegate();
             }
-            return sc;
         }
     }
 }

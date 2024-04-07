@@ -50,6 +50,7 @@ namespace Scenes
         override public void Update(GameTime gameTime)
         {
             renderer.Update(gameTime);
+            selector.Update(gameTime);
             keyboardInput.Update(gameTime);
             audio.Update(gameTime);
             linker.Update(gameTime);

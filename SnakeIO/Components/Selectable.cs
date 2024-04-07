@@ -4,14 +4,14 @@ namespace Components
 
     public class Selectable : Component
     {
-        public bool selected;
-        public bool highlighted;
-        public SelectionDelegate selectionDelegate;
+        public bool interacted { get; set; }
+        public bool selected { get; set; }
+        public SelectionDelegate selectionDelegate { get; set; }
         
-        public Selectable(bool highlighted, SelectionDelegate selectionDelegate)
+        public Selectable(bool selected, SelectionDelegate selectionDelegate)
         {
-            this.selected = false;
-            this.highlighted = highlighted;
+            this.interacted = false;
+            this.selected = selected;
             this.selectionDelegate = selectionDelegate;
         }
     }

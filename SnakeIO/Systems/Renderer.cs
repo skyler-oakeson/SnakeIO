@@ -92,7 +92,7 @@ namespace Systems
             {
                 Components.Selectable selectable = entity.GetComponent<Components.Selectable>();
                 sb.Begin();
-                DrawOutlineText(sb, renderable.texture, renderable.label, selectable.highlighted ? Color.White : renderable.stroke, renderable.color, 4, posistionable.pos, 1.0f);
+                DrawOutlineText(sb, renderable.texture, renderable.label, selectable.selected ? Color.White : renderable.stroke, renderable.color, 4, posistionable.pos, 1.0f);
                 sb.End();
             }
             else
