@@ -1,18 +1,25 @@
+#nullable enable
+
 namespace Components
 {
-    public delegate Scenes.SceneContext SelectionDelegate();
+    public delegate bool SelectableDelegate();
 
-    public class Selectable : Component
+    public class Selectable<T> : Component
     {
         public bool interacted { get; set; }
+        public bool prevState { get; set; }
         public bool selected { get; set; }
-        public SelectionDelegate selectionDelegate { get; set; }
+        public T value { get; set; }
+        public SelectableDelegate? selectableDelegate { get; set; }
+
         
-        public Selectable(bool selected, SelectionDelegate selectionDelegate)
+        public Selectable(bool selected, T value, SelectableDelegate? selectableDelegate = null)
         {
-            this.interacted = false;
             this.selected = selected;
-            this.selectionDelegate = selectionDelegate;
+            this.interacted = false;
+            this.prevState = false;
+            this.value = value;
+            this.selectableDelegate = selectableDelegate;
         }
     }
 }

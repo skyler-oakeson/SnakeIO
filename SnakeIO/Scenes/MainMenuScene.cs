@@ -12,7 +12,7 @@ namespace Scenes
     {
         private Renderer<SpriteFont> renderer;
         private KeyboardInput keyboardInput;
-        private Selector selector;
+        private Selector<SceneContext> selector;
         private Audio audio;
         private Linker linker;
 
@@ -22,7 +22,7 @@ namespace Scenes
 
             this.controlManager = controlManager;
             this.keyboardInput = new Systems.KeyboardInput(controlManager);
-            this.selector = new Systems.Selector(SceneContext.MainMenu);
+            this.selector = new Systems.Selector<SceneContext>();
             this.renderer = new Renderer<SpriteFont>(spriteBatch);
             this.audio = new Audio();
             this.linker = new Linker();
@@ -32,13 +32,22 @@ namespace Scenes
         {
             SpriteFont font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
-            AddEntity(MenuItem.Create(font, SceneContext.Game, "main", true, new Vector2(50, 50), sound, Components.LinkPosition.Head, controlManager));
-            AddEntity(MenuItem.Create(font, SceneContext.Options, "main", false, new Vector2(50, 100), sound, Components.LinkPosition.Body, controlManager));
-            AddEntity(MenuItem.Create(font, SceneContext.Exit, "main",  false, new Vector2(50, 150), sound, Components.LinkPosition.Tail, controlManager));
+            AddEntity(MenuItem<SceneContext>.Create(font, SceneContext.Game, "main", true, new Vector2(50, 50), sound, Components.LinkPosition.Head, controlManager));
+            AddEntity(MenuItem<SceneContext>.Create(font, SceneContext.Options, "main", false, new Vector2(50, 100), sound, Components.LinkPosition.Body, controlManager));
+            AddEntity(MenuItem<SceneContext>.Create(font, SceneContext.Exit, "main",  false, new Vector2(50, 150), sound, Components.LinkPosition.Tail, controlManager));
         }
 
         override public SceneContext ProcessInput(GameTime gameTime)
         {
+            selector.Update(gameTime);
+
+            if (selector.selectedVal != default(SceneContext))
+            {
+                SceneContext selected = selector.selectedVal;
+                selector.selectedVal = default(SceneContext);
+                return selected;
+            }
+
             return SceneContext.MainMenu;
         }
 

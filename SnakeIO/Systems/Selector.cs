@@ -1,20 +1,21 @@
 using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Systems
 {
     /// <summary>
     /// </summary>
-    public class Selector : System
+    public class Selector<T> : System
     {
-        private Scenes.SceneContext sc;
-        public Selector(Scenes.SceneContext sc)
+        public T selectedVal = default(T);
+
+        public Selector()
             : base(
-                   typeof(Components.Selectable)
+                   typeof(Components.Selectable<T>)
                    )
         {
-            this.sc = sc;
         }
 
 
@@ -22,29 +23,45 @@ namespace Systems
         {
             foreach (var entity in entities.Values)
             {
-                Select(entity, gameTime);
+                Components.Selectable<T> sel = entity.GetComponent<Components.Selectable<T>>();
+                if (sel.prevState != sel.selected)
+                {
+                    Select(entity);
+                }
+                if (sel.interacted)
+                {
+                    sel.interacted = false;
+                    selectedVal = sel.value;
+                    if (sel.selectableDelegate != null)
+                    {
+                        sel.interacted = !sel.selectableDelegate();
+                    }
+                }
             }
         }
 
 
         /// <summary>
         /// </summary>
-        public void Select(Entities.Entity entity, GameTime gameTime)
+        public void Select(Entities.Entity entity)
         {
-            Components.Selectable sel = entity.GetComponent<Components.Selectable>();
-            if (sel.selected)
+            Components.Selectable<T> sel = entity.GetComponent<Components.Selectable<T>>();
+
+            if (entity.ContainsComponent<Components.Renderable<SpriteFont>>())
             {
-                entity.GetComponent<Components.KeyboardControllable>().enable = true;
+                Components.Renderable<SpriteFont> renderable = entity.GetComponent<Components.Renderable<SpriteFont>>();
+                Color temp = renderable.stroke;
+                renderable.stroke = renderable.color;
+                renderable.color = temp;
             }
-            else
+
+            if (entity.ContainsComponent<Components.KeyboardControllable>())
             {
-                entity.GetComponent<Components.KeyboardControllable>().enable = false;
+                entity.GetComponent<Components.KeyboardControllable>().enable = sel.selected;
             }
-            if (sel.interacted)
-            {
-                sel.interacted = false;
-                sel.selectionDelegate();
-            }
+
+
+            sel.prevState = !sel.prevState;
         }
     }
 }

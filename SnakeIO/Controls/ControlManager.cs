@@ -26,11 +26,11 @@ namespace Controls
         {
             controls.Add(ControlContext.MenuUp, new Control(ControlContext.MenuUp, Keys.W, true));
             controls.Add(ControlContext.MenuDown, new Control(ControlContext.MenuDown, Keys.S, true));
+            controls.Add(ControlContext.Confirm, new Control(ControlContext.Confirm, Keys.Enter, true));
             controls.Add(ControlContext.MoveUp, new Control(ControlContext.MoveUp, Keys.W, false));
             controls.Add(ControlContext.MoveDown, new Control(ControlContext.MoveDown, Keys.S, false));
             controls.Add(ControlContext.MoveLeft, new Control(ControlContext.MoveLeft, Keys.A, false));
             controls.Add(ControlContext.MoveRight, new Control(ControlContext.MoveRight, Keys.D, false));
-            controls.Add(ControlContext.Confirm, new Control(ControlContext.Confirm, Keys.Enter, true));
             controls.Add(ControlContext.MouseUp, new Control(ControlContext.MouseUp, mouseEvent: MouseEvent.MouseUp));
             controls.Add(ControlContext.MouseDown, new Control(ControlContext.MouseDown, mouseEvent: MouseEvent.MouseDown));
             controls.Add(ControlContext.MouseMove, new Control(ControlContext.MouseMove, mouseEvent: MouseEvent.MouseMove));

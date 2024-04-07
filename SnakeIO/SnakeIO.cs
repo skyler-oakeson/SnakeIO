@@ -32,6 +32,7 @@ namespace SnakeIO
         {
             scenes.Add(SceneContext.Game, new GameScene(graphics.GraphicsDevice, graphics, controlManager));
             scenes.Add(SceneContext.MainMenu, new MainMenuScene(graphics.GraphicsDevice, graphics, controlManager));
+            scenes.Add(SceneContext.Options, new OptionScene(graphics.GraphicsDevice, graphics, controlManager));
 
             foreach (Scene scene in scenes.Values)
             {
@@ -55,12 +56,11 @@ namespace SnakeIO
 
         protected override void Update(GameTime gameTime)
         {
-            // if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            // {
-            //     Exit();
-            // }
-
-            if (currSceneContext != nextScene)
+            if (nextScene == SceneContext.Exit)
+            {
+                Exit();
+            }
+            else if (currSceneContext != nextScene)
             {
                 currScene = scenes[nextScene];
                 currSceneContext = nextScene;
