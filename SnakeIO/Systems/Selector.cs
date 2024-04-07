@@ -32,6 +32,14 @@ namespace Systems
         public void Select(Entities.Entity entity, GameTime gameTime)
         {
             Components.Selectable sel = entity.GetComponent<Components.Selectable>();
+            if (sel.selected)
+            {
+                entity.GetComponent<Components.KeyboardControllable>().enable = true;
+            }
+            else
+            {
+                entity.GetComponent<Components.KeyboardControllable>().enable = false;
+            }
             if (sel.interacted)
             {
                 sel.interacted = false;

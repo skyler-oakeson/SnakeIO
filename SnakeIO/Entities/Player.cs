@@ -27,6 +27,7 @@ namespace Entities
             player.Add(new Components.Audible(sound));
             Components.Movable movable = player.GetComponent<Components.Movable>();
             player.Add(new Components.KeyboardControllable(
+                true,
                 cm,
                 new (Controls.ControlContext, Controls.ControlDelegate)[4]
                 {

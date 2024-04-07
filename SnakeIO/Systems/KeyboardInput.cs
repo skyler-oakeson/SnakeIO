@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Controls;
@@ -26,7 +27,10 @@ namespace Systems
         {
             foreach (var entity in entities.Values)
             {
-                KeyboardUpdate(entity, gameTime);
+                if (entity.GetComponent<KeyboardControllable>().enable)
+                {
+                    KeyboardUpdate(entity, gameTime);
+                }
             }
         }
 
