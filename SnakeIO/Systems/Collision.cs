@@ -59,7 +59,7 @@ namespace Systems
             Components.Positionable e1Pos = e1.GetComponent<Components.Positionable>();
             Components.Positionable e2Pos = e2.GetComponent<Components.Positionable>();
             Vector2 n = (e1Pos.pos - e2Pos.pos);
-            // n.Normalize();
+            n.Normalize();
 
             e1Pos.pos = e1Pos.prevPos;
             e2Pos.pos = e2Pos.prevPos;
