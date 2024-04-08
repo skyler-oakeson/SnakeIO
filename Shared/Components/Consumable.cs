@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Shared.Components
 {
-    class Consumable : Component
+    public class Consumable : Component
     {
         public float growth;
         public Type type { get; private set; }
