@@ -82,52 +82,64 @@ namespace Shared.Messages
         public uint id { get; private set; }
 
         // Appearance
+        public bool hasAppearance { get; private set; }
         public Components.Appearance? appearance { get; private set; } = null;
         public Parsers.AppearanceParser.AppearanceMessage appearanceMessage { get; private set; } 
 
         // Position
+        public bool hasPosition { get; private set; }
         public Components.Positionable? positionable { get; private set; } = null;
         public Parsers.PositionableParser.PositionableMessage positionableMessage { get; private set; }
 
         // Audio
+        public bool hasAudio { get; private set; } 
         public Components.Audible? audible { get; private set; } = null;
         public Parsers.AudibleParser.AudibleMessage audibleMessage { get; private set; }
 
         //Sound
+        public bool hasSound { get; private set; }
         public Components.Sound? sound { get; private set; } = null;
         public Parsers.SoundParser.SoundMessage soundMessage { get; private set; }
 
         //Renderable
+        public bool hasRenderable { get; private set; }
         public Components.Renderable? renderable { get; private set; } = null;
         public Parsers.RenderableParser.RenderableMessage renderableMessage { get; private set; }
 
         // Movement
+        public bool hasMovement { get; private set; }
         public Components.Movable? movable { get; private set; } = null;
         public Parsers.MovableParser.MovableMessage movableMessage { get; private set; }
 
         // Collision
+        public bool hasCollidable { get; private set; }
         public Components.Collidable? collidable { get; private set; } = null;
         public Parsers.CollidableParser.CollidableMessage collidableMessage { get; private set; }
 
         // Spawnable
+        public bool hasSpawnable { get; private set; }
         public Components.Spawnable? spawnable { get; private set; } = null;
         public Parsers.SpawnableParser.SpawnableMessage spawnableMessage { get; private set; }
 
         // Consumable
+        public bool hasConsumable { get; private set; }
         public Components.Consumable? consumable { get; private set; } = null;
         public Parsers.ConsumableParser.ConsumableMessage consumableMessage { get; private set; }
 
         //Animatable
+        public bool hasAnimatable { get; private set; }
         public Components.Animatable? animatable { get; private set; } = null;
         public Parsers.AnimatableParser.AnimatableMessage animatableMessage { get; private set; }
 
         // Keyboard Input
         // TODO: Fix this when new input
+        public bool hasKeyboardControllable { get; private set; }
         public Components.KeyboardControllable? keyboardControllable { get; private set; } = null;
         public Parsers.KeyboardControllableParser.KeyboardControllableMessage keyboardControllableMessage { get; private set; }
 
         //Mouse Input
         //TODO: fix this when new input
+        public bool hasMouseControllable { get; private set; }
         public Components.MouseControllable? mouseControllable { get; private set; } = null;
         public Parsers.MouseControllableParser.MouseControllableMessage mouseControllableMessage { get; private set; }
 
@@ -216,7 +228,7 @@ namespace Shared.Messages
             this.id = BitConverter.ToUInt32(data, offset);
             offset += sizeof(uint);
             
-            bool hasAppearance = BitConverter.ToBoolean(data, offset);
+            this.hasAppearance = BitConverter.ToBoolean(data, offset);
             offset += sizeof(bool);
             if (hasAppearance)
             {
@@ -225,7 +237,7 @@ namespace Shared.Messages
                 this.appearanceMessage = parser.GetMessage();
             }
 
-            bool hasPosition = BitConverter.ToBoolean(data, offset);
+            this.hasPosition = BitConverter.ToBoolean(data, offset);
             offset += sizeof(bool);
             if (hasPosition)
             {
@@ -234,7 +246,7 @@ namespace Shared.Messages
                 this.positionableMessage = parser.GetMessage();
             }
 
-            bool hasAudio = BitConverter.ToBoolean(data, offset);
+            this.hasAudio = BitConverter.ToBoolean(data, offset);
             offset += sizeof(bool);
             if (hasAudio)
             {
@@ -243,7 +255,7 @@ namespace Shared.Messages
                 this.audibleMessage = parser.GetMessage();
             }
 
-            bool hasSound = BitConverter.ToBoolean(data, offset);
+            this.hasSound = BitConverter.ToBoolean(data, offset);
             offset += sizeof(bool);
             if (hasSound)
             {
@@ -252,7 +264,7 @@ namespace Shared.Messages
                 this.soundMessage = parser.GetMessage();
             }
 
-            bool hasRenderable = BitConverter.ToBoolean(data, offset);
+            this.hasRenderable = BitConverter.ToBoolean(data, offset);
             offset += sizeof(bool);
             if (hasRenderable)
             {
@@ -261,7 +273,7 @@ namespace Shared.Messages
                 this.renderableMessage = parser.GetMessage();
             }
 
-            bool hasMovement = BitConverter.ToBoolean(data, offset);
+            this.hasMovement = BitConverter.ToBoolean(data, offset);
             offset += sizeof(bool);
             if (hasMovement)
             {
@@ -271,16 +283,16 @@ namespace Shared.Messages
             }
 
             // Currently being handled elsewhere, but it would be nice to do here.
-            bool hasCollision = BitConverter.ToBoolean(data, offset);
+            this.hasCollidable = BitConverter.ToBoolean(data, offset);
             offset += sizeof(bool);
-            if (hasCollision)
+            if (hasCollidable)
             {
                 Parsers.CollidableParser parser = new Parsers.CollidableParser();
                 parser.Parse(ref data, ref offset);
                 this.collidableMessage = parser.GetMessage();
             }
 
-            bool hasSpawnable = BitConverter.ToBoolean(data, offset);
+            this.hasSpawnable = BitConverter.ToBoolean(data, offset);
             offset += sizeof(bool);
             if (hasSpawnable)
             {
@@ -289,7 +301,7 @@ namespace Shared.Messages
                 this.spawnableMessage = parser.GetMessage();
             }
 
-            bool hasConsumable = BitConverter.ToBoolean(data, offset);
+            this.hasConsumable = BitConverter.ToBoolean(data, offset);
             offset += sizeof(bool);
             if (hasConsumable)
             {
@@ -299,9 +311,9 @@ namespace Shared.Messages
             }
 
             //Keyboard
-            bool hasKeyboard = BitConverter.ToBoolean(data, offset);
+            this.hasKeyboardControllable = BitConverter.ToBoolean(data, offset);
             offset += sizeof(bool);
-            if (hasKeyboard)
+            if (hasKeyboardControllable)
             {
                 Parsers.KeyboardControllableParser parser = new Parsers.KeyboardControllableParser();
                 parser.Parse(ref data, ref offset);
@@ -309,9 +321,9 @@ namespace Shared.Messages
             }
 
             //Mouse
-            bool hasMouse = BitConverter.ToBoolean(data, offset);
+            this.hasMouseControllable = BitConverter.ToBoolean(data, offset);
             offset += sizeof(bool);
-            if (hasMouse)
+            if (hasMouseControllable)
             {
                 Parsers.MouseControllableParser parser = new Parsers.MouseControllableParser();
                 parser.Parse(ref data, ref offset);

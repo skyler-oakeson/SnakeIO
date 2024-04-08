@@ -119,19 +119,18 @@ namespace SnakeIO
         {
             Entity entity = new Entity(message.id);
 
-            if (message.appearance != null)
+            if (message.hasAppearance)
             {
                 //Texture2D texture = contentManager.Load<Texture2D>(message.texturePath);
                 //entity.Add(new Shared.Components.Renderable(texture, new Color(message.color.R, message.color.G, message.color.B, message.color.A), new Color(message.stroke.R, message.stroke.G, message.stroke.B, message.stroke.A)));
             }
 
-            if (message.positionable != null)
+            if (message.hasPosition)
             {
-                entity.Add(new Shared.Components.Positionable(
-                            new Vector2(message.positionableMessage.pos.X, message.positionableMessage.pos.Y)));
+                entity.Add(new Shared.Components.Positionable(new Vector2(message.positionableMessage.pos.X, message.positionableMessage.pos.Y)));
             }
 
-            if (message.renderable != null)
+            if (message.hasRenderable)
             {
                 Shared.Components.Appearance appearance = entity.GetComponent<Shared.Components.Appearance>();
                 Texture2D texture = contentManager.Load<Texture2D>(appearance.texturePath);
@@ -140,29 +139,29 @@ namespace SnakeIO
 
             //TODO: find other ways to handle collidable. Maybe we specify what the radius is so that we don't have to calculate it. 
             //There is no guaruntee that if it has position and has appearance that it will be collidable
-            if (message.collidable != null)
+            if (message.hasCollidable)
             {
                 Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
                 int radius = renderable.Texture.Width >= renderable.Texture.Height ? renderable.Texture.Width / 2 : renderable.Texture.Height / 2;
                 entity.Add(new Shared.Components.Collidable(new Vector3(message.positionableMessage.pos.X, message.positionableMessage.pos.Y, radius)));
             }
 
-            if (message.movable != null)
+            if (message.hasMovement)
             {
                 entity.Add(new Shared.Components.Movable(new Vector2(message.movableMessage.rotation.X, message.movableMessage.rotation.Y), new Vector2(message.movableMessage.velocity.X, message.movableMessage.velocity.Y)));
             }
 
-            if (message.spawnable != null)
+            if (message.hasSpawnable)
             {
                 entity.Add(new Shared.Components.Spawnable(message.spawnableMessage.spawnRate, message.spawnableMessage.spawnCount, message.spawnableMessage.type));
             }
 
-            if (message.keyboardControllable != null)
+            if (message.hasKeyboardControllable)
             {
                 //Do Something
             }
 
-            if (message.mouseControllable != null)
+            if (message.hasMouseControllable)
             {
                 //Do Something
             }
