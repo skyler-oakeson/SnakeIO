@@ -77,8 +77,6 @@ namespace Shared.Messages
         }
         public NewEntity() : base(Type.NewEntity)
         {
-            this.inputs = new List<Shared.Controls.Control>();
-            this.audio = "";
         }
 
         public uint id { get; private set; }
