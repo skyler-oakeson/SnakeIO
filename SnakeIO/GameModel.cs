@@ -119,71 +119,52 @@ namespace SnakeIO
         {
             Entity entity = new Entity(message.id);
 
-            Debug.WriteLine(message.appearanceMessage.Value.texturePath);
-
-            if (message.appearanceMessage != null)
+            if (message.appearance != null)
             {
                 //Texture2D texture = contentManager.Load<Texture2D>(message.texturePath);
                 //entity.Add(new Shared.Components.Renderable(texture, new Color(message.color.R, message.color.G, message.color.B, message.color.A), new Color(message.stroke.R, message.stroke.G, message.stroke.B, message.stroke.A)));
             }
 
-            if (message.hasPosition)
+            if (message.positionable != null)
             {
-                entity.Add(new Shared.Components.Positionable(new Vector2(message.position.X, message.position.Y)));
+                entity.Add(new Shared.Components.Positionable(
+                            new Vector2(message.positionableMessage.pos.X, message.positionableMessage.pos.Y)));
+            }
+
+            if (message.renderable != null)
+            {
+                Shared.Components.Appearance appearance = entity.GetComponent<Shared.Components.Appearance>();
+                Texture2D texture = contentManager.Load<Texture2D>(appearance.texturePath);
+                entity.Add(new Shared.Components.Renderable(texture, appearance.color, appearance.stroke));
             }
 
             //TODO: find other ways to handle collidable. Maybe we specify what the radius is so that we don't have to calculate it. 
             //There is no guaruntee that if it has position and has appearance that it will be collidable
-            if (message.hasPosition && message.appearanceMessage != null)
+            if (message.collidable != null)
             {
                 Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
                 int radius = renderable.Texture.Width >= renderable.Texture.Height ? renderable.Texture.Width / 2 : renderable.Texture.Height / 2;
-                entity.Add(new Shared.Components.Collidable(new Vector3(message.position.X, message.position.Y, radius)));
+                entity.Add(new Shared.Components.Collidable(new Vector3(message.positionableMessage.pos.X, message.positionableMessage.pos.Y, radius)));
             }
 
-            if (message.hasMovement)
+            if (message.movable != null)
             {
-                entity.Add(new Shared.Components.Movable(new Vector2(message.rotation.X, message.rotation.Y), new Vector2(message.velocity.X, message.velocity.Y)));
+                entity.Add(new Shared.Components.Movable(new Vector2(message.movableMessage.rotation.X, message.movableMessage.rotation.Y), new Vector2(message.movableMessage.velocity.X, message.movableMessage.velocity.Y)));
             }
 
-            if (message.hasSpawnable)
+            if (message.spawnable != null)
             {
-                entity.Add(new Shared.Components.Spawnable(message.spawnRate, message.spawnCount, message.spawnType));
+                entity.Add(new Shared.Components.Spawnable(message.spawnableMessage.spawnRate, message.spawnableMessage.spawnCount, message.spawnableMessage.type));
             }
 
-            //TODO: update NewEntity message and here to hold all needed components
-
-            if (message.hasInput)
+            if (message.keyboardControllable != null)
             {
-                foreach (var input in message.inputs)
-                {
-                    entity.Add(new Shared.Components.KeyboardControllable(
-                                controlManager,
-                                new (Shared.Controls.Control, Shared.Controls.ControlDelegate)[4]
-                                {
-                                (new Shared.Controls.Control(input.sc, input.cc, input.key, null, input.keyPressOnly),
-                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
-                                     {
-                                     entity.GetComponent<Shared.Components.Movable>().Velocity += new Vector2(0, -.2f);
-                                     })),
-                                (new Shared.Controls.Control(input.sc, input.cc, input.key, null, input.keyPressOnly),
-                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
-                                     {
-                                     entity.GetComponent<Shared.Components.Movable>().Velocity += new Vector2(0, .2f);
-                                     })),
-                                (new Shared.Controls.Control(input.sc, input.cc, input.key, null, input.keyPressOnly),
-                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
-                                     {
-                                     entity.GetComponent<Shared.Components.Movable>().Velocity += new Vector2(-.2f, 0);
-                                     })),
-                                (new Shared.Controls.Control(input.sc, input.cc, input.key, null, input.keyPressOnly),
-                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
-                                     {
-                                     entity.GetComponent<Shared.Components.Movable>().Velocity += new Vector2(.2f, 0);
-                                     }))
-                                }
-                    ));
-                }
+                //Do Something
+            }
+
+            if (message.mouseControllable != null)
+            {
+                //Do Something
             }
 
             return entity;

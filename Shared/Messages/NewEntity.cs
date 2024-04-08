@@ -83,53 +83,53 @@ namespace Shared.Messages
 
         // Appearance
         public Components.Appearance? appearance { get; private set; } = null;
-        public Parsers.AppearanceParser.AppearanceMessage? appearanceMessage { get; private set; } 
+        public Parsers.AppearanceParser.AppearanceMessage appearanceMessage { get; private set; } 
 
         // Position
         public Components.Positionable? positionable { get; private set; } = null;
-        public Parsers.PositionableParser.PositionableMessage? positionableMessage { get; private set; }
+        public Parsers.PositionableParser.PositionableMessage positionableMessage { get; private set; }
 
         // Audio
         public Components.Audible? audible { get; private set; } = null;
-        public Parsers.AudibleParser.AudibleMessage? audibleMessage { get; private set; }
+        public Parsers.AudibleParser.AudibleMessage audibleMessage { get; private set; }
 
         //Sound
         public Components.Sound? sound { get; private set; } = null;
-        public Parsers.SoundParser.SoundMessage? soundMessage { get; private set; }
+        public Parsers.SoundParser.SoundMessage soundMessage { get; private set; }
 
         //Renderable
         public Components.Renderable? renderable { get; private set; } = null;
-        public Parsers.RenderableParser.RenderableMessage? renderableMessage { get; private set; }
+        public Parsers.RenderableParser.RenderableMessage renderableMessage { get; private set; }
 
         // Movement
         public Components.Movable? movable { get; private set; } = null;
-        public Parsers.MovableParser.MovableMessage? movableMessage { get; private set; }
+        public Parsers.MovableParser.MovableMessage movableMessage { get; private set; }
 
         // Collision
         public Components.Collidable? collidable { get; private set; } = null;
-        public Parsers.CollidableParser.CollidableMessage? collidableMessage { get; private set; }
+        public Parsers.CollidableParser.CollidableMessage collidableMessage { get; private set; }
 
         // Spawnable
         public Components.Spawnable? spawnable { get; private set; } = null;
-        public Parsers.SpawnableParser.SpawnableMessage? spawnableMessage { get; private set; }
+        public Parsers.SpawnableParser.SpawnableMessage spawnableMessage { get; private set; }
 
         // Consumable
         public Components.Consumable? consumable { get; private set; } = null;
-        public Parsers.ConsumableParser.ConsumableMessage? consumableMessage { get; private set; }
+        public Parsers.ConsumableParser.ConsumableMessage consumableMessage { get; private set; }
 
         //Animatable
         public Components.Animatable? animatable { get; private set; } = null;
-        public Parsers.AnimatableParser.AnimatableMessage? animatableMessage { get; private set; }
+        public Parsers.AnimatableParser.AnimatableMessage animatableMessage { get; private set; }
 
         // Keyboard Input
         // TODO: Fix this when new input
         public Components.KeyboardControllable? keyboardControllable { get; private set; } = null;
-        public Parsers.KeyboardControllableParser.KeyboardControllableMessage? keyboardControllableMessage { get; private set; }
+        public Parsers.KeyboardControllableParser.KeyboardControllableMessage keyboardControllableMessage { get; private set; }
 
         //Mouse Input
         //TODO: fix this when new input
         public Components.MouseControllable? mouseControllable { get; private set; } = null;
-        public Parsers.MouseControllableParser.MouseControllableMessage? mouseControllableMessage { get; private set; }
+        public Parsers.MouseControllableParser.MouseControllableMessage mouseControllableMessage { get; private set; }
 
         public override byte[] serialize()
         {
