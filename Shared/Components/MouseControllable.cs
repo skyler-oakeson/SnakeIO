@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Shared.Controls;
 namespace Shared.Components
 {
     /// <summary>
@@ -6,20 +8,17 @@ namespace Shared.Components
     /// </summary>
     public class MouseControllable : Component
     {
-        public (Shared.Controls.Control, Shared.Controls.ControlDelegatePosition)[] actions;
+        public Dictionary<ControlContext, ControlDelegatePosition> controls = new Dictionary<ControlContext, ControlDelegatePosition>();
         public MouseControllable(
-                Shared.Controls.ControlManager cm,
-                (Shared.Controls.Control, Shared.Controls.ControlDelegatePosition)[] actions
+                Controls.ControlManager cm,
+                (Controls.ControlContext, ControlDelegatePosition)[] actions
                 )
         {
-            this.actions = actions;
-            foreach ((Shared.Controls.Control con, Shared.Controls.ControlDelegatePosition del) in actions)
+            foreach ((ControlContext con, ControlDelegatePosition del) in actions)
             {
-                cm.RegisterControl(con, del);
+                controls.Add(con, del);
             }
         }
-
-        // Input will be changing, do this with changed input
         public override void Serialize(ref List<byte> data)
         {
         }

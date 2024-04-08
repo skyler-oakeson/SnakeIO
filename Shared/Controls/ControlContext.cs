@@ -12,5 +12,10 @@ namespace Shared.Controls
         MoveTowards,
         MenuUp,
         MenuDown,
+        Confirm,
+        MouseClick,
+        MouseDown,
+        MouseUp,
+        MouseMove,
     }
 }

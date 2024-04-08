@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -8,59 +9,63 @@ namespace Shared.Entities
 {
     public class Player
     {
-        public static Entity Create(string texturePath, string soundPath, Controls.ControlManager cm, Scenes.SceneContext sc, Vector2 pos)
+        public static Entity Create(string texture, Color color, string sound, Shared.Controls.ControlManager cm, Vector2 pos, string chain = null)
         {
             Entity player = new Entity();
 
-            player.Add(new Components.Appearance(texturePath, Color.Red, Color.Black));
+            player.Add(new Shared.Components.Appearance(texture, Color.Red, Color.Black));
 
-            // int radius = texture.Width >= texture.Height ? texture.Width / 2 : texture.Height / 2;
+            if (chain != null)
+            {
+                player.Add(new Shared.Components.Linkable(chain, Shared.Components.LinkPosition.Head));
+            }
 
             // player.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
-            // player.Add(new Components.Renderable(texture, Color.Red, Color.Black));
-            player.Add(new Components.Positionable(pos));
-            player.Add(new Components.Movable(new Vector2(0, 0), new Vector2(0, 0)));
+            // player.Add(new Components.Renderable<Texture2D>(texture, color, Color.Black));
+            player.Add(new Shared.Components.Positionable(pos));
+            player.Add(new Shared.Components.Movable(new Vector2(0, 0), new Vector2(0, 0)));
             // player.Add(new Components.Audible(sound));
-            Components.Movable movable = player.GetComponent<Components.Movable>();
-            player.Add(new Components.KeyboardControllable(
-                        cm,
-                        new (Controls.Control, Controls.ControlDelegate)[4]
-                        {
-                        (new Controls.Control(sc, Controls.ControlContext.MoveUp, Keys.W, null, false),
-                         new Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
-                         {
-                            movable.Velocity += new Vector2(0, -.2f);
-                         })),
-                        (new Controls.Control(sc, Controls.ControlContext.MoveDown, Keys.S, null, false),
-                         new Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
-                         {
-                            movable.Velocity += new Vector2(0, .2f);
-                         })),
-                        (new Controls.Control(sc, Controls.ControlContext.MoveRight, Keys.D, null, false),
-                         new Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
-                         {
-                            movable.Velocity += new Vector2(.2f, 0);
-                         })),
-                        (new Controls.Control(sc, Controls.ControlContext.MoveLeft, Keys.A, null, false),
-                         new Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
-                         {
-                            movable.Velocity += new Vector2(-.2f, 0);
-                         })),
-                        }));
-            
+            Shared.Components.Movable movable = player.GetComponent<Shared.Components.Movable>();
+            player.Add(new Shared.Components.KeyboardControllable(
+                true,
+                cm,
+                new (Shared.Controls.ControlContext, Shared.Controls.ControlDelegate)[4]
+                {
+                (Shared.Controls.ControlContext.MoveUp,
+                     new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
+                     {
+                     movable.velocity += new Vector2(0, -.2f);
+                     })),
+                (Shared.Controls.ControlContext.MoveDown,
+                     new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
+                     {
+                     movable.velocity += new Vector2(0, .2f);
+                     })),
+                (Shared.Controls.ControlContext.MoveRight,
+                     new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
+                     {
+                     movable.velocity += new Vector2(.2f, 0);
+                     })),
+                (Shared.Controls.ControlContext.MoveLeft,
+                     new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
+                     {
+                     movable.velocity += new Vector2(-.2f, 0);
+                     })),
+                }));
             //Remove if statement for mouse controls. We will want to check what the user selects in the real game
-            if (false) { 
-                player.Add(new Components.MouseControllable(
+            if (false)
+            {
+                player.Add(new Shared.Components.MouseControllable(
                             cm,
-                            new (Controls.Control, Controls.ControlDelegatePosition)[1]
+                            new (Shared.Controls.ControlContext, Shared.Controls.ControlDelegatePosition)[1]
                             {
-                            (new Controls.Control(sc, Controls.ControlContext.MoveTowards, null, Controls.MouseEvent.MouseMove, false),
-                             new Controls.ControlDelegatePosition((TimeSpan elapsedTime, int x, int y) =>
+                            (Shared.Controls.ControlContext.MouseMove,
+                             new Shared.Controls.ControlDelegatePosition((TimeSpan elapsedTime, int x, int y) =>
                                  {
-                                 Vector2 pos = player.GetComponent<Components.Positionable>().Pos;
+                                 Vector2 pos = player.GetComponent<Shared.Components.Positionable>().pos;
                                  Vector2 dir = new Vector2(x, y) - pos;
                                  dir.Normalize();
-                                 movable.Velocity += dir * .2f; //direction * by speed
+                                 movable.velocity += dir * .2f; //direction * by speed
                                  })),
                             }));
             }

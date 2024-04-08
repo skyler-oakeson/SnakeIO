@@ -50,7 +50,7 @@ namespace Shared.Systems
         /// Adds an entity to this system, if <see cref="IsInterested(Entity)"/> returns true for <paramref name="entity"/>.
         /// </summary>
         /// <returns>Returns true if the given entity was added to this system. Otherwise returns false.</returns>
-        public bool Add(Entity entity)
+        public virtual bool Add(Entity entity)
         {
             bool interested = IsInterested(entity);
             if (interested)

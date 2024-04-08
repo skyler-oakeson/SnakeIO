@@ -16,10 +16,13 @@ namespace SnakeIO
 
         private Dictionary<uint, Entity> entities = new Dictionary<uint, Entity>(); // may not need
 
-        private Systems.Renderer renderer;
+        private Systems.Renderer<Texture2D> renderer;
         private Systems.KeyboardInput keyboardInput;
         private Systems.Network network;
         private Systems.Interpolation interpolation;
+        private Systems.MouseInput mouseInput;
+        private Systems.Linker linker;
+        private Systems.Audio audio;
 
         private ContentManager contentManager;
         private Shared.Controls.ControlManager controlManager;
@@ -39,15 +42,16 @@ namespace SnakeIO
 
         public void Initialize(Shared.Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager)
         {
-            this.keyboardInput = new Systems.KeyboardInput(controlManager, Scenes.SceneContext.Game);
-            this.renderer = new Systems.Renderer(spriteBatch);
+            this.renderer = new Systems.Renderer<Texture2D>(spriteBatch);
             this.network = new Systems.Network();
             this.interpolation = new Systems.Interpolation();
-            this.controlManager = controlManager;
-            this.contentManager = contentManager;
             network.registerNewEntityHandler(handleNewEntity);
             network.registerRemoveEntityHandler(handleRemoveEntity);
-
+            this.keyboardInput = new Systems.KeyboardInput(controlManager);
+            this.mouseInput = new Systems.MouseInput(controlManager);
+            this.audio = new Systems.Audio();
+            this.linker = new Systems.Linker();
+            
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
             SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
@@ -57,14 +61,10 @@ namespace SnakeIO
         {
             network.update(elapsedTime, MessageQueueClient.instance.getMessages());
             renderer.Update(elapsedTime);
-            try
-            {
-                keyboardInput.Update(elapsedTime);
-            }
-            catch
-            {
-                Console.WriteLine("Skill Issue");
-            }
+            keyboardInput.Update(elapsedTime);
+            mouseInput.Update(elapsedTime);
+            audio.Update(elapsedTime);
+            linker.Update(elapsedTime);
         }
 
         public void Render(TimeSpan elapsedTime)
@@ -78,6 +78,9 @@ namespace SnakeIO
             keyboardInput.Add(entity);
             network.Add(entity);
             interpolation.Add(entity);
+            mouseInput.Add(entity);
+            audio.Add(entity);
+            linker.Add(entity);
 
             entities[entity.id] = entity;
         }
@@ -88,6 +91,10 @@ namespace SnakeIO
             keyboardInput.Remove(entity.id);
             network.Remove(entity.id);
             interpolation.Remove(entity.id);
+            mouseInput.Remove(entity.id);
+            audio.Remove(entity.id);
+            linker.Remove(entity.id);
+
             entities.Remove(entity.id);
         }
 
@@ -134,15 +141,15 @@ namespace SnakeIO
             {
                 Shared.Components.Appearance appearance = entity.GetComponent<Shared.Components.Appearance>();
                 Texture2D texture = contentManager.Load<Texture2D>(appearance.texturePath);
-                entity.Add(new Shared.Components.Renderable(texture, appearance.color, appearance.stroke));
+                entity.Add(new Shared.Components.Renderable<Texture2D>(texture, appearance.color, appearance.stroke));
             }
 
             //TODO: find other ways to handle collidable. Maybe we specify what the radius is so that we don't have to calculate it. 
             //There is no guaruntee that if it has position and has appearance that it will be collidable
             if (message.hasCollidable)
             {
-                Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
-                int radius = renderable.Texture.Width >= renderable.Texture.Height ? renderable.Texture.Width / 2 : renderable.Texture.Height / 2;
+                Shared.Components.Renderable<Texture2D> renderable = entity.GetComponent<Shared.Components.Renderable<Texture2D>>();
+                int radius = renderable.texture.Width >= renderable.texture.Height ? renderable.texture.Width / 2 : renderable.texture.Height / 2;
                 entity.Add(new Shared.Components.Collidable(new Vector3(message.positionableMessage.pos.X, message.positionableMessage.pos.Y, radius)));
             }
 

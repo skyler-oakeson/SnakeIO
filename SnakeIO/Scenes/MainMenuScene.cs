@@ -1,36 +1,85 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
+using Systems;
 
 namespace Scenes
 {
     public class MainMenuScene : Scene
     {
+        private Renderer<SpriteFont> renderer;
+        private KeyboardInput keyboardInput;
+        private Selector<SceneContext> selector;
+        private Audio audio;
+        private Linker linker;
+
         public MainMenuScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
 
+            this.controlManager = controlManager;
+            this.keyboardInput = new Systems.KeyboardInput(controlManager);
+            this.selector = new Systems.Selector<SceneContext>();
+            this.renderer = new Renderer<SpriteFont>(spriteBatch);
+            this.audio = new Audio();
+            this.linker = new Linker();
         }
 
         override public void LoadContent(ContentManager contentManager)
         {
-
+            SpriteFont font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
+            SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
+            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(font, SceneContext.Game, "main", true, new Vector2(50, 50), sound, Shared.Components.LinkPosition.Head, controlManager));
+            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(font, SceneContext.Options, "main", false, new Vector2(50, 100), sound, Shared.Components.LinkPosition.Body, controlManager));
+            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(font, SceneContext.Exit, "main",  false, new Vector2(50, 150), sound, Shared.Components.LinkPosition.Tail, controlManager));
         }
 
         override public SceneContext ProcessInput(GameTime gameTime)
         {
+            selector.Update(gameTime.ElapsedGameTime);
+
+            if (selector.selectedVal != default(SceneContext))
+            {
+                SceneContext selected = selector.selectedVal;
+                selector.selectedVal = default(SceneContext);
+                return selected;
+            }
+
             return SceneContext.MainMenu;
         }
 
         override public void Render(TimeSpan elapsedTime)
         {
-
+            renderer.Update(elapsedTime);
         }
 
         override public void Update(TimeSpan elapsedTime)
         {
+            renderer.Update(elapsedTime);
+            selector.Update(elapsedTime);
+            keyboardInput.Update(elapsedTime);
+            audio.Update(elapsedTime);
+            linker.Update(elapsedTime);
+        }
 
+        private void AddEntity(Shared.Entities.Entity entity)
+        {
+            renderer.Add(entity);
+            selector.Add(entity);
+            keyboardInput.Add(entity);
+            audio.Add(entity);
+            linker.Add(entity);
+        }
+
+        private void RemoveEntity(Shared.Entities.Entity entity)
+        {
+            renderer.Remove(entity.id);
+            selector.Remove(entity.id);
+            keyboardInput.Remove(entity.id);
+            audio.Remove(entity.id);
+            linker.Remove(entity.id);
         }
 
     }

@@ -7,23 +7,20 @@ namespace Shared.Controls
     public class Control
     {
         [DataMember()]
-        public ControlContext cc { get; private set; }
-        [DataMember()]
-        public Scenes.SceneContext sc { get; private set; }
+        public ControlContext controlContext { get; private set; }
         [DataMember()]
         public Keys? key { get; set; }
         [DataMember()]
         public MouseEvent? mouseEvent { get; set; }
         [DataMember()]
-        public bool keyPressOnly { get; set; }
+        public bool? keyPressOnly { get; set; }
 
-        public Control(Scenes.SceneContext sc, ControlContext cc, Keys? key, MouseEvent? mouseEvent, bool keyPressOnly)
+        public Control(ControlContext controlContext, Keys? key = null, bool? keyPressOnly = null, MouseEvent? mouseEvent = null)
         {
-            this.sc = sc;
-            this.cc = cc;
+            this.controlContext = controlContext; 
             this.key = key;
-            this.mouseEvent = mouseEvent;
             this.keyPressOnly = keyPressOnly;
+            this.mouseEvent = mouseEvent;
         }
     }
 }

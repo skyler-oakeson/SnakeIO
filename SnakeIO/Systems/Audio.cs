@@ -30,10 +30,10 @@ namespace Systems
         private void PlaySound(Shared.Entities.Entity entity)
         {
             Shared.Components.Audible audible = entity.GetComponent<Shared.Components.Audible>();
-            if (audible.Play)
+            if (audible.play)
             {
-                audible.Sound.Play();
-                audible.Play = false;
+                audible.sound.Play();
+                audible.play = false;
             }
         }
     }
