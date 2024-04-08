@@ -4,9 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
-using Components;
 using Systems;
-using Entities;
 
 namespace Scenes
 {
@@ -14,7 +12,7 @@ namespace Scenes
     {
         private Renderer<SpriteFont> renderer;
         private KeyboardInput keyboardInput;
-        private Selector<Controls.Control> selector;
+        private Selector<Shared.Controls.Control> selector;
         private Audio audio;
         private Linker linker;
 
@@ -24,7 +22,7 @@ namespace Scenes
 
             this.controlManager = controlManager;
             this.keyboardInput = new Systems.KeyboardInput(controlManager);
-            this.selector = new Systems.Selector<Controls.Control>();
+            this.selector = new Systems.Selector<Shared.Controls.Control>();
             this.renderer = new Renderer<SpriteFont>(spriteBatch);
             this.audio = new Audio();
             this.linker = new Linker();
@@ -34,23 +32,23 @@ namespace Scenes
         {
             SpriteFont font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
-            AddEntity(MenuItem<Controls.Control>.Create(
-                        font, controlManager.GetControl(Controls.ControlContext.MoveUp), 
-                        "options", true, new Vector2(50, 50), sound, Components.LinkPosition.Head, controlManager));
-            AddEntity(MenuItem<Controls.Control>.Create(
-                        font, controlManager.GetControl(Controls.ControlContext.MoveDown),
-                        "options", false, new Vector2(50, 100), sound, Components.LinkPosition.Body, controlManager));
-            AddEntity(MenuItem<Controls.Control>.Create(
-                        font, controlManager.GetControl(Controls.ControlContext.MoveLeft),
-                        "options",  false, new Vector2(50, 150), sound, Components.LinkPosition.Body, controlManager));
-            AddEntity(MenuItem<Controls.Control>.Create(
-                        font, controlManager.GetControl(Controls.ControlContext.MoveRight),
-                        "options",  false, new Vector2(50, 200), sound, Components.LinkPosition.Tail, controlManager));
+            AddEntity(Shared.Entities.MenuItem<Shared.Controls.Control>.Create(
+                        font, controlManager.GetControl(Shared.Controls.ControlContext.MoveUp), 
+                        "options", true, new Vector2(50, 50), sound, Shared.Components.LinkPosition.Head, controlManager));
+            AddEntity(Shared.Entities.MenuItem<Shared.Controls.Control>.Create(
+                        font, controlManager.GetControl(Shared.Controls.ControlContext.MoveDown),
+                        "options", false, new Vector2(50, 100), sound, Shared.Components.LinkPosition.Body, controlManager));
+            AddEntity(Shared.Entities.MenuItem<Shared.Controls.Control>.Create(
+                        font, controlManager.GetControl(Shared.Controls.ControlContext.MoveLeft),
+                        "options",  false, new Vector2(50, 150), sound, Shared.Components.LinkPosition.Body, controlManager));
+            AddEntity(Shared.Entities.MenuItem<Shared.Controls.Control>.Create(
+                        font, controlManager.GetControl(Shared.Controls.ControlContext.MoveRight),
+                        "options",  false, new Vector2(50, 200), sound, Shared.Components.LinkPosition.Tail, controlManager));
         }
 
         override public SceneContext ProcessInput(GameTime gameTime)
         {
-            selector.Update(gameTime);
+            selector.Update(gameTime.ElapsedGameTime);
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 return SceneContext.MainMenu;
@@ -60,19 +58,19 @@ namespace Scenes
 
         override public void Render(TimeSpan elapsedTime)
         {
-            renderer.Update(gameTime);
+            renderer.Update(elapsedTime);
         }
 
         override public void Update(TimeSpan elapsedTime)
         {
-            renderer.Update(gameTime);
-            selector.Update(gameTime);
-            keyboardInput.Update(gameTime);
-            audio.Update(gameTime);
-            linker.Update(gameTime);
+            renderer.Update(elapsedTime);
+            selector.Update(elapsedTime);
+            keyboardInput.Update(elapsedTime);
+            audio.Update(elapsedTime);
+            linker.Update(elapsedTime);
         }
 
-        private void AddEntity(Entity entity)
+        private void AddEntity(Shared.Entities.Entity entity)
         {
             renderer.Add(entity);
             selector.Add(entity);
@@ -81,7 +79,7 @@ namespace Scenes
             linker.Add(entity);
         }
 
-        private void RemoveEntity(Entity entity)
+        private void RemoveEntity(Shared.Entities.Entity entity)
         {
             renderer.Remove(entity.id);
             selector.Remove(entity.id);

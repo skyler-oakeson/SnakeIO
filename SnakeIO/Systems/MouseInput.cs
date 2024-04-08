@@ -1,8 +1,6 @@
 using Microsoft.Xna.Framework;
 using System;
 using Microsoft.Xna.Framework.Input;
-using Controls;
-using Components;
 
 namespace Systems
 {
