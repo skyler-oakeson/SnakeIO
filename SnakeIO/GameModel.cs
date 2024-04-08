@@ -1,4 +1,3 @@
-using Systems;
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
@@ -17,10 +16,10 @@ namespace SnakeIO
 
         private Dictionary<uint, Entity> entities = new Dictionary<uint, Entity>(); // may not need
 
-        private Renderer renderer;
-        private KeyboardInput keyboardInput;
-        private Network network;
-        private Interpolation interpolation;
+        private Systems.Renderer renderer;
+        private Systems.KeyboardInput keyboardInput;
+        private Systems.Network network;
+        private Systems.Interpolation interpolation;
 
         private ContentManager contentManager;
         private Shared.Controls.ControlManager controlManager;
@@ -41,9 +40,9 @@ namespace SnakeIO
         public void Initialize(Shared.Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager)
         {
             this.keyboardInput = new Systems.KeyboardInput(controlManager, Scenes.SceneContext.Game);
-            this.renderer = new Renderer(spriteBatch);
-            this.network = new Network();
-            this.interpolation = new Interpolation();
+            this.renderer = new Systems.Renderer(spriteBatch);
+            this.network = new Systems.Network();
+            this.interpolation = new Systems.Interpolation();
             this.controlManager = controlManager;
             this.contentManager = contentManager;
             network.registerNewEntityHandler(handleNewEntity);
@@ -120,10 +119,12 @@ namespace SnakeIO
         {
             Entity entity = new Entity(message.id);
 
-            if (message.hasAppearance)
+            Debug.WriteLine(message.appearanceMessage.Value.texturePath);
+
+            if (message.appearanceMessage != null)
             {
-                Texture2D texture = contentManager.Load<Texture2D>(message.texturePath);
-                entity.Add(new Shared.Components.Renderable(texture, new Color(message.color.R, message.color.G, message.color.B), new Color(message.stroke.R, message.stroke.G, message.stroke.B)));
+                //Texture2D texture = contentManager.Load<Texture2D>(message.texturePath);
+                //entity.Add(new Shared.Components.Renderable(texture, new Color(message.color.R, message.color.G, message.color.B, message.color.A), new Color(message.stroke.R, message.stroke.G, message.stroke.B, message.stroke.A)));
             }
 
             if (message.hasPosition)
@@ -133,7 +134,7 @@ namespace SnakeIO
 
             //TODO: find other ways to handle collidable. Maybe we specify what the radius is so that we don't have to calculate it. 
             //There is no guaruntee that if it has position and has appearance that it will be collidable
-            if (message.hasPosition && message.hasAppearance)
+            if (message.hasPosition && message.appearanceMessage != null)
             {
                 Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
                 int radius = renderable.Texture.Width >= renderable.Texture.Height ? renderable.Texture.Width / 2 : renderable.Texture.Height / 2;
@@ -152,7 +153,6 @@ namespace SnakeIO
 
             //TODO: update NewEntity message and here to hold all needed components
 
-            //TODO: do input
             if (message.hasInput)
             {
                 foreach (var input in message.inputs)

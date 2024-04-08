@@ -25,5 +25,10 @@ namespace Shared.Components
         {
             this.hitBox = hitBox;
         }
+
+        // This will be handled in CreateEntity. These are just used as flags
+        public override void Serialize(ref List<byte> data)
+        {
+        }
     }
 }

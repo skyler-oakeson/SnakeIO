@@ -36,5 +36,11 @@ namespace Shared.Components
             this.color = color;
             this.stroke = stroke;
         }
+
+        // This will be handled in CreateEntity. These are just used as flags
+        public override void Serialize(ref List<byte> data)
+        {
+        }
+
     }
 }

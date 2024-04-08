@@ -18,5 +18,10 @@ namespace Shared.Components
             }
             this.actions = actions;
         }
+
+        // Input will be changing, do this with changed input
+        public override void Serialize(ref List<byte> data)
+        {
+        }
     }
 }

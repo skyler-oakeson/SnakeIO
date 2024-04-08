@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Shared.Components
 {
@@ -21,5 +22,12 @@ namespace Shared.Components
             this.pos = pos;
             this.PrevPos = pos;
         }
+
+        public override void Serialize(ref List<byte> data)
+        {
+            data.AddRange(BitConverter.GetBytes(pos.X));
+            data.AddRange(BitConverter.GetBytes(pos.Y));
+        }
+
     }
 }

@@ -26,5 +26,10 @@ namespace Shared.Components
             this.sound = sound;
             this.Play = false;
         }
+
+        // This will be handled in CreateEntity. These are just used as flags
+        public override void Serialize(ref List<byte> data)
+        {
+        }
     }
 }

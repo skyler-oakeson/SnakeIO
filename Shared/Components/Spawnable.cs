@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 
 namespace Shared.Components
 {
@@ -14,5 +15,14 @@ namespace Shared.Components
             this.spawnCount = spawnCount;
             this.type = type;
         }
+
+        public override void Serialize(ref List<byte> data)
+        {
+            data.AddRange(BitConverter.GetBytes(spawnRate.TotalMilliseconds));
+            data.AddRange(BitConverter.GetBytes(spawnCount));
+            data.AddRange(BitConverter.GetBytes(type.AssemblyQualifiedName.Length));
+            data.AddRange(Encoding.UTF8.GetBytes(type.AssemblyQualifiedName));
+        }
+
     }
 }

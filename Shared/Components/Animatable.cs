@@ -18,5 +18,10 @@ namespace Shared.Components
             this.subImageWidth = spriteSheet.Width / spriteTime.Length;
             this.subImageIndex = 0;
         }
+
+        // TODO: Parse everything except for Texture2D
+        public override void Serialize(ref List<byte> data)
+        {
+        }
     }
 }

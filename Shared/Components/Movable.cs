@@ -27,5 +27,12 @@ namespace Shared.Components
             this.velocity = velocity;
         }
 
+        public override void Serialize(ref List<byte> data) {
+            data.AddRange(BitConverter.GetBytes(rotation.X));
+            data.AddRange(BitConverter.GetBytes(rotation.Y));
+            data.AddRange(BitConverter.GetBytes(velocity.X));
+            data.AddRange(BitConverter.GetBytes(velocity.Y));
+        }
+
     }
 }
