@@ -11,7 +11,7 @@ namespace Shared.Entities
             Entity wall = new Entity();
             int radius = texture.Width >= texture.Height ? texture.Height/2 : texture.Width/2;
 
-            wall.Add(new Components.Renderable<Texture2D>(texture, color, Color.Black));
+            wall.Add(new Components.Renderable(texture, "Images/player", color, Color.Black));
             wall.Add(new Components.Positionable(pos));
             wall.Add(new Components.Movable(new Vector2(0, 0), new Vector2(0, 0)));
             if (chain != null && linkPos.HasValue)

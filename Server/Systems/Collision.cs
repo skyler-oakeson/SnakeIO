@@ -44,8 +44,8 @@ namespace Systems
 
             Shared.Components.Collidable e1Col = e1.GetComponent<Shared.Components.Collidable>();
             Shared.Components.Collidable e2Col = e2.GetComponent<Shared.Components.Collidable>();
-            double hitDist = Math.Pow(e1Col.HitBox.Z + e2Col.HitBox.Z, 2);
-            double dist = Math.Pow(Math.Abs(e1Col.HitBox.X - e2Col.HitBox.X), 2) + Math.Pow(Math.Abs(e1Col.HitBox.Y - e2Col.HitBox.Y), 2);
+            double hitDist = Math.Pow(e1Col.hitBox.Z + e2Col.hitBox.Z, 2);
+            double dist = Math.Pow(Math.Abs(e1Col.hitBox.X - e2Col.hitBox.X), 2) + Math.Pow(Math.Abs(e1Col.hitBox.Y - e2Col.hitBox.Y), 2);
 
             if (dist < hitDist)
             {
@@ -59,11 +59,11 @@ namespace Systems
         {
             Shared.Components.Positionable e1Pos = e1.GetComponent<Shared.Components.Positionable>();
             Shared.Components.Positionable e2Pos = e2.GetComponent<Shared.Components.Positionable>();
-            Vector2 n = (e1Pos.Pos - e2Pos.Pos);
+            Vector2 n = (e1Pos.pos - e2Pos.pos);
             n.Normalize();
 
-            e1Pos.Pos = e1Pos.PrevPos;
-            e2Pos.Pos = e2Pos.PrevPos;
+            e1Pos.pos = e1Pos.prevPos;
+            e2Pos.pos = e2Pos.prevPos;
 
             //if (e1.ContainsComponent<Shared.Components.Audible>())
             //{
@@ -74,7 +74,7 @@ namespace Systems
             if (e1.ContainsComponent<Shared.Components.Movable>() && !e2.ContainsComponent<Shared.Components.Movable>())
             {
                 Shared.Components.Movable e1Mov = e1.GetComponent<Shared.Components.Movable>();
-                e1Mov.Velocity += n;
+                e1Mov.velocity += n;
             }
 
             // Movables - Movables
@@ -82,8 +82,8 @@ namespace Systems
             {
                 Shared.Components.Movable e1Mov = e1.GetComponent<Shared.Components.Movable>();
                 Shared.Components.Movable e2Mov = e2.GetComponent<Shared.Components.Movable>();
-                e2Mov.Velocity -= n*.5f;
-                e1Mov.Velocity += n*.5f;
+                e2Mov.velocity -= n*.5f;
+                e1Mov.velocity += n*.5f;
             }
         }
     }

@@ -14,7 +14,7 @@ namespace Shared.Messages
             if (entity.ContainsComponent<Positionable>())
             {
                 this.hasPosition = true;
-                this.position = entity.GetComponent<Positionable>().Pos;
+                this.position = entity.GetComponent<Positionable>().pos;
             }
             this.updateWindow = updateWindow;
         }

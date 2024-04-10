@@ -18,13 +18,13 @@ namespace Shared.Entities
                 Shared.Controls.ControlManager cm)
         {
             Entity menuItem = new Entity();
-            menuItem.Add(new Shared.Components.Renderable<SpriteFont>(font, Color.Orange, Color.Black, value.ToString()));
+            menuItem.Add(new Shared.Components.Readable(font, "Fonts/Micro5", value.ToString(), Color.Orange, Color.Black));
             menuItem.Add(new Shared.Components.Positionable(pos));
             menuItem.Add(new Shared.Components.Audible(sound));
             menuItem.Add(new Shared.Components.Selectable<T>(selected, value));
             menuItem.Add(new Shared.Components.Linkable(menu, linkPos));
 
-            Shared.Components.Renderable<SpriteFont> renderable = menuItem.GetComponent<Shared.Components.Renderable<SpriteFont>>();
+            Shared.Components.Readable readable = menuItem.GetComponent<Shared.Components.Readable>();
             Shared.Components.Selectable<T> selectable = menuItem.GetComponent<Shared.Components.Selectable<T>>();
 
             Shared.Components.Linkable link = menuItem.GetComponent<Shared.Components.Linkable>();
@@ -36,19 +36,19 @@ namespace Shared.Entities
                         new (Shared.Controls.ControlContext, Shared.Controls.ControlDelegate)[3]
                         {
                         (Shared.Controls.ControlContext.MenuUp,
-                         new Shared.Controls.ControlDelegate((GameTime gameTime, float value) =>
+                         new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                              {
                              link.prevEntity.GetComponent<Components.Selectable<T>>().selected = true;
                              selectable.selected = false;
                              })),
                         (Shared.Controls.ControlContext.MenuDown,
-                         new Shared.Controls.ControlDelegate((GameTime gameTime, float value) =>
+                         new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                              {
                              link.nextEntity.GetComponent<Components.Selectable<T>>().selected = true;
                              selectable.selected = false;
                              })),
                         (Shared.Controls.ControlContext.Confirm,
-                         new Shared.Controls.ControlDelegate((GameTime gameTime, float value) =>
+                         new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                              {
                              selectable.interacted = true;
                              })),
@@ -58,7 +58,7 @@ namespace Shared.Entities
             if (typeof(T) == typeof(Shared.Controls.Control))
             {
                 Shared.Controls.Control con = (Shared.Controls.Control)Convert.ChangeType(selectable.value, typeof(Shared.Controls.Control));
-                renderable.label = $"{con.controlContext}: {con.key}";
+                readable.text = $"{con.controlContext}: {con.key}";
 
                 // Change key function
                 selectable.selectableDelegate = new Shared.Components.SelectableDelegate(() =>
@@ -69,7 +69,7 @@ namespace Shared.Entities
                         if (newKey[0] != Keys.Enter)
                         {
                             cm.ChangeKey(con.controlContext, newKey[0]);
-                            renderable.label = $"{con.controlContext}: {newKey[0]}";
+                            readable.text = $"{con.controlContext}: {newKey[0]}";
                             return true;
                         }
                     }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Shared.Components;
 using Shared.Entities;
 using System.Text;
@@ -50,11 +51,6 @@ namespace Shared.Messages
                 this.sound = entity.GetComponent<Sound>();
             }
 
-            if (entity.ContainsComponent<Shared.Components.Renderable>())
-            {
-                this.renderable = entity.GetComponent<Renderable>();
-            }
-
             if (entity.ContainsComponent<Movable>())
             {
                 this.movable = entity.GetComponent<Movable>();
@@ -100,11 +96,6 @@ namespace Shared.Messages
         public bool hasSound { get; private set; }
         public Components.Sound? sound { get; private set; } = null;
         public Parsers.SoundParser.SoundMessage soundMessage { get; private set; }
-
-        //Renderable
-        public bool hasRenderable { get; private set; }
-        public Components.Renderable? renderable { get; private set; } = null;
-        public Parsers.RenderableParser.RenderableMessage renderableMessage { get; private set; }
 
         // Movement
         public bool hasMovement { get; private set; }
@@ -172,12 +163,6 @@ namespace Shared.Messages
             if (sound != null)
             {
                 sound.Serialize(ref data);
-            }
-
-            data.AddRange(BitConverter.GetBytes(renderable != null));
-            if (renderable != null)
-            {
-                renderable.Serialize(ref data);
             }
 
             data.AddRange(BitConverter.GetBytes(movable != null));
@@ -262,15 +247,6 @@ namespace Shared.Messages
                 Parsers.SoundParser parser = new Parsers.SoundParser();
                 parser.Parse(ref data, ref offset);
                 this.soundMessage = parser.GetMessage();
-            }
-
-            this.hasRenderable = BitConverter.ToBoolean(data, offset);
-            offset += sizeof(bool);
-            if (hasRenderable)
-            {
-                Parsers.RenderableParser parser = new Parsers.RenderableParser();
-                parser.Parse(ref data, ref offset);
-                this.renderableMessage = parser.GetMessage();
             }
 
             this.hasMovement = BitConverter.ToBoolean(data, offset);

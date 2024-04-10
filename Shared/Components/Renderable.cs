@@ -1,5 +1,5 @@
-#nullable enable
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Shared.Components
 {
@@ -7,25 +7,18 @@ namespace Shared.Components
     /// This component is responsible for keeping rendering data of
     /// entites that are renderable on the screen.
     /// </summary>
-    public class Renderable<T> : Component
+    public class Renderable : Appearance 
     {
-        public T texture { get; set; }
-        public Color color { get; set; }
-        public Color stroke { get; set; }
-        public string? label { get; set; }
+        public Texture2D texture { get; set; }
 
-        public Renderable(T texture, Color color, Color stroke, string? label = null)
+        public Renderable(Texture2D texture, string texturePath, Color color, Color stroke): base(texturePath, color, stroke)
         {
             this.texture = texture;
-            this.color = color;
-            this.stroke = stroke;
-            this.label = label;
         }
 
         // This will be handled in CreateEntity. These are just used as flags
         public override void Serialize(ref List<byte> data)
         {
         }
-
     }
 }

@@ -30,13 +30,14 @@ namespace Shared.Messages
             data.AddRange(BitConverter.GetBytes(inputs.Count));
             foreach (Shared.Controls.Control con in inputs)
             {
-                data.AddRange(BitConverter.GetBytes((UInt16)con.sc));
-                data.AddRange(BitConverter.GetBytes((UInt16)con.cc));
                 if (con.key != null)
                 {
                     data.AddRange(BitConverter.GetBytes((UInt16)con.key));
                 }
-                data.AddRange(BitConverter.GetBytes(con.keyPressOnly));
+                if (con.keyPressOnly != null)
+                {
+                    data.AddRange(BitConverter.GetBytes((bool)con.keyPressOnly));
+                }
             }
             data.AddRange(BitConverter.GetBytes(elapsedTime.Milliseconds));
 
@@ -62,7 +63,7 @@ namespace Shared.Messages
                 offset += sizeof(UInt16);
                 bool keyPressOnly = BitConverter.ToBoolean(data, offset);
                 offset += sizeof(bool);
-                inputs.Add(new Shared.Controls.Control(sc, cc, key, null, keyPressOnly));
+                inputs.Add(new Shared.Controls.Control(cc, key, keyPressOnly, null));
             }
 
             elapsedTime = new TimeSpan( 0, 0, 0, 0, BitConverter.ToInt32(data, offset));
