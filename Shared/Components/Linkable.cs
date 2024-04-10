@@ -23,6 +23,10 @@ namespace Shared.Components
             this.chain = chain;
             this.linkDelegate = linkDelegate;
         }
+
+        public override void Serialize(ref List<byte> data)
+        {
+        }
     }
 
     public enum LinkPosition

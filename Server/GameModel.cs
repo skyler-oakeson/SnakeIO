@@ -123,7 +123,8 @@ namespace Server
         {
             reportAllEntities(clientId);
 
-            Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/player", "Audio/bass-switch", new Shared.Controls.ControlManager(new Shared.DataManager()), Scenes.SceneContext.Game, new Vector2(0, 0));
+            Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/player", "Audio/bass-switch", 
+                    new Shared.Controls.ControlManager(new Shared.DataManager()), new Vector2(0, 0));
             clientToEntityId[clientId] = player.id;
 
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
