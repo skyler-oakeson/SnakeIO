@@ -139,7 +139,7 @@ namespace Systems
                 }
                 else if (entity.ContainsComponent<Positionable>() && message.hasPosition)
                 {
-                    entity.GetComponent<Positionable>().Pos = message.position;
+                    entity.GetComponent<Positionable>().pos = message.position;
 
                     m_updatedEntities.Add(entity.id);
                 }

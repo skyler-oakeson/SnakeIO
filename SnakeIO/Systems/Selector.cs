@@ -46,12 +46,12 @@ namespace Systems
         {
             Shared.Components.Selectable<T> sel = entity.GetComponent<Shared.Components.Selectable<T>>();
 
-            if (entity.ContainsComponent<Shared.Components.Renderable<SpriteFont>>())
+            if (entity.ContainsComponent<Shared.Components.Readable>())
             {
-                Shared.Components.Renderable<SpriteFont> renderable = entity.GetComponent<Shared.Components.Renderable<SpriteFont>>();
-                Color temp = renderable.stroke;
-                renderable.stroke = renderable.color;
-                renderable.color = temp;
+                Shared.Components.Readable readable = entity.GetComponent<Shared.Components.Readable>();
+                Color temp = readable.stroke;
+                readable.stroke = readable.color;
+                readable.color = temp;
             }
 
             if (entity.ContainsComponent<Shared.Components.KeyboardControllable>())

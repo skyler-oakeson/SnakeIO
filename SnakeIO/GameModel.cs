@@ -16,7 +16,7 @@ namespace SnakeIO
 
         private Dictionary<uint, Entity> entities = new Dictionary<uint, Entity>(); // may not need
 
-        private Systems.Renderer<Texture2D> renderer;
+        private Systems.Renderer renderer;
         private Systems.KeyboardInput keyboardInput;
         private Systems.Network network;
         private Systems.Interpolation interpolation;
@@ -42,7 +42,7 @@ namespace SnakeIO
 
         public void Initialize(Shared.Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager)
         {
-            this.renderer = new Systems.Renderer<Texture2D>(spriteBatch);
+            this.renderer = new Systems.Renderer(spriteBatch);
             this.network = new Systems.Network();
             this.interpolation = new Systems.Interpolation();
             network.registerNewEntityHandler(handleNewEntity);
@@ -128,8 +128,9 @@ namespace SnakeIO
 
             if (message.hasAppearance)
             {
-                //Texture2D texture = contentManager.Load<Texture2D>(message.texturePath);
-                //entity.Add(new Shared.Components.Renderable(texture, new Color(message.color.R, message.color.G, message.color.B, message.color.A), new Color(message.stroke.R, message.stroke.G, message.stroke.B, message.stroke.A)));
+                Shared.Components.Appearance appearance = entity.GetComponent<Shared.Components.Appearance>();
+                Texture2D texture = contentManager.Load<Texture2D>(appearance.texturePath);
+                entity.Add(new Shared.Components.Renderable(texture, appearance.texturePath, appearance.color, appearance.stroke));
             }
 
             if (message.hasPosition)
@@ -137,18 +138,17 @@ namespace SnakeIO
                 entity.Add(new Shared.Components.Positionable(new Vector2(message.positionableMessage.pos.X, message.positionableMessage.pos.Y)));
             }
 
-            if (message.hasRenderable)
-            {
-                Shared.Components.Appearance appearance = entity.GetComponent<Shared.Components.Appearance>();
-                Texture2D texture = contentManager.Load<Texture2D>(appearance.texturePath);
-                entity.Add(new Shared.Components.Renderable<Texture2D>(texture, appearance.color, appearance.stroke));
-            }
+            // if (message.hasRenderable)
+            // {
+                //Texture2D texture = contentManager.Load<Texture2D>(message.texturePath);
+                //entity.Add(new Shared.Components.Renderable(texture, new Color(message.color.R, message.color.G, message.color.B, message.color.A), new Color(message.stroke.R, message.stroke.G, message.stroke.B, message.stroke.A)));
+            // }
 
             //TODO: find other ways to handle collidable. Maybe we specify what the radius is so that we don't have to calculate it. 
             //There is no guaruntee that if it has position and has appearance that it will be collidable
             if (message.hasCollidable)
             {
-                Shared.Components.Renderable<Texture2D> renderable = entity.GetComponent<Shared.Components.Renderable<Texture2D>>();
+                Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
                 int radius = renderable.texture.Width >= renderable.texture.Height ? renderable.texture.Width / 2 : renderable.texture.Height / 2;
                 entity.Add(new Shared.Components.Collidable(new Vector3(message.positionableMessage.pos.X, message.positionableMessage.pos.Y, radius)));
             }

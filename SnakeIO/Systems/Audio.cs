@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Audio;
 using System.Collections.Generic;
 
 
-namespace SnakIO.Systems
+namespace Systems
 {
     /// <summary>
     /// This system is responsible for handling playing soundeffects of any

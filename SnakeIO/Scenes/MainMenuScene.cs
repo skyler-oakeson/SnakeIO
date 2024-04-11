@@ -9,7 +9,7 @@ namespace Scenes
 {
     public class MainMenuScene : Scene
     {
-        private Renderer<SpriteFont> renderer;
+        private Renderer renderer;
         private KeyboardInput keyboardInput;
         private Selector<SceneContext> selector;
         private Audio audio;
@@ -22,7 +22,7 @@ namespace Scenes
             this.controlManager = controlManager;
             this.keyboardInput = new Systems.KeyboardInput(controlManager);
             this.selector = new Systems.Selector<SceneContext>();
-            this.renderer = new Renderer<SpriteFont>(spriteBatch);
+            this.renderer = new Renderer(spriteBatch);
             this.audio = new Audio();
             this.linker = new Linker();
         }

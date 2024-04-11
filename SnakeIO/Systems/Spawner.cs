@@ -7,33 +7,32 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Systems
 {
-    class Spawner : System
+    class Spawner : Shared.Systems.System
     {
         private Dictionary<Type, TimeSpan> spawnTimes = new Dictionary<Type, TimeSpan>();
-        private List<Entities.Entity> entitiesToSpawn = new List<Entities.Entity>();
-        private MyRandom random = new MyRandom();
+        private List<Shared.Entities.Entity> entitiesToSpawn = new List<Shared.Entities.Entity>();
+        private Shared.MyRandom random = new Shared.MyRandom();
         private SnakeIO.GameModel.AddDelegate addEntity;
 
         public Spawner(SnakeIO.GameModel.AddDelegate addEntity)
-            : base(
-                    typeof(Components.Spawnable),
-                    typeof(Components.Positionable))
+            : base( typeof(Shared.Components.Spawnable),
+                    typeof(Shared.Components.Positionable))
         {
             this.addEntity = addEntity;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(TimeSpan elapsedTime)
         {
             foreach (var entity in entities.Values)
             {
-                Components.Spawnable spawnable = entity.GetComponent<Components.Spawnable>();
+                Shared.Components.Spawnable spawnable = entity.GetComponent<Shared.Components.Spawnable>();
                 if (!spawnTimes.ContainsKey(spawnable.type))
                 {
-                    spawnTimes[spawnable.type] = gameTime.TotalGameTime - spawnable.spawnRate; //spawn initial count
+                    spawnTimes[spawnable.type] = elapsedTime - spawnable.spawnRate; //spawn initial count
                 }
-                if (gameTime.TotalGameTime - spawnTimes[spawnable.type] >= spawnable.spawnRate)
+                if (elapsedTime - spawnTimes[spawnable.type] >= spawnable.spawnRate)
                 {
-                    spawnTimes[spawnable.type] = gameTime.TotalGameTime + spawnable.spawnRate;
+                    spawnTimes[spawnable.type] = elapsedTime + spawnable.spawnRate;
                     SpawnEntity(entity);
                 }
             }
@@ -44,10 +43,10 @@ namespace Systems
             entitiesToSpawn.Clear();
         }
 
-        private void SpawnEntity(Entities.Entity entity)
+        private void SpawnEntity(Shared.Entities.Entity entity)
         {
-            Components.Spawnable spawnable = entity.GetComponent<Components.Spawnable>();
-            Components.Renderable<Texture2D> renderable = entity.GetComponent<Components.Renderable<Texture2D>>();
+            Shared.Components.Spawnable spawnable = entity.GetComponent<Shared.Components.Spawnable>();
+            Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
             Type spawnableType = spawnable.type;
             MethodInfo createMethod = spawnableType.GetMethod("Create");
             for (int i = 0; i < spawnable.spawnCount; i++)
@@ -55,7 +54,7 @@ namespace Systems
                 // There is probably a better way to do this by designing an interface that has the Create() method, then forcing the type to be of that interface.
                 // https://learn.microsoft.com/en-us/dotnet/api/system.reflection.methodinfo.invoke?view=netframework-1.1
                 // Ensure Create Method exists, and then invoke it here.
-                entitiesToSpawn.Add((Entities.Entity)createMethod.Invoke(null, new object[] { renderable.texture, new Vector2((float) random.nextGaussian(100, 50), (float) random.nextGaussian(100, 50)) }));
+                entitiesToSpawn.Add((Shared.Entities.Entity)createMethod.Invoke(null, new object[] { renderable.texture, new Vector2((float) random.nextGaussian(100, 50), (float) random.nextGaussian(100, 50)) }));
             }
         }
     }

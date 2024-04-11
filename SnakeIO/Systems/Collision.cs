@@ -8,41 +8,41 @@ namespace Systems
     /// entities with Collidable, & Positionable components.
     /// This system handles entites with Movable components (Not Required).
     /// </summary>
-    public class Collision : System
+    public class Collision : Shared.Systems.System
     {
         public Collision()
             : base(
-                    typeof(Components.Collidable),
-                    typeof(Components.Positionable)
+                    typeof(Shared.Components.Collidable),
+                    typeof(Shared.Components.Positionable)
                     )
         {
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(TimeSpan elapsedTime)
         {
-            Entities.Entity[] entityArr = new Entities.Entity[entities.Values.Count];
+            Shared.Entities.Entity[] entityArr = new Shared.Entities.Entity[entities.Values.Count];
             entities.Values.CopyTo(entityArr, 0);
             for (int i = 0; i < entityArr.Length; i++)
             {
-                Entities.Entity e1 = entityArr[i];
+                Shared.Entities.Entity e1 = entityArr[i];
                 for (int j = i; j < entityArr.Length; j++)
                 {
-                    Entities.Entity e2 = entityArr[j];
+                    Shared.Entities.Entity e2 = entityArr[j];
                     bool res = DidCollide(e1, e2);
                     if (res) HandleCollision(e1, e2);
                 }
             }
         }
 
-        private bool DidCollide(Entities.Entity e1, Entities.Entity e2)
+        private bool DidCollide(Shared.Entities.Entity e1, Shared.Entities.Entity e2)
         {
             if (e1 == e2)
             {
                 return false;
             }
 
-            Components.Collidable e1Col = e1.GetComponent<Components.Collidable>();
-            Components.Collidable e2Col = e2.GetComponent<Components.Collidable>();
+            Shared.Components.Collidable e1Col = e1.GetComponent<Shared.Components.Collidable>();
+            Shared.Components.Collidable e2Col = e2.GetComponent<Shared.Components.Collidable>();
             double hitDist = Math.Pow(e1Col.hitBox.Z + e2Col.hitBox.Z, 2);
             double dist = Math.Pow(Math.Abs(e1Col.hitBox.X - e2Col.hitBox.X), 2) + Math.Pow(Math.Abs(e1Col.hitBox.Y - e2Col.hitBox.Y), 2);
 
@@ -54,33 +54,33 @@ namespace Systems
             return false;
         }
 
-        private void HandleCollision(Entities.Entity e1, Entities.Entity e2)
+        private void HandleCollision(Shared.Entities.Entity e1, Shared.Entities.Entity e2)
         {
-            Components.Positionable e1Pos = e1.GetComponent<Components.Positionable>();
-            Components.Positionable e2Pos = e2.GetComponent<Components.Positionable>();
+            Shared.Components.Positionable e1Pos = e1.GetComponent<Shared.Components.Positionable>();
+            Shared.Components.Positionable e2Pos = e2.GetComponent<Shared.Components.Positionable>();
             Vector2 n = (e1Pos.pos - e2Pos.pos);
             n.Normalize();
 
             e1Pos.pos = e1Pos.prevPos;
             e2Pos.pos = e2Pos.prevPos;
 
-            if (e1.ContainsComponent<Components.Audible>())
+            if (e1.ContainsComponent<Shared.Components.Audible>())
             {
-                e1.GetComponent<Components.Audible>().play = true;
+                e1.GetComponent<Shared.Components.Audible>().play = true;
             }
 
             // Movables - Non-Movables
-            if (e1.ContainsComponent<Components.Movable>() && !e2.ContainsComponent<Components.Movable>())
+            if (e1.ContainsComponent<Shared.Components.Movable>() && !e2.ContainsComponent<Shared.Components.Movable>())
             {
-                Components.Movable e1Mov = e1.GetComponent<Components.Movable>();
+                Shared.Components.Movable e1Mov = e1.GetComponent<Shared.Components.Movable>();
                 e1Mov.velocity += n;
             }
 
             // Movables - Movables
-            if (e1.ContainsComponent<Components.Movable>() && e2.ContainsComponent<Components.Movable>())
+            if (e1.ContainsComponent<Shared.Components.Movable>() && e2.ContainsComponent<Shared.Components.Movable>())
             {
-                Components.Movable e1Mov = e1.GetComponent<Components.Movable>();
-                Components.Movable e2Mov = e2.GetComponent<Components.Movable>();
+                Shared.Components.Movable e1Mov = e1.GetComponent<Shared.Components.Movable>();
+                Shared.Components.Movable e2Mov = e2.GetComponent<Shared.Components.Movable>();
                 e2Mov.velocity -= n*.5f;
                 e1Mov.velocity += n*.5f;
             }

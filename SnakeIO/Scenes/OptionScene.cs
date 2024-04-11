@@ -10,7 +10,7 @@ namespace Scenes
 {
     public class OptionScene : Scene
     {
-        private Renderer<SpriteFont> renderer;
+        private Renderer renderer;
         private KeyboardInput keyboardInput;
         private Selector<Shared.Controls.Control> selector;
         private Audio audio;
@@ -23,7 +23,7 @@ namespace Scenes
             this.controlManager = controlManager;
             this.keyboardInput = new Systems.KeyboardInput(controlManager);
             this.selector = new Systems.Selector<Shared.Controls.Control>();
-            this.renderer = new Renderer<SpriteFont>(spriteBatch);
+            this.renderer = new Renderer(spriteBatch);
             this.audio = new Audio();
             this.linker = new Linker();
         }

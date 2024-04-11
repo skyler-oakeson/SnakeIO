@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Systems
 {
-    class Renderer<T> : Shared.Systems.System
+    class Renderer : Shared.Systems.System
     {
         public SpriteBatch sb;
         public VertexPositionColor[] vertCircleStrip;
@@ -12,7 +12,7 @@ namespace Systems
         public BasicEffect effect;
 
         public Renderer(SpriteBatch sb)
-            : base(typeof(Shared.Components.Renderable<T>))
+            : base(typeof(Shared.Components.Renderable))
         {
             this.sb = sb;
 
@@ -34,7 +34,7 @@ namespace Systems
             sb.GraphicsDevice.Clear(Color.Black);
             foreach (var entity in entities.Values)
             {
-                if (entity.ContainsComponent<Shared.Components.Animatable>() && typeof(T) == typeof(Texture2D))
+                if (entity.ContainsComponent<Shared.Components.Animatable>())
                 {
                     Shared.Components.Animatable animatable = entity.GetComponent<Shared.Components.Animatable>();
                     animatable.timeSinceLastFrame += elapsedTime;
@@ -49,11 +49,11 @@ namespace Systems
                 }
                 else
                 {
-                    if (typeof(T) == typeof(Texture2D))
+                    if (entity.ContainsComponent<Shared.Components.Renderable>())
                     {
                         RenderEntity(entity);
                     }
-                    else if (typeof(T) == typeof(SpriteFont))
+                    else if (entity.ContainsComponent<Shared.Components.Readable>())
                     {
                         RenderText(entity);
                     }
@@ -65,7 +65,7 @@ namespace Systems
         private void RenderEntity(Shared.Entities.Entity entity)
         {
             Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
-            Shared.Components.Renderable<Texture2D> renderable = entity.GetComponent<Shared.Components.Renderable<Texture2D>>();
+            Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
             {
                 sb.Begin();
                 sb.Draw(
@@ -84,10 +84,10 @@ namespace Systems
 
         private void RenderText(Shared.Entities.Entity entity)
         {
-            Shared.Components.Renderable<SpriteFont> renderable = entity.GetComponent<Shared.Components.Renderable<SpriteFont>>();
+            Shared.Components.Readable readable = entity.GetComponent<Shared.Components.Readable>();
             Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
             sb.Begin();
-            DrawOutlineText(sb, renderable.texture, renderable.label, renderable.stroke, renderable.color, 4, positionable.pos, 1.0f);
+            DrawOutlineText(sb, readable.font, readable.text, readable.stroke, readable.color, 4, positionable.pos, 1.0f);
             sb.End();
 
         }
@@ -95,7 +95,7 @@ namespace Systems
         private void RenderAnimatable(Shared.Entities.Entity entity)
         {
             Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
-            Shared.Components.Renderable<Texture2D> renderable = entity.GetComponent<Shared.Components.Renderable<Texture2D>>();
+            Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
             Shared.Components.Animatable animatable = entity.GetComponent<Shared.Components.Animatable>();
             sb.Begin();
             sb.Draw(

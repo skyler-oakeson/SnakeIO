@@ -12,9 +12,9 @@ namespace Shared.Components
             this.stroke = stroke;
         }
 
-        public string texturePath { get; private set; }
-        public Color color { get; private set; }
-        public Color stroke { get; private set; }
+        public string texturePath { get; set; }
+        public Color color { get; set; }
+        public Color stroke { get; set; }
 
         public override void Serialize(ref List<byte> data)
         {
