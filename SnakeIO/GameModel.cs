@@ -51,7 +51,8 @@ namespace SnakeIO
             this.mouseInput = new Systems.MouseInput(controlManager);
             this.audio = new Systems.Audio();
             this.linker = new Systems.Linker();
-            
+            this.contentManager = contentManager;
+
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
             SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
@@ -128,6 +129,7 @@ namespace SnakeIO
 
             if (message.hasAppearance)
             {
+                entity.Add(new Shared.Components.Appearance(message.appearanceMessage.texturePath, message.appearanceMessage.color, message.appearanceMessage.stroke));
                 Shared.Components.Appearance appearance = entity.GetComponent<Shared.Components.Appearance>();
                 Texture2D texture = contentManager.Load<Texture2D>(appearance.texturePath);
                 entity.Add(new Shared.Components.Renderable(texture, appearance.texturePath, appearance.color, appearance.stroke));
@@ -138,13 +140,7 @@ namespace SnakeIO
                 entity.Add(new Shared.Components.Positionable(new Vector2(message.positionableMessage.pos.X, message.positionableMessage.pos.Y)));
             }
 
-            // if (message.hasRenderable)
-            // {
-                //Texture2D texture = contentManager.Load<Texture2D>(message.texturePath);
-                //entity.Add(new Shared.Components.Renderable(texture, new Color(message.color.R, message.color.G, message.color.B, message.color.A), new Color(message.stroke.R, message.stroke.G, message.stroke.B, message.stroke.A)));
-            // }
-
-            //TODO: find other ways to handle collidable. Maybe we specify what the radius is so that we don't have to calculate it. 
+            //TODO: find other ways to handle collidable. Maybe we specify what the radius is so that we don't have to calculate it.
             //There is no guaruntee that if it has position and has appearance that it will be collidable
             if (message.hasCollidable)
             {
