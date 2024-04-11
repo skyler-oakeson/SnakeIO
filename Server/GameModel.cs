@@ -20,7 +20,6 @@ namespace Server
         private Systems.Network systemNetwork;
         private Systems.Movement movement;
         private Systems.Collision collision;
-        private Systems.Audio audio;
         private Systems.Spawner spawner;
 
         public delegate void AddDelegate(Shared.Entities.Entity entity);
@@ -39,7 +38,6 @@ namespace Server
             //this.keyboardInput = new Systems.KeyboardInput(controlManager, Scenes.SceneContext.Game);
             this.movement = new Systems.Movement();
             this.collision = new Systems.Collision();
-            this.audio = new Systems.Audio();
             this.spawner = new Systems.Spawner(addEntity);
             this.systemNetwork = new Systems.Network();
 
@@ -55,7 +53,6 @@ namespace Server
             //keyboardInput.Update(gameTime);
             movement.Update(elapsedTime);
             collision.Update(elapsedTime);
-            audio.Update(elapsedTime);
             spawner.Update(elapsedTime);
             systemNetwork.update(elapsedTime, MessageQueueServer.instance.getMessages());
         }
@@ -69,7 +66,6 @@ namespace Server
             //keyboardInput.Add(entity);
             movement.Add(entity);
             collision.Add(entity);
-            audio.Add(entity);
             spawner.Add(entity);
             systemNetwork.Add(entity);
             entities[entity.id] = entity;
@@ -80,7 +76,6 @@ namespace Server
             //keyboardInput.Remove(entity.id);
             movement.Remove(entity.id);
             collision.Remove(entity.id);
-            audio.Remove(entity.id);
             spawner.Remove(entity.id);
             systemNetwork.Remove(entity.id);
             entities.Remove(entity.id);
@@ -123,7 +118,7 @@ namespace Server
         {
             reportAllEntities(clientId);
 
-            Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/player", "Audio/bass-switch", 
+            Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/player", Color.White, "Audio/bass-switch", 
                     new Shared.Controls.ControlManager(new Shared.DataManager()), new Vector2(0, 0));
             clientToEntityId[clientId] = player.id;
 

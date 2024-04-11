@@ -1,6 +1,4 @@
-using System;
 using Microsoft.Xna.Framework;
-using Shared;
 
 namespace Systems
 {

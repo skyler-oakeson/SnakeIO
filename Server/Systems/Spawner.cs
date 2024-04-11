@@ -56,7 +56,7 @@ namespace Systems
                 // There is probably a better way to do this by designing an interface that has the Create() method, then forcing the type to be of that interface.
                 // https://learn.microsoft.com/en-us/dotnet/api/system.reflection.methodinfo.invoke?view=netframework-1.1
                 // Ensure Create Method exists, and then invoke it here.
-                entitiesToSpawn.Add((Shared.Entities.Entity)createMethod.Invoke(null, new object[] { renderable.Texture, new Vector2((float) random.nextGaussian(100, 50), (float) random.nextGaussian(100, 50)) }));
+                entitiesToSpawn.Add((Shared.Entities.Entity)createMethod.Invoke(null, new object[] { "Images/food", new Vector2((float) random.nextGaussian(100, 50), (float) random.nextGaussian(100, 50)) }));
             }
         }
     }

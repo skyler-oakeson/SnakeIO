@@ -3,7 +3,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using System.Collections.Generic;
 
-namespace Systems
+
+namespace SnakIO.Systems
 {
     /// <summary>
     /// This system is responsible for handling playing soundeffects of any
@@ -15,7 +16,7 @@ namespace Systems
         public Audio()
             : base(
                     typeof(Shared.Components.Audible)
-                    )
+                  )
         {
         }
 
@@ -38,3 +39,4 @@ namespace Systems
         }
     }
 }
+

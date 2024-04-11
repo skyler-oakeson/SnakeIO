@@ -9,7 +9,7 @@ namespace Shared.Entities
 {
     public class Player
     {
-        public static Entity Create(Texture2D texture, Color color, string sound, Shared.Controls.ControlManager cm, Vector2 pos, string chain = null)
+        public static Entity Create(string texture, Color color, string sound, Shared.Controls.ControlManager cm, Vector2 pos, string chain = null)
         {
             Entity player = new Entity();
 
@@ -19,7 +19,7 @@ namespace Shared.Entities
             }
 
             // player.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
-            player.Add(new Components.Renderable(texture, "Images/player", color, Color.Black));
+            // player.Add(new Components.Renderable(texture, "Images/player", color, Color.Black));
             player.Add(new Shared.Components.Positionable(pos));
             player.Add(new Shared.Components.Movable(new Vector2(0, 0), new Vector2(0, 0)));
             // player.Add(new Components.Audible(sound));
