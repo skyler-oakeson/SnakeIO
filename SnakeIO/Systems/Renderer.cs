@@ -12,7 +12,7 @@ namespace Systems
         public BasicEffect effect;
 
         public Renderer(SpriteBatch sb)
-            : base(typeof(Shared.Components.Renderable))
+            : base(typeof(Shared.Components.Appearance))
         {
             this.sb = sb;
 

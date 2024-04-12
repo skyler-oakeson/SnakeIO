@@ -11,7 +11,7 @@ namespace Shared.Components
     {
         public Texture2D texture { get; set; }
 
-        public Renderable(Texture2D texture, string texturePath, Color color, Color stroke): base(texturePath, color, stroke)
+        public Renderable(Texture2D texture, string texturePath, Color color, Color stroke): base(texturePath, typeof(Texture2D), color, stroke)
         {
             this.texture = texture;
         }

@@ -18,6 +18,10 @@ namespace Shared.Parsers
             offset += sizeof(Int32);
             string messageTexturePath = Encoding.UTF8.GetString(data, offset, textureSize);
             offset += textureSize;
+            int typeSize = BitConverter.ToInt32(data, offset);
+            offset += sizeof(Int32);
+            System.Type messageType = System.Type.GetType(Encoding.UTF8.GetString(data, offset, typeSize));
+            offset += typeSize;
             //for color
             int colorR = data[offset];
             offset += sizeof(int);
@@ -39,7 +43,8 @@ namespace Shared.Parsers
             {
                 texturePath = messageTexturePath,
                 color = new Color(colorR, colorG, colorB, colorA),
-                stroke = new Color(strokeR, strokeG, strokeB, strokeA)
+                stroke = new Color(strokeR, strokeG, strokeB, strokeA),
+                type = messageType
             };
         }
 
@@ -53,6 +58,7 @@ namespace Shared.Parsers
             public string texturePath { get; set; }
             public Color color { get; set; }
             public Color stroke { get; set; }
+            public Type type { get; set; }
         }
     }
 }

@@ -129,10 +129,19 @@ namespace SnakeIO
 
             if (message.hasAppearance)
             {
-                entity.Add(new Shared.Components.Appearance(message.appearanceMessage.texturePath, message.appearanceMessage.color, message.appearanceMessage.stroke));
+                entity.Add(new Shared.Components.Appearance(message.appearanceMessage.texturePath, message.appearanceMessage.type, message.appearanceMessage.color, message.appearanceMessage.stroke));
                 Shared.Components.Appearance appearance = entity.GetComponent<Shared.Components.Appearance>();
+                Console.WriteLine(message.appearanceMessage.type);
                 Texture2D texture = contentManager.Load<Texture2D>(appearance.texturePath);
-                entity.Add(new Shared.Components.Renderable(texture, appearance.texturePath, appearance.color, appearance.stroke));
+                if (appearance.type == typeof(Texture2D))
+                {
+                    entity.Add(new Shared.Components.Renderable(texture, appearance.texturePath, appearance.color, appearance.stroke));
+                }
+                else
+                {
+                    // SpriteFont texture = contentManager.Load<SpriteFont>(appearance.texturePath);
+                    entity.Add(new Shared.Components.Renderable(texture, appearance.texturePath, appearance.color, appearance.stroke));
+                }
             }
 
             if (message.hasPosition)
