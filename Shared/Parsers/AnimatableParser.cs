@@ -3,7 +3,7 @@ namespace Shared.Parsers
     public class AnimatableParser : Parser
     {
         private AnimatableMessage message { get; set; }
-        public AnimatableMessage Message 
+        public AnimatableMessage Message
         {
             get { return message; }
             set { message = value; }
@@ -11,9 +11,21 @@ namespace Shared.Parsers
         //Parse everything but Texture2D
         public override void Parse(ref byte[] data, ref int offset)
         {
+            int spriteTimeLength = BitConverter.ToInt32(data, offset);
+            offset += sizeof(Int32);
+            int[] messageSpriteTime = new int[spriteTimeLength];
+            for (int i = 0; i < spriteTimeLength; i++)
+            {
+                messageSpriteTime[i] = BitConverter.ToInt32(data, offset);
+                offset += sizeof(Int32);
+            }
+            this.message = new AnimatableMessage
+            {
+                spriteTime = messageSpriteTime,
+            };
         }
 
-        public AnimatableMessage GetMessage() 
+        public AnimatableMessage GetMessage()
         {
             return Message;
         }
@@ -21,9 +33,6 @@ namespace Shared.Parsers
         public struct AnimatableMessage
         {
             public int[] spriteTime;
-            public int subImageWidth;
-            public int subImageIndex;
-            public TimeSpan timeSinceLastFrame;
         }
     }
 }

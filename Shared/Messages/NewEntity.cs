@@ -80,7 +80,7 @@ namespace Shared.Messages
         // Appearance
         public bool hasAppearance { get; private set; }
         public Components.Appearance? appearance { get; private set; } = null;
-        public Parsers.AppearanceParser.AppearanceMessage appearanceMessage { get; private set; } 
+        public Parsers.AppearanceParser.AppearanceMessage appearanceMessage { get; private set; }
 
         // Position
         public bool hasPosition { get; private set; }
@@ -88,7 +88,7 @@ namespace Shared.Messages
         public Parsers.PositionableParser.PositionableMessage positionableMessage { get; private set; }
 
         // Audio
-        public bool hasAudio { get; private set; } 
+        public bool hasAudio { get; private set; }
         public Components.Audible? audible { get; private set; } = null;
         public Parsers.AudibleParser.AudibleMessage audibleMessage { get; private set; }
 
@@ -140,7 +140,7 @@ namespace Shared.Messages
 
             data.AddRange(base.serialize());
             data.AddRange(BitConverter.GetBytes(id));
-            
+
             data.AddRange(BitConverter.GetBytes(appearance != null));
             if (appearance != null)
             {
@@ -170,7 +170,7 @@ namespace Shared.Messages
             {
                 movable.Serialize(ref data);
             }
-            
+
             data.AddRange(BitConverter.GetBytes(collidable != null));
             if (collidable != null)
             {
@@ -195,7 +195,7 @@ namespace Shared.Messages
             {
                 keyboardControllable.Serialize(ref data);
             }
-            
+
             //Mouse
             data.AddRange(BitConverter.GetBytes(mouseControllable != null));
             if (mouseControllable != null)
@@ -212,7 +212,7 @@ namespace Shared.Messages
 
             this.id = BitConverter.ToUInt32(data, offset);
             offset += sizeof(uint);
-            
+
             this.hasAppearance = BitConverter.ToBoolean(data, offset);
             offset += sizeof(bool);
             if (hasAppearance)

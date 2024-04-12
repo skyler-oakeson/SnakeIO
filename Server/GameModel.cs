@@ -53,7 +53,7 @@ namespace Server
             //keyboardInput.Update(gameTime);
             movement.Update(elapsedTime);
             collision.Update(elapsedTime);
-            spawner.Update(elapsedTime);
+            // spawner.Update(elapsedTime);
             systemNetwork.update(elapsedTime, MessageQueueServer.instance.getMessages());
         }
 
@@ -118,11 +118,14 @@ namespace Server
         {
             reportAllEntities(clientId);
 
-            Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/player", Color.White, "Audio/bass-switch", 
+            Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/player", Color.White, "Audio/bass-switch",
                     new Shared.Controls.ControlManager(new Shared.DataManager()), new Vector2(0, 0));
             clientToEntityId[clientId] = player.id;
+            Shared.Entities.Entity food = Shared.Entities.Food.Create("Images/food", new Vector2(200, 200));
+            clientToEntityId[clientId] = food.id;
 
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(Shared.Entities.Food.Create("Images/food", new Vector2(200, 200))));
 
             Shared.Messages.Message message = new Shared.Messages.NewEntity(player);
             foreach (int otherId in clients)

@@ -55,7 +55,6 @@ namespace Shared.Systems
             bool interested = IsInterested(entity);
             if (interested)
             {
-                Debug.WriteLine(interested);
                 entities.Add(entity.id, entity);
             }
 

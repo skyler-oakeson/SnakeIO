@@ -27,20 +27,21 @@ namespace Systems
             foreach (var entity in entities.Values)
             {
                 Shared.Components.Spawnable spawnable = entity.GetComponent<Shared.Components.Spawnable>();
-                //TODO: fix to use elapsedTime
-                // if (!spawnTimes.ContainsKey(spawnable.type))
-                // {
-                //     spawnTimes[spawnable.type] = gameTime.TotalGameTime - spawnable.spawnRate; //spawn initial count
-                // }
-                // if (gameTime.TotalGameTime - spawnTimes[spawnable.type] >= spawnable.spawnRate)
-                // {
-                //     spawnTimes[spawnable.type] = gameTime.TotalGameTime + spawnable.spawnRate;
-                //     SpawnEntity(entity);
-                // }
+                if (!spawnTimes.ContainsKey(spawnable.type))
+                {
+                    spawnTimes[spawnable.type] = spawnable.spawnRate; //spawn initial count
+                }
+                spawnTimes[spawnable.type] -= elapsedTime;
+                if (spawnTimes[spawnable.type] <= TimeSpan.Zero)
+                {
+                    spawnTimes[spawnable.type] = spawnable.spawnRate;
+                    SpawnEntity(entity);
+                }
             }
             foreach (var entity in entitiesToSpawn)
             {
                 addEntity(entity);
+                Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(entity));
             }
             entitiesToSpawn.Clear();
         }
@@ -48,15 +49,16 @@ namespace Systems
         private void SpawnEntity(Shared.Entities.Entity entity)
         {
             Shared.Components.Spawnable spawnable = entity.GetComponent<Shared.Components.Spawnable>();
-            Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
+            Shared.Components.Appearance appearance = entity.GetComponent<Shared.Components.Appearance>();
             Type spawnableType = spawnable.type;
             MethodInfo createMethod = spawnableType.GetMethod("Create");
             for (int i = 0; i < spawnable.spawnCount; i++)
-            { 
+            {
                 // There is probably a better way to do this by designing an interface that has the Create() method, then forcing the type to be of that interface.
                 // https://learn.microsoft.com/en-us/dotnet/api/system.reflection.methodinfo.invoke?view=netframework-1.1
                 // Ensure Create Method exists, and then invoke it here.
-                entitiesToSpawn.Add((Shared.Entities.Entity)createMethod.Invoke(null, new object[] { "Images/food", new Vector2((float) random.nextGaussian(100, 50), (float) random.nextGaussian(100, 50)) }));
+                Shared.Entities.Entity newEntity = (Shared.Entities.Entity)createMethod.Invoke(null, new object[] { appearance.texturePath, new Vector2((float)random.nextGaussian(100, 50), (float)random.nextGaussian(100, 50)) });
+                entitiesToSpawn.Add(newEntity);
             }
         }
     }

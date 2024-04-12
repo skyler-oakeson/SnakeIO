@@ -7,12 +7,12 @@ namespace Shared.Components
     /// This component is responsible for keeping rendering data of
     /// entites that are renderable on the screen.
     /// </summary>
-    public class Readable : Appearance 
+    public class Readable : Appearance
     {
         public SpriteFont font { get; set; }
         public string text { get; set; }
 
-        public Readable(SpriteFont font, string texturePath, string text, Color color, Color stroke): base(texturePath, typeof(SpriteFont), color, stroke)
+        public Readable(SpriteFont font, string texturePath, string text, Color color, Color stroke): base(texturePath, typeof(SpriteFont), false, color, stroke)
         {
             this.font = font;
             this.text = text;

@@ -39,12 +39,15 @@ namespace Shared.Parsers
             offset += sizeof(int);
             int strokeA = data[offset];
             offset += sizeof(int);
+            bool animatable = BitConverter.ToBoolean(data, offset);
+            offset += sizeof(bool);
             this.message = new AppearanceMessage
             {
                 texturePath = messageTexturePath,
                 color = new Color(colorR, colorG, colorB, colorA),
                 stroke = new Color(strokeR, strokeG, strokeB, strokeA),
-                type = messageType
+                type = messageType,
+                animatable = animatable
             };
         }
 
@@ -59,6 +62,7 @@ namespace Shared.Parsers
             public Color color { get; set; }
             public Color stroke { get; set; }
             public Type type { get; set; }
+            public bool animatable { get; set; }
         }
     }
 }

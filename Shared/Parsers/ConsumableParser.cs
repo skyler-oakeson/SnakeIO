@@ -14,14 +14,9 @@ namespace Shared.Parsers
         {
             float messageGrowth = BitConverter.ToSingle(data, offset);
             offset += sizeof(Single);
-            int typeSize = BitConverter.ToInt32(data, offset);
-            offset += sizeof(Int32);
-            System.Type messageType = System.Type.GetType(Encoding.UTF8.GetString(data, offset, typeSize));
-            offset += typeSize;
             this.message = new ConsumableMessage()
             {
                 growth = messageGrowth,
-                type = messageType
             };
         }
 
@@ -30,10 +25,9 @@ namespace Shared.Parsers
             return Message;
         }
 
-        public struct ConsumableMessage 
+        public struct ConsumableMessage
         {
             public float growth { get; set; }
-            public Type type { get; set; }
         }
     }
 }

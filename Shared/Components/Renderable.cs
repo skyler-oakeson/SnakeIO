@@ -7,11 +7,11 @@ namespace Shared.Components
     /// This component is responsible for keeping rendering data of
     /// entites that are renderable on the screen.
     /// </summary>
-    public class Renderable : Appearance 
+    public class Renderable : Appearance
     {
         public Texture2D texture { get; set; }
 
-        public Renderable(Texture2D texture, string texturePath, Color color, Color stroke): base(texturePath, typeof(Texture2D), color, stroke)
+        public Renderable(Texture2D texture, string texturePath, bool animatable, Color color, Color stroke): base(texturePath, typeof(Texture2D), animatable, color, stroke)
         {
             this.texture = texture;
         }
