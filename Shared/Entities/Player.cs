@@ -18,7 +18,7 @@ namespace Shared.Entities
                 player.Add(new Shared.Components.Linkable(chain, Shared.Components.LinkPosition.Head));
             }
 
-            player.Add(new Components.Appearance(texture, typeof(Texture2D), false, color, Color.Black));
+            player.Add(new Components.Appearance(texture, typeof(Texture2D), color, Color.Black));
             // player.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
             // player.Add(new Components.Renderable(texture, "Images/player", color, Color.Black));
             player.Add(new Shared.Components.Positionable(pos));

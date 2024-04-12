@@ -32,6 +32,7 @@ namespace Systems
                     spawnTimes[spawnable.type] = spawnable.spawnRate; //spawn initial count
                 }
                 spawnTimes[spawnable.type] -= elapsedTime;
+
                 if (spawnTimes[spawnable.type] <= TimeSpan.Zero)
                 {
                     spawnTimes[spawnable.type] = spawnable.spawnRate;

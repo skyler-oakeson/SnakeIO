@@ -45,6 +45,8 @@ namespace Server
             systemNetwork.registerDisconnectHandler(handleDisconnect);
             MessageQueueServer.instance.registerConnectHandler(handleConnect);
 
+            AddEntity(Shared.Entities.Food.Create("Images/food", new Vector2(100, 100)));
+
             return true;
         }
 
@@ -53,7 +55,7 @@ namespace Server
             //keyboardInput.Update(gameTime);
             movement.Update(elapsedTime);
             collision.Update(elapsedTime);
-            // spawner.Update(elapsedTime);
+            spawner.Update(elapsedTime);
             systemNetwork.update(elapsedTime, MessageQueueServer.instance.getMessages());
         }
 

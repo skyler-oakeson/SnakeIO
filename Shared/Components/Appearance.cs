@@ -5,7 +5,7 @@ namespace Shared.Components
 {
     public class Appearance : Component
     {
-        public Appearance(string texturePath, Type type, bool animatable, Color color, Color stroke)
+        public Appearance(string texturePath, Type type, Color color, Color stroke, bool animatable = false)
         {
             this.texturePath = texturePath;
             this.type = type;
