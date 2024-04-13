@@ -12,7 +12,6 @@ namespace Shared.Entities
                 T value,
                 string menu,
                 bool selected,
-                Vector2 pos,
                 SoundEffect sound,
                 Shared.Components.LinkPosition linkPos,
                 Shared.Controls.ControlManager cm,
@@ -20,7 +19,7 @@ namespace Shared.Entities
         {
             Entity menuItem = new Entity();
             menuItem.Add(new Shared.Components.Readable(font, "Fonts/Micro5", value.ToString(), Color.Orange, Color.Black, rectangle));
-            menuItem.Add(new Shared.Components.Positionable(pos));
+            menuItem.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y)));
             menuItem.Add(new Shared.Components.Audible(sound));
             menuItem.Add(new Shared.Components.Selectable<T>(selected, value));
             menuItem.Add(new Shared.Components.Linkable(menu, linkPos));

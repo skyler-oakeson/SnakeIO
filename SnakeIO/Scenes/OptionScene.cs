@@ -34,16 +34,16 @@ namespace Scenes
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
             AddEntity(Shared.Entities.MenuItem<Shared.Controls.Control>.Create(
                         font, controlManager.GetControl(Shared.Controls.ControlContext.MoveUp),
-                        "options", true, new Vector2(50, 50), sound, Shared.Components.LinkPosition.Head, controlManager, new Rectangle(50, 50, 0, 0)));
+                        "options", true, sound, Shared.Components.LinkPosition.Head, controlManager, new Rectangle(50, 50, 0, 0)));
             AddEntity(Shared.Entities.MenuItem<Shared.Controls.Control>.Create(
                         font, controlManager.GetControl(Shared.Controls.ControlContext.MoveDown),
-                        "options", false, new Vector2(50, 100), sound, Shared.Components.LinkPosition.Body, controlManager, new Rectangle(50, 100, 0, 0)));
+                        "options", false, sound, Shared.Components.LinkPosition.Body, controlManager, new Rectangle(50, 100, 0, 0)));
             AddEntity(Shared.Entities.MenuItem<Shared.Controls.Control>.Create(
                         font, controlManager.GetControl(Shared.Controls.ControlContext.MoveLeft),
-                        "options",  false, new Vector2(50, 150), sound, Shared.Components.LinkPosition.Body, controlManager, new Rectangle(50, 150, 0, 0)));
+                        "options",  false, sound, Shared.Components.LinkPosition.Body, controlManager, new Rectangle(50, 150, 0, 0)));
             AddEntity(Shared.Entities.MenuItem<Shared.Controls.Control>.Create(
                         font, controlManager.GetControl(Shared.Controls.ControlContext.MoveRight),
-                        "options",  false, new Vector2(50, 200), sound, Shared.Components.LinkPosition.Tail, controlManager, new Rectangle(50, 200, 0, 0)));
+                        "options",  false, sound, Shared.Components.LinkPosition.Tail, controlManager, new Rectangle(50, 200, 0, 0)));
         }
 
         override public SceneContext ProcessInput(GameTime gameTime)

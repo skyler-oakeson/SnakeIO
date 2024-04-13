@@ -71,10 +71,10 @@ namespace Systems
                 sb.Draw(
                         renderable.texture,
                         new Rectangle(
-                            (int)(positionable.pos.X - renderable.texture.Width/2),
-                            (int)(positionable.pos.Y - renderable.texture.Height/2),
-                            renderable.texture.Height,
-                            renderable.texture.Width
+                            (int)(renderable.rectangle.X - renderable.rectangle.Width/2),
+                            (int)(renderable.rectangle.Y - renderable.rectangle.Height/2),
+                            renderable.rectangle.Height,
+                            renderable.rectangle.Width
                             ),
                         renderable.color
                        );

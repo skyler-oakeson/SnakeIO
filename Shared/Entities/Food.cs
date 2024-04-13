@@ -9,7 +9,7 @@ namespace Shared.Entities
     public class Food
     {
         private static MyRandom random = new MyRandom();
-        public static Entity Create(string texture, Vector2 pos, Rectangle rectangle)
+        public static Entity Create(string texture, Rectangle rectangle)
         {
             Entity food = new Entity();
 
@@ -20,7 +20,7 @@ namespace Shared.Entities
             food.Add(new Components.Appearance("Images/food", typeof(Texture2D), new Color(r, g, b), Color.White, rectangle, true));
             // food.Add(new Components.Renderable(texture, "Images/food", new Color(r, g, b), Color.White));
             // food.Add(new Components.Animatable(texture, new int[] { 100, 100, 100, 100, 100, 100 }));
-            food.Add(new Components.Positionable(pos));
+            food.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y)));
             food.Add(new Components.Consumable(1.0f));
             food.Add(new Components.Spawnable(TimeSpan.FromMilliseconds(5000), 5, typeof(Food)));
             // Components.Animatable animatable = food.GetComponent<Components.Animatable>();
