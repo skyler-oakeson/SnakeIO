@@ -129,23 +129,22 @@ namespace SnakeIO
 
             if (message.hasAppearance)
             {
-                entity.Add(new Shared.Components.Appearance(message.appearanceMessage.texturePath, message.appearanceMessage.type, message.appearanceMessage.animatable, message.appearanceMessage.color, message.appearanceMessage.stroke));
+                Rectangle rectangle = new Rectangle(message.appearanceMessage.rectangle.X, message.appearanceMessage.rectangle.Y, message.appearanceMessage.rectangle.Width, message.appearanceMessage.rectangle.Height);
+                entity.Add(new Shared.Components.Appearance(message.appearanceMessage.texturePath, message.appearanceMessage.type, message.appearanceMessage.color, message.appearanceMessage.stroke, rectangle, message.appearanceMessage.animatable));
                 Shared.Components.Appearance appearance = entity.GetComponent<Shared.Components.Appearance>();
                 Texture2D texture = contentManager.Load<Texture2D>(appearance.texturePath);
                 if (appearance.type == typeof(Texture2D))
                 {
                     if (appearance.animatable)
                     {
-                        Console.WriteLine("Adding animatable component");
                         entity.Add(new Shared.Components.Animatable(texture, new int[] { 100, 100, 100, 100, 100, 100 }));
-                        Console.WriteLine("Added animatable component");
                     }
-                    entity.Add(new Shared.Components.Renderable(texture, appearance.texturePath, appearance.animatable, appearance.color, appearance.stroke));
+                    entity.Add(new Shared.Components.Renderable(texture, appearance.texturePath, appearance.color, appearance.stroke, rectangle, appearance.animatable));
                 }
                 else
                 {
                     // SpriteFont texture = contentManager.Load<SpriteFont>(appearance.texturePath);
-                    entity.Add(new Shared.Components.Renderable(texture, appearance.texturePath, appearance.animatable, appearance.color, appearance.stroke));
+                    entity.Add(new Shared.Components.Renderable(texture, appearance.texturePath, appearance.color, appearance.stroke, rectangle, appearance.animatable));
                 }
             }
 

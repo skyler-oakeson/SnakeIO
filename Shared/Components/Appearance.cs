@@ -5,12 +5,13 @@ namespace Shared.Components
 {
     public class Appearance : Component
     {
-        public Appearance(string texturePath, Type type, Color color, Color stroke, bool animatable = false)
+        public Appearance(string texturePath, Type type, Color color, Color stroke, Rectangle rectangle, bool animatable = false)
         {
             this.texturePath = texturePath;
             this.type = type;
             this.color = color;
             this.stroke = stroke;
+            this.rectangle = rectangle;
             this.animatable = animatable;
         }
 
@@ -18,6 +19,7 @@ namespace Shared.Components
         public Color color { get; set; }
         public Color stroke { get; set; }
         public Type type { get; set; }
+        public Rectangle rectangle { get; set; }
         public bool animatable { get; set; }
 
         public override void Serialize(ref List<byte> data)
@@ -26,6 +28,10 @@ namespace Shared.Components
             data.AddRange(Encoding.UTF8.GetBytes(texturePath));
             data.AddRange(BitConverter.GetBytes(type.AssemblyQualifiedName.Length));
             data.AddRange(Encoding.UTF8.GetBytes(type.AssemblyQualifiedName));
+            data.AddRange(BitConverter.GetBytes(rectangle.X));
+            data.AddRange(BitConverter.GetBytes(rectangle.Y));
+            data.AddRange(BitConverter.GetBytes(rectangle.Width));
+            data.AddRange(BitConverter.GetBytes(rectangle.Height));
             data.AddRange(BitConverter.GetBytes((int)color.R));
             data.AddRange(BitConverter.GetBytes((int)color.G));
             data.AddRange(BitConverter.GetBytes((int)color.B));

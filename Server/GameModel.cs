@@ -44,8 +44,8 @@ namespace Server
             systemNetwork.registerJoinHandler(handleJoin);
             systemNetwork.registerDisconnectHandler(handleDisconnect);
             MessageQueueServer.instance.registerConnectHandler(handleConnect);
-
-            AddEntity(Shared.Entities.Food.Create("Images/food", new Vector2(100, 100)));
+            Rectangle rectangle = new Rectangle(100, 100, 10, 10);
+            AddEntity(Shared.Entities.Food.Create("Images/food", new Vector2(100, 100), rectangle));
 
             return true;
         }
@@ -55,7 +55,7 @@ namespace Server
             //keyboardInput.Update(gameTime);
             movement.Update(elapsedTime);
             collision.Update(elapsedTime);
-            spawner.Update(elapsedTime);
+            // spawner.Update(elapsedTime);
             systemNetwork.update(elapsedTime, MessageQueueServer.instance.getMessages());
         }
 
@@ -120,14 +120,16 @@ namespace Server
         {
             reportAllEntities(clientId);
 
+            Rectangle playerRect = new Rectangle(0, 0, 0, 0); //TODO: update width and height
             Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/player", Color.White, "Audio/bass-switch",
-                    new Shared.Controls.ControlManager(new Shared.DataManager()), new Vector2(0, 0));
+                    new Shared.Controls.ControlManager(new Shared.DataManager()), new Vector2(0, 0), playerRect);
             clientToEntityId[clientId] = player.id;
-            Shared.Entities.Entity food = Shared.Entities.Food.Create("Images/food", new Vector2(200, 200));
+            Rectangle foodRect = new Rectangle(200, 200, 10, 10);
+            Shared.Entities.Entity food = Shared.Entities.Food.Create("Images/food", new Vector2(200, 200), foodRect);
             clientToEntityId[clientId] = food.id;
 
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
-            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(Shared.Entities.Food.Create("Images/food", new Vector2(200, 200))));
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(food));
 
             Shared.Messages.Message message = new Shared.Messages.NewEntity(player);
             foreach (int otherId in clients)

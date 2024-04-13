@@ -15,10 +15,11 @@ namespace Shared.Entities
                 Vector2 pos,
                 SoundEffect sound,
                 Shared.Components.LinkPosition linkPos,
-                Shared.Controls.ControlManager cm)
+                Shared.Controls.ControlManager cm,
+                Rectangle rectangle)
         {
             Entity menuItem = new Entity();
-            menuItem.Add(new Shared.Components.Readable(font, "Fonts/Micro5", value.ToString(), Color.Orange, Color.Black));
+            menuItem.Add(new Shared.Components.Readable(font, "Fonts/Micro5", value.ToString(), Color.Orange, Color.Black, rectangle));
             menuItem.Add(new Shared.Components.Positionable(pos));
             menuItem.Add(new Shared.Components.Audible(sound));
             menuItem.Add(new Shared.Components.Selectable<T>(selected, value));

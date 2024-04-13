@@ -31,9 +31,9 @@ namespace Scenes
         {
             SpriteFont font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
-            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(font, SceneContext.Game, "main", true, new Vector2(50, 50), sound, Shared.Components.LinkPosition.Head, controlManager));
-            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(font, SceneContext.Options, "main", false, new Vector2(50, 100), sound, Shared.Components.LinkPosition.Body, controlManager));
-            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(font, SceneContext.Exit, "main",  false, new Vector2(50, 150), sound, Shared.Components.LinkPosition.Tail, controlManager));
+            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(font, SceneContext.Game, "main", true, new Vector2(50, 50), sound, Shared.Components.LinkPosition.Head, controlManager, new Rectangle(50, 50, 0, 0)));
+            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(font, SceneContext.Options, "main", false, new Vector2(50, 100), sound, Shared.Components.LinkPosition.Body, controlManager, new Rectangle(50, 100, 0, 0)));
+            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(font, SceneContext.Exit, "main",  false, new Vector2(50, 150), sound, Shared.Components.LinkPosition.Tail, controlManager, new Rectangle(50, 150, 0, 0)));
         }
 
         override public SceneContext ProcessInput(GameTime gameTime)

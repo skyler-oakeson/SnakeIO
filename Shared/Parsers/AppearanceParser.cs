@@ -22,6 +22,16 @@ namespace Shared.Parsers
             offset += sizeof(Int32);
             System.Type messageType = System.Type.GetType(Encoding.UTF8.GetString(data, offset, typeSize));
             offset += typeSize;
+            //rectangle
+            int rectangleX = BitConverter.ToInt32(data, offset);
+            offset += sizeof(Int32);
+            int rectangleY = BitConverter.ToInt32(data, offset);
+            offset += sizeof(Int32);
+            int rectangleHeight = BitConverter.ToInt32(data, offset);
+            offset += sizeof(Int32);
+            int rectangleWidth = BitConverter.ToInt32(data, offset);
+            offset += sizeof(Int32);
+            Rectangle messageRectangle = new Rectangle(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
             //for color
             int colorR = data[offset];
             offset += sizeof(int);
@@ -47,6 +57,7 @@ namespace Shared.Parsers
                 color = new Color(colorR, colorG, colorB, colorA),
                 stroke = new Color(strokeR, strokeG, strokeB, strokeA),
                 type = messageType,
+                rectangle = messageRectangle,
                 animatable = animatable
             };
         }
@@ -62,6 +73,7 @@ namespace Shared.Parsers
             public Color color { get; set; }
             public Color stroke { get; set; }
             public Type type { get; set; }
+            public Rectangle rectangle { get; set; }
             public bool animatable { get; set; }
         }
     }

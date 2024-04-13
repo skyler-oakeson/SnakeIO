@@ -27,8 +27,11 @@ namespace Systems
                 for (int j = i; j < entityArr.Length; j++)
                 {
                     Shared.Entities.Entity e2 = entityArr[j];
-                    bool res = DidCollide(e1, e2);
-                    if (res) HandleCollision(e1, e2);
+                    if (!(e1.ContainsComponent<Shared.Components.Consumable>() && e2.ContainsComponent<Shared.Components.Consumable>()))
+                    {
+                        bool res = DidCollide(e1, e2);
+                        if (res) HandleCollision(e1, e2);
+                    }
                 }
             }
         }
@@ -80,8 +83,8 @@ namespace Systems
             {
                 Shared.Components.Movable e1Mov = e1.GetComponent<Shared.Components.Movable>();
                 Shared.Components.Movable e2Mov = e2.GetComponent<Shared.Components.Movable>();
-                e2Mov.velocity -= n*.5f;
-                e1Mov.velocity += n*.5f;
+                e2Mov.velocity -= n * .5f;
+                e1Mov.velocity += n * .5f;
             }
         }
     }

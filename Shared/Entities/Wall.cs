@@ -6,12 +6,12 @@ namespace Shared.Entities
 {
     public class Wall
     {
-        public static Entity Create(Texture2D texture, Vector2 pos, Color color, string chain = null, Components.LinkPosition? linkPos = null)
+        public static Entity Create(Texture2D texture, Vector2 pos, Color color, Rectangle rectangle, string chain = null, Components.LinkPosition? linkPos = null)
         {
             Entity wall = new Entity();
             int radius = texture.Width >= texture.Height ? texture.Height/2 : texture.Width/2;
 
-            wall.Add(new Components.Renderable(texture, "Images/player", color, Color.Black));
+            wall.Add(new Components.Renderable(texture, "Images/player", color, Color.Black, rectangle));
             wall.Add(new Components.Positionable(pos));
             wall.Add(new Components.Movable(new Vector2(0, 0), new Vector2(0, 0)));
             if (chain != null && linkPos.HasValue)
