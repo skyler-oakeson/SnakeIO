@@ -43,6 +43,7 @@ namespace Systems
             {
                 addEntity(entity);
                 Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(entity));
+                Console.WriteLine("Spawning");
             }
             entitiesToSpawn.Clear();
         }
@@ -60,7 +61,7 @@ namespace Systems
                 // Ensure Create Method exists, and then invoke it here.
                 //
                 // TODO: This will need fixed to take rectangle instead of pos
-                Shared.Entities.Entity newEntity = (Shared.Entities.Entity)createMethod.Invoke(null, new object[] { appearance.texturePath, new Vector2((float)random.nextGaussian(100, 50), (float)random.nextGaussian(100, 50)) });
+                Shared.Entities.Entity newEntity = (Shared.Entities.Entity)createMethod.Invoke(null, new object[] { appearance.texturePath, new Rectangle((int)random.nextGaussian(100, 50), (int)random.nextGaussian(100, 50), 10, 10) });
                 entitiesToSpawn.Add(newEntity);
             }
         }
