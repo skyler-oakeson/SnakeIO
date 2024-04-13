@@ -174,7 +174,37 @@ namespace SnakeIO
 
             if (message.hasKeyboardControllable)
             {
-                //Do Something
+                if (message.keyboardControllableMessage.type == Shared.Controls.ControlableEntity.Player)
+                {
+                    Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
+                    entity.Add(new Shared.Components.KeyboardControllable(
+                                message.keyboardControllableMessage.enable,
+                                message.keyboardControllableMessage.type,
+                                controlManager,
+                                new (Shared.Controls.ControlContext, Shared.Controls.ControlDelegate)[4]
+                                {
+                                (Shared.Controls.ControlContext.MoveUp,
+                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
+                                     {
+                                     movable.velocity += new Vector2(0, -.2f);
+                                     })),
+                                (Shared.Controls.ControlContext.MoveDown,
+                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
+                                     {
+                                     movable.velocity += new Vector2(0, .2f);
+                                     })),
+                                (Shared.Controls.ControlContext.MoveRight,
+                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
+                                     {
+                                     movable.velocity += new Vector2(.2f, 0);
+                                     })),
+                                (Shared.Controls.ControlContext.MoveLeft,
+                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
+                                     {
+                                     movable.velocity += new Vector2(-.2f, 0);
+                                     })),
+                                }));
+                }
             }
 
             if (message.hasMouseControllable)

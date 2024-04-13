@@ -32,6 +32,7 @@ namespace Shared.Entities
 
             menuItem.Add(new Shared.Components.KeyboardControllable(
                         selected,
+                        Controls.ControlableEntity.MenuItem,
                         cm,
                         new (Shared.Controls.ControlContext, Shared.Controls.ControlDelegate)[3]
                         {

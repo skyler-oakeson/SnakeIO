@@ -11,15 +11,18 @@ namespace Shared.Components
     public class KeyboardControllable : Shared.Components.Component
     {
         public Dictionary<Shared.Controls.ControlContext, Shared.Controls.ControlDelegate> controls = new Dictionary<Shared.Controls.ControlContext, Shared.Controls.ControlDelegate>();
+        public Shared.Controls.ControlableEntity entityType;
         public bool enable;
 
         public KeyboardControllable(
                 bool enable,
+                Shared.Controls.ControlableEntity entityType,
                 Shared.Controls.ControlManager cm,
                 (Shared.Controls.ControlContext, Shared.Controls.ControlDelegate)[] actions
                 )
         {
             this.enable = enable;
+            this.entityType = entityType;
             foreach ((Shared.Controls.ControlContext con, Shared.Controls.ControlDelegate del) in actions)
             {
                 controls.Add(con, del);
@@ -29,6 +32,8 @@ namespace Shared.Components
         // Input will be changing, do this with changed input
         public override void Serialize(ref List<byte> data)
         {
+            data.AddRange(BitConverter.GetBytes(enable));
+            data.AddRange(BitConverter.GetBytes((UInt16)entityType));
         }
     }
 }

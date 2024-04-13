@@ -16,11 +16,12 @@ namespace Server
         private Dictionary<int, uint> clientToEntityId = new Dictionary<int, uint>();
 
 
-        // private Systems.KeyboardInput keyboardInput;
+        private Systems.InputHandler inputHandler;
         private Systems.Network systemNetwork;
         private Systems.Movement movement;
         private Systems.Collision collision;
         private Systems.Spawner spawner;
+        private Shared.Controls.ControlManager controlManager = new Shared.Controls.ControlManager(new Shared.DataManager());
 
         public delegate void AddDelegate(Shared.Entities.Entity entity);
         private AddDelegate addEntity;
@@ -35,7 +36,7 @@ namespace Server
 
         public bool Initialize()
         {
-            //this.keyboardInput = new Systems.KeyboardInput(controlManager, Scenes.SceneContext.Game);
+            this.inputHandler = new Systems.InputHandler(controlManager);
             this.movement = new Systems.Movement();
             this.collision = new Systems.Collision();
             this.spawner = new Systems.Spawner(addEntity);
@@ -65,7 +66,7 @@ namespace Server
 
         private void AddEntity(Shared.Entities.Entity entity)
         {
-            //keyboardInput.Add(entity);
+            inputHandler.Add(entity);
             movement.Add(entity);
             collision.Add(entity);
             spawner.Add(entity);
@@ -75,7 +76,7 @@ namespace Server
 
         private void RemoveEntity(Shared.Entities.Entity entity)
         {
-            //keyboardInput.Remove(entity.id);
+            inputHandler.Remove(entity.id);
             movement.Remove(entity.id);
             collision.Remove(entity.id);
             spawner.Remove(entity.id);

@@ -4,7 +4,7 @@ namespace Shared.Messages
     public class Input : Message
     {
         //TODO: Research posibilities to handle Mouse controllable as well
-        public Input(uint entityId, List<Shared.Controls.Control> inputs, TimeSpan elapsedTime) : base(Messages.Type.Input)
+        public Input(uint entityId, List<Shared.Controls.ControlContext> inputs, TimeSpan elapsedTime) : base(Messages.Type.Input)
         {
             this.entityId = entityId;
             this.inputs = inputs;
@@ -14,11 +14,11 @@ namespace Shared.Messages
         public Input() : base(Messages.Type.Input)
         {
             this.elapsedTime = TimeSpan.Zero;
-            this.inputs = new List<Shared.Controls.Control>();
+            this.inputs = new List<Shared.Controls.ControlContext>();
         }
 
         public uint entityId { get; private set; }
-        public List<Shared.Controls.Control> inputs { get; private set; }
+        public List<Shared.Controls.ControlContext> inputs { get; private set; }
         public TimeSpan elapsedTime { get; private set; }
 
         public override byte[] serialize()
@@ -28,16 +28,9 @@ namespace Shared.Messages
             data.AddRange(BitConverter.GetBytes(entityId));
             
             data.AddRange(BitConverter.GetBytes(inputs.Count));
-            foreach (Shared.Controls.Control con in inputs)
+            foreach (Shared.Controls.ControlContext con in inputs)
             {
-                if (con.key != null)
-                {
-                    data.AddRange(BitConverter.GetBytes((UInt16)con.key));
-                }
-                if (con.keyPressOnly != null)
-                {
-                    data.AddRange(BitConverter.GetBytes((bool)con.keyPressOnly));
-                }
+                data.AddRange(BitConverter.GetBytes((UInt16)con));
             }
             data.AddRange(BitConverter.GetBytes(elapsedTime.Milliseconds));
 
@@ -55,15 +48,9 @@ namespace Shared.Messages
             offset += sizeof(UInt32);
             for (int i = 0; i < inputCount; i++)
             {
-                Scenes.SceneContext sc = (Scenes.SceneContext)BitConverter.ToUInt16(data, offset); //scene context comes first
+                Shared.Controls.ControlContext cc = (Shared.Controls.ControlContext)BitConverter.ToUInt16(data, offset); 
                 offset += sizeof(UInt16);
-                Shared.Controls.ControlContext cc = (Shared.Controls.ControlContext)BitConverter.ToUInt16(data, offset); //control context comes second
-                offset += sizeof(UInt16);
-                Keys key = (Keys) BitConverter.ToUInt16(data, offset);
-                offset += sizeof(UInt16);
-                bool keyPressOnly = BitConverter.ToBoolean(data, offset);
-                offset += sizeof(bool);
-                inputs.Add(new Shared.Controls.Control(cc, key, keyPressOnly, null));
+                inputs.Add(cc);
             }
 
             elapsedTime = new TimeSpan( 0, 0, 0, 0, BitConverter.ToInt32(data, offset));
