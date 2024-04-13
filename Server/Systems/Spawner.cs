@@ -13,6 +13,7 @@ namespace Systems
         private List<Shared.Entities.Entity> entitiesToSpawn = new List<Shared.Entities.Entity>();
         private Shared.MyRandom random = new Shared.MyRandom();
         private Server.GameModel.AddDelegate addEntity;
+        private List<Type> updated = new List<Type>();
 
         public Spawner(Server.GameModel.AddDelegate addEntity)
             : base(
@@ -31,8 +32,11 @@ namespace Systems
                 {
                     spawnTimes[spawnable.type] = spawnable.spawnRate; //spawn initial count
                 }
-                spawnTimes[spawnable.type] -= elapsedTime;
-
+                else if (!updated.Contains(spawnable.type))
+                {
+                    updated.Add(spawnable.type);
+                    spawnTimes[spawnable.type] -= elapsedTime;
+                }
                 if (spawnTimes[spawnable.type] <= TimeSpan.Zero)
                 {
                     spawnTimes[spawnable.type] = spawnable.spawnRate;
@@ -46,6 +50,7 @@ namespace Systems
                 Console.WriteLine("Spawning");
             }
             entitiesToSpawn.Clear();
+            updated.Clear();
         }
 
         private void SpawnEntity(Shared.Entities.Entity entity)
@@ -59,8 +64,6 @@ namespace Systems
                 // There is probably a better way to do this by designing an interface that has the Create() method, then forcing the type to be of that interface.
                 // https://learn.microsoft.com/en-us/dotnet/api/system.reflection.methodinfo.invoke?view=netframework-1.1
                 // Ensure Create Method exists, and then invoke it here.
-                //
-                // TODO: This will need fixed to take rectangle instead of pos
                 Shared.Entities.Entity newEntity = (Shared.Entities.Entity)createMethod.Invoke(null, new object[] { appearance.texturePath, new Rectangle((int)random.nextGaussian(100, 50), (int)random.nextGaussian(100, 50), 10, 10) });
                 entitiesToSpawn.Add(newEntity);
             }
