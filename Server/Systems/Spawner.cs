@@ -45,7 +45,7 @@ namespace Systems
             }
             foreach (var entity in entitiesToSpawn)
             {
-                addEntity(entity);
+                // addEntity(entity);
                 Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(entity));
             }
             entitiesToSpawn.Clear();

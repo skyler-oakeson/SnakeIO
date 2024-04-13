@@ -15,7 +15,6 @@ namespace Server
         private Dictionary<uint, Shared.Entities.Entity> entities = new Dictionary<uint, Shared.Entities.Entity>(); // may not need
         private Dictionary<int, uint> clientToEntityId = new Dictionary<int, uint>();
 
-
         // private Systems.KeyboardInput keyboardInput;
         private Systems.Network systemNetwork;
         private Systems.Movement movement;
@@ -46,6 +45,10 @@ namespace Server
             MessageQueueServer.instance.registerConnectHandler(handleConnect);
             Rectangle rectangle = new Rectangle(100, 100, 10, 10);
             AddEntity(Shared.Entities.Food.Create("Images/food", rectangle));
+
+            Console.WriteLine("Creating world");
+            new Utils.WorldGenerator(addEntity);
+            Console.WriteLine("Created world");
 
             return true;
         }

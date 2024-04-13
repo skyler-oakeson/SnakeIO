@@ -6,35 +6,15 @@ namespace Shared.Entities
 {
     public class Wall
     {
-        public static Entity Create(Texture2D texture, Vector2 pos, Color color, Rectangle rectangle, string chain = null, Components.LinkPosition? linkPos = null)
+        public static Entity Create(string texture, Color color, Rectangle rectangle, string chain = null, Components.LinkPosition? linkPos = null)
         {
             Entity wall = new Entity();
-            int radius = texture.Width >= texture.Height ? texture.Height/2 : texture.Width/2;
+            // int radius = texture.Width >= texture.Height ? texture.Height/2 : texture.Width/2;
 
-            wall.Add(new Components.Renderable(texture, "Images/player", color, Color.Black, rectangle));
-            wall.Add(new Components.Positionable(pos));
-            if (chain != null && linkPos.HasValue)
-            {
-                wall.Add(new Components.Linkable(chain,
-                            (Components.LinkPosition)linkPos,
-                            new Components.LinkDelegate((Entities.Entity root) =>
-                                {
-                                Components.Linkable rootLink = root.GetComponent<Components.Linkable>();
-                                Components.Positionable rootPos = root.GetComponent<Components.Positionable>();
-                                Components.Movable rootMov = root.GetComponent<Components.Movable>();
-                                Components.Positionable prevPos = rootLink.prevEntity.GetComponent<Components.Positionable>();
-                                Components.Movable prevMov = rootLink.prevEntity.GetComponent<Components.Movable>();
+            // wall.Add(new Components.Renderable(texture, "Images/player", color, Color.Black, rectangle));
+            wall.Add(new Components.Appearance(texture, typeof(Texture2D), color, Color.Transparent, rectangle));
+            wall.Add(new Components.Positionable(new Vector2(rectangle.X, rectangle.Y)));
 
-                                Vector2 offset = prevMov.velocity;
-                                offset = offset * radius;
-                                rootPos.prevPos = rootPos.pos;
-                                rootPos.pos = prevPos.prevPos - offset;
-                                })));
-            }
-            else
-            {
-                wall.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
-            }
             return wall;
         }
     }
