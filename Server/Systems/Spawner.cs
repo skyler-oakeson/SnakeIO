@@ -47,7 +47,6 @@ namespace Systems
             {
                 addEntity(entity);
                 Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(entity));
-                Console.WriteLine("Spawning");
             }
             entitiesToSpawn.Clear();
             updated.Clear();
