@@ -27,7 +27,8 @@ namespace Systems
                 for (int j = i; j < entityArr.Length; j++)
                 {
                     Shared.Entities.Entity e2 = entityArr[j];
-                    if (!(e1.ContainsComponent<Shared.Components.Consumable>() && e2.ContainsComponent<Shared.Components.Consumable>()))
+                    bool shouldCheck = !((e1.ContainsComponent<Shared.Components.Consumable>() && !e2.ContainsComponent<Shared.Components.Movable>()) || (!e1.ContainsComponent<Shared.Components.Movable>() && e2.ContainsComponent<Shared.Components.Consumable>()) || (e1.ContainsComponent<Shared.Components.Consumable>() && e2.ContainsComponent<Shared.Components.Consumable>()));
+                    if (shouldCheck)
                     {
                         bool res = DidCollide(e1, e2);
                         if (res) HandleCollision(e1, e2);
