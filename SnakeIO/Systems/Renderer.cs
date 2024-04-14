@@ -69,14 +69,15 @@ namespace Systems
             {
                 sb.Begin();
                 sb.Draw(
-                        renderable.texture,
-                        new Rectangle(
-                            (int)(positionable.pos.X - renderable.rectangle.Width/2),
-                            (int)(positionable.pos.Y - renderable.rectangle.Height/2),
-                            renderable.rectangle.Height,
-                            renderable.rectangle.Width
-                            ),
-                        renderable.color
+                        texture: renderable.texture,
+                        position: positionable.pos,
+                        sourceRectangle: null,
+                        rotation: positionable.orientation,
+                        origin: new Vector2((float)(renderable.texture.Width/2), (float)(renderable.texture.Height/2)),
+                        scale: new Vector2(1f, 1f),
+                        layerDepth: 0,
+                        effects: SpriteEffects.None,
+                        color: renderable.color
                        );
                 sb.End();
             }

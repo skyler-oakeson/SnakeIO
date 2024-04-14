@@ -44,7 +44,8 @@ namespace Shared.Systems
             Vector2 newpos = movable.velocity * elapsedTime.Milliseconds + positionable.pos;
             positionable.prevPos = positionable.pos;
             positionable.pos = newpos;
-            Console.WriteLine(newpos);
+            positionable.orientation = (float)Math.Atan(movable.velocity.Y / movable.velocity.X);
+            Console.WriteLine($"PrevPos: {positionable.prevPos} Pos: {positionable.pos} Ori: {positionable.orientation}");
 
             movable.velocity *= new Vector2(.80f, .80f);
 

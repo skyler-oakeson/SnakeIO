@@ -15,6 +15,7 @@ namespace Shared.Messages
             {
                 this.hasPosition = true;
                 this.position = entity.GetComponent<Positionable>().pos;
+                this.prevPosition = entity.GetComponent<Positionable>().prevPos;
             }
             this.updateWindow = updateWindow;
         }
@@ -28,6 +29,7 @@ namespace Shared.Messages
         // Position
         public bool hasPosition { get; private set; } = false;
         public Vector2 position { get; private set; }
+        public Vector2 prevPosition { get; private set; }
         public float orientation { get; private set; }
 
         // Only the milliseconds are used/serialized
@@ -45,6 +47,8 @@ namespace Shared.Messages
             {
                 data.AddRange(BitConverter.GetBytes(position.X));
                 data.AddRange(BitConverter.GetBytes(position.Y));
+                data.AddRange(BitConverter.GetBytes(prevPosition.X));
+                data.AddRange(BitConverter.GetBytes(prevPosition.Y));
                 data.AddRange(BitConverter.GetBytes(orientation));
             }
 
@@ -68,7 +72,12 @@ namespace Shared.Messages
                 offset += sizeof(Single);
                 float positionY = BitConverter.ToSingle(data, offset);
                 offset += sizeof(Single);
+                float prevPositionX = BitConverter.ToSingle(data, offset);
+                offset += sizeof(Single);
+                float prevPositionY = BitConverter.ToSingle(data, offset);
+                offset += sizeof(Single);
                 this.position = new Vector2(positionX, positionY);
+                this.prevPosition = new Vector2(prevPositionX, prevPositionY);
                 this.orientation = BitConverter.ToSingle(data, offset);
                 offset += sizeof(Single);
             }

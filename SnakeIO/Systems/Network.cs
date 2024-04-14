@@ -91,7 +91,6 @@ namespace Systems
                         Shared.Components.KeyboardControllable con = entity.GetComponent<Shared.Components.KeyboardControllable>();
                         foreach (var input in message.inputs)
                         {
-                            Console.WriteLine("Reconcile");
                             con.controls[input].Invoke(message.elapsedTime, 1.0f);
                         }
                     }
@@ -134,15 +133,12 @@ namespace Systems
             if (entities.ContainsKey(message.id))
             {
                 var entity = entities[message.id];
-                if (message.hasPosition)
+                if (entity.ContainsComponent<Positionable>() && message.hasPosition)
                 {
-                    var position = entity.GetComponent<Positionable>();
-                    position.pos = message.position;
-                }
-                else if (entity.ContainsComponent<Positionable>() && message.hasPosition)
-                {
-                    entity.GetComponent<Positionable>().pos = message.position;
-
+                    Shared.Components.Positionable positionable = entity.GetComponent<Positionable>();
+                    positionable.pos = message.position;
+                    positionable.prevPos = message.prevPosition;
+                    positionable.orientation = message.orientation;
                     updatedEntities.Add(entity.id);
                 }
             }

@@ -17,9 +17,12 @@ namespace Shared.Parsers
             offset += sizeof(Single);
             float posY = BitConverter.ToSingle(data, offset);
             offset += sizeof(Single);
+            float ori = BitConverter.ToSingle(data, offset);
+            offset += sizeof(Single);
             this.message = new PositionableMessage()
             {
-                pos = new Vector2(posX, posY)
+                pos = new Vector2(posX, posY),
+                orientation = ori
             };
         }
 
@@ -31,6 +34,7 @@ namespace Shared.Parsers
         public struct PositionableMessage
         {
             public Vector2 pos { get; set; }
+            public float orientation { get; set; }
         }
     }
 }
