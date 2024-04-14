@@ -10,7 +10,6 @@ namespace Systems
         public delegate void Handler(int clientId, TimeSpan elapsedTime, Shared.Messages.Message message);
         public delegate void JoinHandler(int clientId);
         public delegate void DisconnectHandler(int clientId);
-        public delegate void InputHandler(Shared.Entities.Entity entity, Shared.Messages.Type type, TimeSpan elapsedTime);
 
         private Dictionary<Shared.Messages.Type, Handler> commandMap = new Dictionary<Shared.Messages.Type, Handler>();
         private JoinHandler joinHandler;
@@ -101,14 +100,17 @@ namespace Systems
         /// to the registered input handler.
         /// </summary>
         /// <param name="message"></param>
-        // TODO: Make work with our input
         private void handleInput(Shared.Messages.Input message)
         {
-            Shared.Entities.Entity entity = entities[message.entityId];
-            Shared.Components.KeyboardControllable con = entity.GetComponent<Shared.Components.KeyboardControllable>();
-            foreach (Shared.Controls.ControlContext input in message.inputs)
+            if (entities.ContainsKey(message.entityId))
             {
-                con.controls[input].Invoke(message.elapsedTime, 1.0f);
+                Shared.Entities.Entity entity = entities[message.entityId];
+                Shared.Components.KeyboardControllable con = entity.GetComponent<Shared.Components.KeyboardControllable>();
+                foreach (Shared.Controls.ControlContext input in message.inputs)
+                {
+                    con.controls[input].Invoke(message.elapsedTime, 1.0f);
+                    reportThese.Add(entity.id);
+                }
             }
         }
 

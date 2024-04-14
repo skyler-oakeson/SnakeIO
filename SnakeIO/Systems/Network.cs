@@ -29,7 +29,7 @@ namespace Systems
         {
 
             registerHandler(Shared.Messages.Type.ConnectAck, (TimeSpan elapsedTime, Message message) =>
-            {
+            { 
                 handleConnectAck(elapsedTime, (ConnectAck)message);
             });
 
@@ -88,9 +88,11 @@ namespace Systems
                     var entity = entities[message.entityId];
                     if (updatedEntities.Contains(entity.id))
                     {
+                        Shared.Components.KeyboardControllable con = entity.GetComponent<Shared.Components.KeyboardControllable>();
                         foreach (var input in message.inputs)
                         {
-                            //TODO: Make this work for our input
+                            Console.WriteLine("Reconcile");
+                            con.controls[input].Invoke(message.elapsedTime, 1.0f);
                         }
                     }
                 }
@@ -135,7 +137,7 @@ namespace Systems
                 if (message.hasPosition)
                 {
                     var position = entity.GetComponent<Positionable>();
-                    //TODO: Implement
+                    position.pos = message.position;
                 }
                 else if (entity.ContainsComponent<Positionable>() && message.hasPosition)
                 {

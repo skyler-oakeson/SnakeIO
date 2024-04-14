@@ -2,13 +2,13 @@ using Microsoft.Xna.Framework;
 using System;
 using Shared.Components;
 
-namespace Systems
+namespace Shared.Systems
 {
     /// <summary>
     /// This system is responsible for handling the movement of any
     /// entity with a Movable & positionable components.
     /// </summary>
-    class Movement : Shared.Systems.System
+    public class Movement : Shared.Systems.System
     {
         public Movement()
             : base(
@@ -44,6 +44,7 @@ namespace Systems
             Vector2 newpos = movable.velocity * elapsedTime.Milliseconds + positionable.pos;
             positionable.prevPos = positionable.pos;
             positionable.pos = newpos;
+            Console.WriteLine(newpos);
 
             movable.velocity *= new Vector2(.80f, .80f);
 

@@ -15,10 +15,8 @@ namespace Server
         private Dictionary<uint, Shared.Entities.Entity> entities = new Dictionary<uint, Shared.Entities.Entity>(); // may not need
         private Dictionary<int, uint> clientToEntityId = new Dictionary<int, uint>();
 
-
-        private Systems.InputHandler inputHandler;
         private Systems.Network systemNetwork;
-        private Systems.Movement movement;
+        private Shared.Systems.Movement movement;
         private Systems.Collision collision;
         private Systems.Spawner spawner;
         private Shared.Controls.ControlManager controlManager = new Shared.Controls.ControlManager(new Shared.DataManager());
@@ -36,8 +34,7 @@ namespace Server
 
         public bool Initialize()
         {
-            this.inputHandler = new Systems.InputHandler(controlManager);
-            this.movement = new Systems.Movement();
+            this.movement = new Shared.Systems.Movement();
             this.collision = new Systems.Collision();
             this.spawner = new Systems.Spawner(addEntity);
             this.systemNetwork = new Systems.Network();
@@ -53,7 +50,6 @@ namespace Server
 
         public void Update(TimeSpan elapsedTime)
         {
-            //keyboardInput.Update(gameTime);
             movement.Update(elapsedTime);
             collision.Update(elapsedTime);
             // spawner.Update(elapsedTime);
@@ -66,7 +62,6 @@ namespace Server
 
         private void AddEntity(Shared.Entities.Entity entity)
         {
-            inputHandler.Add(entity);
             movement.Add(entity);
             collision.Add(entity);
             spawner.Add(entity);
@@ -76,7 +71,6 @@ namespace Server
 
         private void RemoveEntity(Shared.Entities.Entity entity)
         {
-            inputHandler.Remove(entity.id);
             movement.Remove(entity.id);
             collision.Remove(entity.id);
             spawner.Remove(entity.id);
@@ -105,7 +99,7 @@ namespace Server
             clients.Remove(clientId);
             Shared.Messages.Message message = new Shared.Messages.RemoveEntity(clientToEntityId[clientId]);
             MessageQueueServer.instance.broadcastMessage(message);
-            RemoveEntity(clientToEntityId[clientId]);
+            RemoveEntity(entities[clientToEntityId[clientId]]);
             clientToEntityId.Remove(clientId);
         }
 
@@ -140,6 +134,7 @@ namespace Server
                     MessageQueueServer.instance.sendMessage(otherId, message);
                 }
             }
+            AddEntity(player);
         }
     }
 }
