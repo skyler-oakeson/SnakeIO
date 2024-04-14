@@ -7,7 +7,10 @@ namespace Shared.Components
     {
         public Rectangle rectangle { get; set; }
         public Point center { get; set; }
-        public Matrix Transform { get; set; }
+        public Matrix Transform { get; set; } = Matrix.Identity;
+        //Transition speeds
+        public float LerpAmount { get; set; } = 0f;
+        public float LerpSpeed = .00005f;
 
         public Camera(Rectangle rectangle)
         {
@@ -59,7 +62,7 @@ namespace Shared.Components
             return false;
         }
 
-        // This will be handled in CreateEntity. These are just used as flags
+        //TODO: Probably remove this, we make all the data in the createEntity anyways
         public override void Serialize(ref List<byte> data)
         {
             data.AddRange(BitConverter.GetBytes(rectangle.X));
