@@ -45,6 +45,13 @@ namespace Systems
             positionable.prevPos = positionable.pos;
             positionable.pos = newpos;
 
+            // if it has camera, update camera center
+            if (entity.ContainsComponent<Shared.Components.Camera>())
+            {
+                Shared.Components.Camera camera = entity.GetComponent<Shared.Components.Camera>();
+                camera.center = new Point((int) positionable.pos.X, (int) positionable.pos.Y);
+            }
+
             movable.velocity *= new Vector2(.80f, .80f);
 
             // If Collidable update the hitbox position
