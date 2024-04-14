@@ -49,14 +49,38 @@ namespace Systems
                         animatable.subImageIndex++;
                         animatable.subImageIndex = animatable.subImageIndex % animatable.spriteTime.Length;
                     }
-                    RenderAnimatable(entity);
+                    if (camera != null)
+                    {
+                        camera.LerpAmount += camera.LerpSpeed;
+                        camera.LerpAmount = camera.LerpAmount >= 1f ? 1f : camera.LerpAmount;
+                        if (camera.ShouldRender(entity))
+                        {
+                            RenderAnimatable(entity);
+                        }
+                    }
+                    else
+                    {
+                        RenderAnimatable(entity);
+                    }
                     // RenderHitbox(entity);
                 }
                 else
                 {
                     if (entity.ContainsComponent<Shared.Components.Renderable>())
                     {
-                        RenderEntity(entity);
+                        if (camera != null)
+                        {
+                            camera.LerpAmount += camera.LerpSpeed;
+                            camera.LerpAmount = camera.LerpAmount >= 1f ? 1f : camera.LerpAmount;
+                            if (camera.ShouldRender(entity))
+                            {
+                                RenderEntity(entity);
+                            }
+                        }
+                        else
+                        {
+                            RenderEntity(entity);
+                        }
                     }
                     else if (entity.ContainsComponent<Shared.Components.Readable>())
                     {
@@ -74,8 +98,6 @@ namespace Systems
             {
                 if (camera != null)
                 {
-                    camera.LerpAmount += camera.LerpSpeed;
-                    camera.LerpAmount = camera.LerpAmount >= 1f ? 1f : camera.LerpAmount;
                     Matrix newMatrix = Matrix.Lerp(Matrix.Identity, camera.Transform, camera.LerpAmount);
                     sb.Begin(transformMatrix: newMatrix);
                 }
@@ -113,8 +135,6 @@ namespace Systems
             Shared.Components.Animatable animatable = entity.GetComponent<Shared.Components.Animatable>();
             if (camera != null)
             {
-                camera.LerpAmount += camera.LerpSpeed;
-                camera.LerpAmount = camera.LerpAmount >= 1f ? 1f : camera.LerpAmount;
                 Matrix newMatrix = Matrix.Lerp(Matrix.Identity, camera.Transform, camera.LerpAmount);
                 sb.Begin(transformMatrix: newMatrix);
             }
