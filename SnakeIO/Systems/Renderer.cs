@@ -10,6 +10,7 @@ namespace Systems
         public VertexPositionColor[] vertCircleStrip;
         public int[] indexCircleStrip;
         public BasicEffect effect;
+        private Shared.Components.Camera? camera = null;
 
         public Renderer(SpriteBatch sb)
             : base(typeof(Shared.Components.Appearance))
@@ -34,6 +35,10 @@ namespace Systems
             sb.GraphicsDevice.Clear(Color.Black);
             foreach (var entity in entities.Values)
             {
+                if (entity.ContainsComponent<Shared.Components.Camera>())
+                {
+                    camera = entity.GetComponent<Shared.Components.Camera>();
+                }
                 if (entity.ContainsComponent<Shared.Components.Animatable>())
                 {
                     Shared.Components.Animatable animatable = entity.GetComponent<Shared.Components.Animatable>();
@@ -67,14 +72,21 @@ namespace Systems
             Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
             Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
             {
-                sb.Begin();
+                if (camera != null)
+                {
+                    sb.Begin(transformMatrix: camera.Transform);
+                }
+                else
+                {
+                    sb.Begin();
+                }
                 sb.Draw(
                         renderable.texture,
                         new Rectangle(
-                            (int)(renderable.rectangle.X - renderable.rectangle.Width/2),
-                            (int)(renderable.rectangle.Y - renderable.rectangle.Height/2),
-                            renderable.rectangle.Height,
-                            renderable.rectangle.Width
+                            (int)(positionable.pos.X - renderable.rectangle.Width / 2),
+                            (int)(positionable.pos.Y - renderable.rectangle.Height / 2),
+                            renderable.rectangle.Width,
+                            renderable.rectangle.Height
                             ),
                         renderable.color
                        );
@@ -89,7 +101,6 @@ namespace Systems
             sb.Begin();
             DrawOutlineText(sb, readable.font, readable.text, readable.stroke, readable.color, 4, positionable.pos, 1.0f);
             sb.End();
-
         }
 
         private void RenderAnimatable(Shared.Entities.Entity entity)
@@ -97,7 +108,14 @@ namespace Systems
             Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
             Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
             Shared.Components.Animatable animatable = entity.GetComponent<Shared.Components.Animatable>();
-            sb.Begin();
+            if (camera != null)
+            {
+                sb.Begin(transformMatrix: camera.Transform);
+            }
+            else
+            {
+                sb.Begin();
+            }
             sb.Draw(
                     animatable.spriteSheet,
                     new Rectangle(

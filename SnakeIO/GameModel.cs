@@ -176,7 +176,8 @@ namespace SnakeIO
             if (message.hasCamera)
             {
                 Shared.Components.Positionable position = entity.GetComponent<Shared.Components.Positionable>();
-                entity.Add(new Shared.Components.Camera(new Rectangle((int)position.pos.X, (int)position.pos.Y, WIDTH, HEIGHT)));
+                entity.Add(new Shared.Components.Camera(new Rectangle(message.cameraMessage.rectangle.X, message.cameraMessage.rectangle.Y, WIDTH, HEIGHT)));
+                Shared.Components.Camera camera = entity.GetComponent<Shared.Components.Camera>();
             }
 
             if (message.hasKeyboardControllable)

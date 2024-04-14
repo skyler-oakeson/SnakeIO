@@ -7,12 +7,25 @@ namespace Shared.Components
     {
         public Rectangle rectangle { get; set; }
         public Point center { get; set; }
+        public Matrix Transform { get; set; }
 
         public Camera(Rectangle rectangle)
         {
             // Rectangle width will be camera / screen width, height is camera / screen height, X and Y are top left
             this.rectangle = rectangle;
             this.center = new Point(rectangle.X + (rectangle.Width / 2), rectangle.Y + (rectangle.Height / 2));
+            Matrix position = Matrix.CreateTranslation(0, 0, 0);
+            Matrix offset = Matrix.CreateTranslation(rectangle.Width / 2, rectangle.Height / 2, 0);
+            Transform = position * offset;
+        }
+
+        public void Follow(Shared.Entities.Entity target)
+        {
+            Shared.Components.Renderable renderable = target.GetComponent<Shared.Components.Renderable>();
+            Console.WriteLine($"{renderable.rectangle.X}, {renderable.rectangle.Y}");
+            Matrix position = Matrix.CreateTranslation(-renderable.rectangle.X - (renderable.rectangle.Width / 2), -renderable.rectangle.Y - (renderable.rectangle.Height / 2), 0);
+            Matrix offset = Matrix.CreateTranslation(rectangle.Width / 2, rectangle.Height / 2, 0);
+            Transform = position * offset;
         }
 
         public bool ShouldRender(Shared.Entities.Entity entity)
