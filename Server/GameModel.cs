@@ -45,10 +45,7 @@ namespace Server
             MessageQueueServer.instance.registerConnectHandler(handleConnect);
             Rectangle rectangle = new Rectangle(100, 100, 10, 10);
             AddEntity(Shared.Entities.Food.Create("Images/food", rectangle));
-
-            Console.WriteLine("Creating world");
             new Utils.WorldGenerator(addEntity);
-            Console.WriteLine("Created world");
 
             return true;
         }
@@ -88,6 +85,10 @@ namespace Server
 
         private void RemoveEntity(uint id)
         {
+            movement.Remove(id);
+            collision.Remove(id);
+            spawner.Remove(id);
+            systemNetwork.Remove(id);
             entities.Remove(id);
         }
 
@@ -133,6 +134,11 @@ namespace Server
 
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(food));
+
+            // Other clients do not need this
+            player.Remove<Shared.Components.MouseControllable>();
+            player.Remove<Shared.Components.KeyboardControllable>();
+            player.Remove<Shared.Components.Camera>();
 
             Shared.Messages.Message message = new Shared.Messages.NewEntity(player);
             foreach (int otherId in clients)

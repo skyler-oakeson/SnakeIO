@@ -19,6 +19,7 @@ namespace Shared.Entities
             }
 
             player.Add(new Components.Appearance(texture, typeof(Texture2D), color, Color.Black, rectangle));
+            player.Add(new Components.Camera(new Rectangle(rectangle.X, rectangle.Y, 1500, 1500)));
             // player.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
             // player.Add(new Components.Renderable(texture, "Images/player", color, Color.Black));
             player.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y)));

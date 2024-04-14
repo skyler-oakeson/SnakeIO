@@ -26,6 +26,7 @@ namespace SnakeIO
 
         private ContentManager contentManager;
         private Shared.Controls.ControlManager controlManager;
+        private Shared.Entities.Entity clientPlayer;
 
         public delegate void AddDelegate(Entity entity);
         private AddDelegate addEntity;
@@ -172,6 +173,12 @@ namespace SnakeIO
                 entity.Add(new Shared.Components.Spawnable(message.spawnableMessage.spawnRate, message.spawnableMessage.spawnCount, message.spawnableMessage.type));
             }
 
+            if (message.hasCamera)
+            {
+                Shared.Components.Positionable position = entity.GetComponent<Shared.Components.Positionable>();
+                entity.Add(new Shared.Components.Camera(new Rectangle(position.pos.X, position.pos.Y, WIDTH, HEIGHT)));
+            }
+
             if (message.hasKeyboardControllable)
             {
                 //Do Something
@@ -180,6 +187,12 @@ namespace SnakeIO
             if (message.hasMouseControllable)
             {
                 //Do Something
+            }
+
+            // This is the client's player
+            if (message.hasKeyboardControllable || message.hasMouseControllable || message.hasCamera)
+            {
+                this.clientPlayer = entity;
             }
 
             return entity;

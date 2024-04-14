@@ -19,6 +19,11 @@ namespace Shared.Messages
                 this.appearance = entity.GetComponent<Appearance>();
             }
 
+            if (entity.ContainsComponent<Shared.Components.Camera>())
+            {
+                this.camera = entity.GetComponent<Shared.Components.Camera>();
+            }
+
             // Spawnable and consumable Components
             if (entity.ContainsComponent<Shared.Components.Spawnable>())
             {
@@ -81,6 +86,11 @@ namespace Shared.Messages
         public bool hasAppearance { get; private set; }
         public Components.Appearance? appearance { get; private set; } = null;
         public Parsers.AppearanceParser.AppearanceMessage appearanceMessage { get; private set; }
+
+        //Camera
+        public bool hasCamera { get; private set; }
+        public Components.Camera? camera { get; private set; } = null;
+        public Parsers.CameraParser.CameraMessage cameraMessage { get; private set; }
 
         // Position
         public bool hasPosition { get; private set; }
@@ -145,6 +155,12 @@ namespace Shared.Messages
             if (appearance != null)
             {
                 appearance.Serialize(ref data);
+            }
+
+            data.AddRange(BitConverter.GetBytes(camera != null));
+            if (camera != null)
+            {
+                camera.Serialize(ref data);
             }
 
             data.AddRange(BitConverter.GetBytes(positionable != null));
@@ -220,6 +236,15 @@ namespace Shared.Messages
                 Parsers.AppearanceParser parser = new Parsers.AppearanceParser();
                 parser.Parse(ref data, ref offset);
                 this.appearanceMessage = parser.GetMessage();
+            }
+
+            this.hasCamera = BitConverter.ToBoolean(data, offset);
+            offset += sizeof(bool);
+            if (hasCamera)
+            {
+                Parsers.CameraParser parser = new Parsers.CameraParser();
+                parser.Parse(ref data, ref offset);
+                this.cameraMessage = parser.GetMessage();
             }
 
             this.hasPosition = BitConverter.ToBoolean(data, offset);
