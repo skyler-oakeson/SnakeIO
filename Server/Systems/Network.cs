@@ -10,13 +10,13 @@ namespace Systems
         public delegate void Handler(int clientId, TimeSpan elapsedTime, Shared.Messages.Message message);
         public delegate void JoinHandler(int clientId);
         public delegate void DisconnectHandler(int clientId);
-        // public delegate void InputHandler(Entity entity, Shared.Components.Input.Type type, TimeSpan elapsedTime);
+        public delegate void InputHandler(Shared.Entities.Entity entity, Shared.Messages.Type type, TimeSpan elapsedTime);
 
-        private Dictionary<Shared.Messages.Type, Handler> m_commandMap = new Dictionary<Shared.Messages.Type, Handler>();
-        private JoinHandler m_joinHandler;
-        private DisconnectHandler m_disconnectHandler;
+        private Dictionary<Shared.Messages.Type, Handler> commandMap = new Dictionary<Shared.Messages.Type, Handler>();
+        private JoinHandler joinHandler;
+        private DisconnectHandler disconnectHandler;
 
-        private HashSet<uint> m_reportThese = new HashSet<uint>();
+        private HashSet<uint> reportThese = new HashSet<uint>();
 
         /// <summary>
         /// Primary activity in the constructor is to setup the command map
@@ -31,28 +31,28 @@ namespace Systems
             // Register our own join handler
             registerHandler(Shared.Messages.Type.Join, (int clientId, TimeSpan elapsedTime, Shared.Messages.Message message) =>
             {
-                if (m_joinHandler != null)
+                if (joinHandler != null)
                 {
-                    m_joinHandler(clientId);
+                    joinHandler(clientId);
                 }
             });
 
             // Register our own disconnect handler
             registerHandler(Shared.Messages.Type.Disconnect, (int clientId, TimeSpan elapsedTime, Shared.Messages.Message message) =>
             {
-                if (m_disconnectHandler != null)
+                if (disconnectHandler != null)
                 {
-                    m_disconnectHandler(clientId);
+                    disconnectHandler(clientId);
                 }
             });
 
             //TODO: Make work with our input
             // Register our own input handler
-            // registerHandler(Shared.Messages.Type.Input, (int clientId, TimeSpan elapsedTime, Shared.Messages.Message message) =>
-            // {
-            //     handleInput((Shared.Messages.Input)message);
-            // });
-            //
+            registerHandler(Shared.Messages.Type.Input, (int clientId, TimeSpan elapsedTime, Shared.Messages.Message message) =>
+            {
+                handleInput((Shared.Messages.Input)message);
+            });
+
 
         }
 
@@ -70,9 +70,9 @@ namespace Systems
                 while (messages.Count > 0)
                 {
                     var message = messages.Dequeue();
-                    if (m_commandMap.ContainsKey(message.Item2.type))
+                    if (commandMap.ContainsKey(message.Item2.type))
                     {
-                        m_commandMap[message.Item2.type](message.Item1, elapsedTime, message.Item2);
+                        commandMap[message.Item2.type](message.Item1, elapsedTime, message.Item2);
                     }
                 }
             }
@@ -83,17 +83,17 @@ namespace Systems
 
         public void registerJoinHandler(JoinHandler handler)
         {
-            m_joinHandler = handler;
+            joinHandler = handler;
         }
 
         public void registerDisconnectHandler(DisconnectHandler handler)
         {
-            m_disconnectHandler = handler;
+            disconnectHandler = handler;
         }
 
         private void registerHandler(Shared.Messages.Type type, Handler handler)
         {
-            m_commandMap[type] = handler;
+            commandMap[type] = handler;
         }
 
         /// <summary>
@@ -102,9 +102,15 @@ namespace Systems
         /// </summary>
         /// <param name="message"></param>
         // TODO: Make work with our input
-        // private void handleInput(Shared.Messages.Input message)
-        // {
-        // }
+        private void handleInput(Shared.Messages.Input message)
+        {
+            Shared.Entities.Entity entity = entities[message.entityId];
+            Shared.Components.KeyboardControllable con = entity.GetComponent<Shared.Components.KeyboardControllable>();
+            foreach (Shared.Controls.ControlContext input in message.inputs)
+            {
+                con.controls[input].Invoke(message.elapsedTime, 1.0f);
+            }
+        }
 
         /// <summary>
         /// For the entities that have updates, send those updates to all
@@ -112,14 +118,14 @@ namespace Systems
         /// </summary>
         private void updateClients(TimeSpan elapsedTime)
         {
-            foreach (var entityId in m_reportThese)
+            foreach (var entityId in reportThese)
             {
                 var entity = entities[entityId];
                 var message = new Shared.Messages.UpdateEntity(entity, elapsedTime);
                 Server.MessageQueueServer.instance.broadcastMessageWithLastId(message);
             }
 
-            m_reportThese.Clear();
+            reportThese.Clear();
         }
     }
 }

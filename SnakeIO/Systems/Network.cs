@@ -14,11 +14,11 @@ namespace Systems
         public delegate void RemoveEntityHandler(RemoveEntity message);
         public delegate void NewEntityHandler(NewEntity message);
 
-        private Dictionary<Shared.Messages.Type, Handler> m_commandMap = new Dictionary<Shared.Messages.Type, Handler>();
-        private RemoveEntityHandler m_removeEntityHandler;
-        private NewEntityHandler m_newEntityHandler;
-        private uint m_lastMessageId = 0;
-        private HashSet<uint> m_updatedEntities = new HashSet<uint>();
+        private Dictionary<Shared.Messages.Type, Handler> commandMap = new Dictionary<Shared.Messages.Type, Handler>();
+        private RemoveEntityHandler removeEntityHandler;
+        private NewEntityHandler newEntityHandler;
+        private uint lastMessageId = 0;
+        private HashSet<uint> updatedEntities = new HashSet<uint>();
 
         /// <summary>
         /// Primary activity in the constructor is to setup the command map
@@ -35,7 +35,7 @@ namespace Systems
 
             registerHandler(Shared.Messages.Type.NewEntity, (TimeSpan elapsedTime, Message message) =>
             {
-                m_newEntityHandler((NewEntity)message);
+                newEntityHandler((NewEntity)message);
             });
 
             registerHandler(Shared.Messages.Type.UpdateEntity, (TimeSpan elapsedTime, Message message) =>
@@ -45,7 +45,7 @@ namespace Systems
 
             registerHandler(Shared.Messages.Type.RemoveEntity, (TimeSpan elapsedTime, Message message) =>
             {
-                m_removeEntityHandler((RemoveEntity)message);
+                removeEntityHandler((RemoveEntity)message);
             });
         }
 
@@ -58,35 +58,35 @@ namespace Systems
         /// </summary>
         public void update(TimeSpan elapsedTime, Queue<Message> messages)
         {
-            m_updatedEntities.Clear();
+            updatedEntities.Clear();
 
             if (messages != null)
             {
                 while (messages.Count > 0)
                 {
                     var message = messages.Dequeue();
-                    if (m_commandMap.ContainsKey(message.type))
+                    if (commandMap.ContainsKey(message.type))
                     {
-                        m_commandMap[message.type](elapsedTime, message);
+                        commandMap[message.type](elapsedTime, message);
                     }
 
                     if (message.messageId.HasValue)
                     {
-                        m_lastMessageId = message.messageId.Value;
+                        lastMessageId = message.messageId.Value;
                     }
                 }
             }
 
             // After processing all the messages, perform server reconciliation by
             // resimulating the inputs from any sent messages not yet acknowledged by the server.
-            var sent = SnakeIO.MessageQueueClient.instance.getSendMessageHistory(m_lastMessageId);
+            var sent = SnakeIO.MessageQueueClient.instance.getSendMessageHistory(lastMessageId);
             while (sent.Count > 0)
             {
                 var message = (Shared.Messages.Input)sent.Dequeue();
                 if (message.type == Shared.Messages.Type.Input)
                 {
                     var entity = entities[message.entityId];
-                    if (m_updatedEntities.Contains(entity.id))
+                    if (updatedEntities.Contains(entity.id))
                     {
                         foreach (var input in message.inputs)
                         {
@@ -99,17 +99,17 @@ namespace Systems
 
         private void registerHandler(Shared.Messages.Type type, Handler handler)
         {
-            m_commandMap[type] = handler;
+            commandMap[type] = handler;
         }
 
         public void registerNewEntityHandler(NewEntityHandler handler)
         {
-            m_newEntityHandler = handler;
+            newEntityHandler = handler;
         }
 
         public void registerRemoveEntityHandler(RemoveEntityHandler handler)
         {
-            m_removeEntityHandler = handler;
+            removeEntityHandler = handler;
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace Systems
                 {
                     entity.GetComponent<Positionable>().pos = message.position;
 
-                    m_updatedEntities.Add(entity.id);
+                    updatedEntities.Add(entity.id);
                 }
             }
         }
