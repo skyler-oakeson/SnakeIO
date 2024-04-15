@@ -12,7 +12,7 @@ namespace Shared.Entities
             int radius = texture.Width >= texture.Height ? texture.Height/2 : texture.Width/2;
 
             wall.Add(new Components.Renderable(texture, "Images/player", color, Color.Black, rectangle));
-            wall.Add(new Components.Positionable(pos));
+            wall.Add(new Components.Positionable(pos, 0f));
             if (chain != null && linkPos.HasValue)
             {
                 wall.Add(new Components.Linkable(chain,

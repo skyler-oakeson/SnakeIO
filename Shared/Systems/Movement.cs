@@ -30,6 +30,7 @@ namespace Shared.Systems
         {
             Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
             Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
+            Console.WriteLine($"PrevPos: {positionable.prevPos} Pos: {positionable.pos} Ori: {positionable.orientation}");
 
             // Don't have to update if velocity is 0
             if (movable.velocity.X == 0 && movable.velocity.Y == 0)
@@ -44,8 +45,6 @@ namespace Shared.Systems
             Vector2 newpos = movable.velocity * elapsedTime.Milliseconds + positionable.pos;
             positionable.prevPos = positionable.pos;
             positionable.pos = newpos;
-            positionable.orientation = (float)Math.Atan(movable.velocity.Y / movable.velocity.X);
-            Console.WriteLine($"PrevPos: {positionable.prevPos} Pos: {positionable.pos} Ori: {positionable.orientation}");
 
             movable.velocity *= new Vector2(.80f, .80f);
 

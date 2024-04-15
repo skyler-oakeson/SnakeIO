@@ -17,6 +17,7 @@ namespace Shared.Messages
                 this.position = entity.GetComponent<Positionable>().pos;
                 this.prevPosition = entity.GetComponent<Positionable>().prevPos;
             }
+
             this.updateWindow = updateWindow;
         }
 

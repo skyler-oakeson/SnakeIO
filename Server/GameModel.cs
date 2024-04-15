@@ -119,12 +119,8 @@ namespace Server
             Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/player", Color.White, "Audio/bass-switch",
                     new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect);
             clientToEntityId[clientId] = player.id;
-            Rectangle foodRect = new Rectangle(200, 200, 10, 10);
-            Shared.Entities.Entity food = Shared.Entities.Food.Create("Images/food", foodRect);
-            clientToEntityId[clientId] = food.id;
 
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
-            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(food));
 
             Shared.Messages.Message message = new Shared.Messages.NewEntity(player);
             foreach (int otherId in clients)

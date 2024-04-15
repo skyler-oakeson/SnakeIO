@@ -64,6 +64,7 @@ namespace SnakeIO
         public void Update(TimeSpan elapsedTime)
         {
             network.update(elapsedTime, MessageQueueClient.instance.getMessages());
+            interpolation.Update(elapsedTime);
             keyboardInput.Update(elapsedTime);
             mouseInput.Update(elapsedTime);
             movement.Update(elapsedTime);
@@ -158,14 +159,13 @@ namespace SnakeIO
                 }
                 else
                 {
-                    // SpriteFont texture = contentManager.Load<SpriteFont>(appearance.texturePath);
                     entity.Add(new Shared.Components.Renderable(texture, appearance.texturePath, appearance.color, appearance.stroke, rectangle, appearance.animatable));
                 }
             }
 
             if (message.hasPosition)
             {
-                entity.Add(new Shared.Components.Positionable(new Vector2(message.positionableMessage.pos.X, message.positionableMessage.pos.Y)));
+                entity.Add(new Shared.Components.Positionable(new Vector2(message.positionableMessage.pos.X, message.positionableMessage.pos.Y), message.positionableMessage.orientation));
             }
 
             //TODO: find other ways to handle collidable. Maybe we specify what the radius is so that we don't have to calculate it.
@@ -179,9 +179,7 @@ namespace SnakeIO
 
             if (message.hasMovement)
             {
-                entity.Add(new Shared.Components.Movable(
-                            new Vector2(message.movableMessage.rotation.X, message.movableMessage.rotation.Y), 
-                            new Vector2(message.movableMessage.velocity.X, message.movableMessage.velocity.Y)));
+                entity.Add(new Shared.Components.Movable(new Vector2(message.movableMessage.velocity.X, message.movableMessage.velocity.Y)));
             }
 
             if (message.hasSpawnable)
@@ -204,25 +202,25 @@ namespace SnakeIO
                                  new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                                      {
                                      movable.velocity += new Vector2(0, -.2f);
-                                     Console.WriteLine(movable.velocity);
+                                     movable.velocity.Normalize();
                                      })),
                                 (Shared.Controls.ControlContext.MoveDown,
                                  new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                                      {
                                      movable.velocity += new Vector2(0, .2f);
-                                     Console.WriteLine(movable.velocity);
+                                     movable.velocity.Normalize();
                                      })),
                                 (Shared.Controls.ControlContext.MoveRight,
                                  new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                                      {
                                      movable.velocity += new Vector2(.2f, 0);
-                                     Console.WriteLine(movable.velocity);
+                                     movable.velocity.Normalize();
                                      })),
                                 (Shared.Controls.ControlContext.MoveLeft,
                                  new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                                      {
                                      movable.velocity += new Vector2(-.2f, 0);
-                                     Console.WriteLine(movable.velocity);
+                                     movable.velocity.Normalize();
                                      })),
                                 }));
                 }

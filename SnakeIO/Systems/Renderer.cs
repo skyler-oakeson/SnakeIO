@@ -90,7 +90,6 @@ namespace Systems
             sb.Begin();
             DrawOutlineText(sb, readable.font, readable.text, readable.stroke, readable.color, 4, positionable.pos, 1.0f);
             sb.End();
-
         }
 
         private void RenderAnimatable(Shared.Entities.Entity entity)

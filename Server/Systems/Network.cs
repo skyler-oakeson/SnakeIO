@@ -109,8 +109,8 @@ namespace Systems
                 foreach (Shared.Controls.ControlContext input in message.inputs)
                 {
                     con.controls[input].Invoke(message.elapsedTime, 1.0f);
-                    reportThese.Add(entity.id);
                 }
+                reportThese.Add(entity.id);
             }
         }
 

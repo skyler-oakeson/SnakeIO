@@ -12,11 +12,11 @@ namespace Shared.Components
         public Vector2 prevPos { get; set; }
         public float orientation { get; set; }
 
-        public Positionable(Vector2 pos)
+        public Positionable(Vector2 pos, float orientation)
         {
             this.pos = pos;
             this.prevPos = pos;
-            this.orientation = 0f;
+            this.orientation = orientation;
         }
 
         public override void Serialize(ref List<byte> data)

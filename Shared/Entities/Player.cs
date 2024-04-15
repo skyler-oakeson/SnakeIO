@@ -20,8 +20,8 @@ namespace Shared.Entities
 
             player.Add(new Components.Appearance(texture, typeof(Texture2D), color, Color.Black, rectangle));
             // player.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
-            player.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y)));
-            player.Add(new Shared.Components.Movable(new Vector2(0, 0), new Vector2(0, 0)));
+            player.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
+            player.Add(new Shared.Components.Movable(new Vector2(0, 0)));
             // player.Add(new Components.Audible(sound));
             Shared.Components.Movable movable = player.GetComponent<Shared.Components.Movable>();
             player.Add(new Shared.Components.KeyboardControllable(
@@ -34,21 +34,25 @@ namespace Shared.Entities
                      new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                      {
                      movable.velocity += new Vector2(0, -.2f);
+                     movable.velocity.Normalize();
                      })),
                 (Shared.Controls.ControlContext.MoveDown,
                      new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                      {
                      movable.velocity += new Vector2(0, .2f);
+                     movable.velocity.Normalize();
                      })),
                 (Shared.Controls.ControlContext.MoveRight,
                      new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                      {
                      movable.velocity += new Vector2(.2f, 0);
+                     movable.velocity.Normalize();
                      })),
                 (Shared.Controls.ControlContext.MoveLeft,
                      new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                      {
                      movable.velocity += new Vector2(-.2f, 0);
+                     movable.velocity.Normalize();
                      })),
                 }));
             //Remove if statement for mouse controls. We will want to check what the user selects in the real game

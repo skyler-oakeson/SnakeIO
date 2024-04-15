@@ -15,7 +15,7 @@ namespace Shared.Controls
         public ControlManager(DataManager dm)
         {
             this.dataManager = dm;
-            controls = dm.Load<Dictionary<ControlContext, Control>>(controls);
+            // controls = dm.Load<Dictionary<ControlContext, Control>>(controls);
             if (controls.Values.Count <= 0)
             {
                 InitializeControls();

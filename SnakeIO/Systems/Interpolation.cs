@@ -29,7 +29,7 @@ namespace Systems
                 {
                     interested = true;
                     var position = entity.GetComponent<Shared.Components.Positionable>();
-                    // entity.Add(new Shared.Components.Interpretable(position.pos, position.pos));
+                    entity.Add(new Shared.Components.Interpretable(position.pos, position.orientation));
                 }
             }
 
@@ -40,9 +40,22 @@ namespace Systems
         {
             foreach (var entity in entities.Values)
             {
-                var position = entity.GetComponent<Shared.Components.Positionable>();
-                
-                //TODO: Implement interpolation
+                var positionable = entity.GetComponent<Shared.Components.Positionable>();
+                var interpretable = entity.GetComponent<Shared.Components.Interpretable>();
+
+                if (interpretable.updateWindow > TimeSpan.Zero && interpretable.updatedTime < interpretable.updateWindow)
+                {
+                    interpretable.updatedTime += elapsedTime;
+                    var updateFraction = (float)elapsedTime.Milliseconds / interpretable.updateWindow.Milliseconds;
+
+                    // Turn first
+                    positionable.orientation = positionable.orientation - (interpretable.startOrientation - interpretable.endOrientation) * updateFraction;
+
+                    // Then move
+                    positionable.pos = new Vector2(
+                        positionable.pos.X - (interpretable.startPosition.X - interpretable.endPosition.X) * updateFraction,
+                        positionable.pos.Y - (interpretable.startPosition.Y - interpretable.endPosition.Y) * updateFraction);
+                }
             }
         }
     }
