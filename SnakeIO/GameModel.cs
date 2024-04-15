@@ -64,12 +64,12 @@ namespace SnakeIO
         public void Update(TimeSpan elapsedTime)
         {
             network.update(elapsedTime, MessageQueueClient.instance.getMessages());
-            interpolation.Update(elapsedTime);
             keyboardInput.Update(elapsedTime);
             mouseInput.Update(elapsedTime);
+            linker.Update(elapsedTime);
+            interpolation.Update(elapsedTime);
             movement.Update(elapsedTime);
             audio.Update(elapsedTime);
-            linker.Update(elapsedTime);
         }
 
         public void Render(TimeSpan elapsedTime)
@@ -202,25 +202,21 @@ namespace SnakeIO
                                  new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                                      {
                                      movable.velocity += new Vector2(0, -.2f);
-                                     movable.velocity.Normalize();
                                      })),
                                 (Shared.Controls.ControlContext.MoveDown,
                                  new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                                      {
                                      movable.velocity += new Vector2(0, .2f);
-                                     movable.velocity.Normalize();
                                      })),
                                 (Shared.Controls.ControlContext.MoveRight,
                                  new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                                      {
                                      movable.velocity += new Vector2(.2f, 0);
-                                     movable.velocity.Normalize();
                                      })),
                                 (Shared.Controls.ControlContext.MoveLeft,
                                  new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                                      {
                                      movable.velocity += new Vector2(-.2f, 0);
-                                     movable.velocity.Normalize();
                                      })),
                                 }));
                 }

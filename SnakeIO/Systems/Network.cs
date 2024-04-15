@@ -138,7 +138,7 @@ namespace Systems
                     Shared.Components.Positionable positionable = entity.GetComponent<Positionable>();
                     positionable.pos = message.position;
                     positionable.prevPos = message.prevPosition;
-                    // positionable.orientation = message.orientation;
+                    positionable.orientation = message.orientation;
                     updatedEntities.Add(entity.id);
                 }
             }

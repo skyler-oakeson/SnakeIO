@@ -33,26 +33,22 @@ namespace Shared.Entities
                 (Shared.Controls.ControlContext.MoveUp,
                      new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                      {
-                     movable.velocity += new Vector2(0, -.2f);
-                     movable.velocity.Normalize();
+                     movable.velocity += new Vector2(0, -.1f);
                      })),
                 (Shared.Controls.ControlContext.MoveDown,
                      new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                      {
-                     movable.velocity += new Vector2(0, .2f);
-                     movable.velocity.Normalize();
+                     movable.velocity += new Vector2(0, .1f);
                      })),
                 (Shared.Controls.ControlContext.MoveRight,
                      new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                      {
-                     movable.velocity += new Vector2(.2f, 0);
-                     movable.velocity.Normalize();
+                     movable.velocity += new Vector2(.1f, 0);
                      })),
                 (Shared.Controls.ControlContext.MoveLeft,
                      new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                      {
-                     movable.velocity += new Vector2(-.2f, 0);
-                     movable.velocity.Normalize();
+                     movable.velocity += new Vector2(-.1f, 0);
                      })),
                 }));
             //Remove if statement for mouse controls. We will want to check what the user selects in the real game
