@@ -25,7 +25,6 @@ namespace Shared.Components
         public void Follow(Shared.Entities.Entity target)
         {
             Shared.Components.Renderable renderable = target.GetComponent<Shared.Components.Renderable>();
-            Console.WriteLine($"{renderable.rectangle.X}, {renderable.rectangle.Y}");
             Matrix position = Matrix.CreateTranslation(-renderable.rectangle.X - (renderable.rectangle.Width / 2), -renderable.rectangle.Y - (renderable.rectangle.Height / 2), 0);
             Matrix offset = Matrix.CreateTranslation(rectangle.Width / 2, rectangle.Height / 2, 0);
             Transform = position * offset;
