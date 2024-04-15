@@ -18,4 +18,11 @@ namespace Shared.Controls
         MouseUp,
         MouseMove,
     }
+
+    [Flags]
+    public enum ControlableEntity : UInt16
+    {
+        Player,
+        MenuItem
+    }
 }

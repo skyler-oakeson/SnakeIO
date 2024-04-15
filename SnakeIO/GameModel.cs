@@ -22,6 +22,7 @@ namespace SnakeIO
         private Systems.Interpolation interpolation;
         private Systems.MouseInput mouseInput;
         private Systems.Linker linker;
+        private Shared.Systems.Movement movement;
         private Systems.Audio audio;
 
         private ContentManager contentManager;
@@ -46,6 +47,7 @@ namespace SnakeIO
             this.renderer = new Systems.Renderer(spriteBatch);
             this.network = new Systems.Network();
             this.interpolation = new Systems.Interpolation();
+            this.movement = new Shared.Systems.Movement();
             network.registerNewEntityHandler(handleNewEntity);
             network.registerRemoveEntityHandler(handleRemoveEntity);
             this.keyboardInput = new Systems.KeyboardInput(controlManager);
@@ -57,16 +59,18 @@ namespace SnakeIO
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
             SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
+
         }
 
         public void Update(TimeSpan elapsedTime)
         {
             network.update(elapsedTime, MessageQueueClient.instance.getMessages());
-            renderer.Update(elapsedTime);
             keyboardInput.Update(elapsedTime);
             mouseInput.Update(elapsedTime);
-            audio.Update(elapsedTime);
             linker.Update(elapsedTime);
+            interpolation.Update(elapsedTime);
+            movement.Update(elapsedTime);
+            audio.Update(elapsedTime);
         }
 
         public void Render(TimeSpan elapsedTime)
@@ -77,6 +81,7 @@ namespace SnakeIO
         private void AddEntity(Entity entity)
         {
             renderer.Add(entity);
+            movement.Add(entity);
             keyboardInput.Add(entity);
             network.Add(entity);
             interpolation.Add(entity);
@@ -90,6 +95,7 @@ namespace SnakeIO
         private void RemoveEntity(Entity entity)
         {
             renderer.Remove(entity.id);
+            movement.Remove(entity.id);
             keyboardInput.Remove(entity.id);
             network.Remove(entity.id);
             interpolation.Remove(entity.id);
@@ -130,8 +136,18 @@ namespace SnakeIO
 
             if (message.hasAppearance)
             {
-                Rectangle rectangle = new Rectangle(message.appearanceMessage.rectangle.X, message.appearanceMessage.rectangle.Y, message.appearanceMessage.rectangle.Width, message.appearanceMessage.rectangle.Height);
-                entity.Add(new Shared.Components.Appearance(message.appearanceMessage.texturePath, message.appearanceMessage.type, message.appearanceMessage.color, message.appearanceMessage.stroke, rectangle, message.appearanceMessage.animatable));
+                Rectangle rectangle = new Rectangle(
+                        message.appearanceMessage.rectangle.X,
+                        message.appearanceMessage.rectangle.Y,
+                        message.appearanceMessage.rectangle.Width,
+                        message.appearanceMessage.rectangle.Height);
+                entity.Add(new Shared.Components.Appearance(
+                            message.appearanceMessage.texturePath,
+                            message.appearanceMessage.type,
+                            message.appearanceMessage.color,
+                            message.appearanceMessage.stroke,
+                            rectangle,
+                            message.appearanceMessage.animatable));
                 Shared.Components.Appearance appearance = entity.GetComponent<Shared.Components.Appearance>();
                 Texture2D texture = contentManager.Load<Texture2D>(appearance.texturePath);
                 if (appearance.type == typeof(Texture2D))
@@ -144,14 +160,13 @@ namespace SnakeIO
                 }
                 else
                 {
-                    // SpriteFont texture = contentManager.Load<SpriteFont>(appearance.texturePath);
                     entity.Add(new Shared.Components.Renderable(texture, appearance.texturePath, appearance.color, appearance.stroke, rectangle, appearance.animatable));
                 }
             }
 
             if (message.hasPosition)
             {
-                entity.Add(new Shared.Components.Positionable(new Vector2(message.positionableMessage.pos.X, message.positionableMessage.pos.Y)));
+                entity.Add(new Shared.Components.Positionable(new Vector2(message.positionableMessage.pos.X, message.positionableMessage.pos.Y), message.positionableMessage.orientation));
             }
 
             //TODO: find other ways to handle collidable. Maybe we specify what the radius is so that we don't have to calculate it.
@@ -165,7 +180,7 @@ namespace SnakeIO
 
             if (message.hasMovement)
             {
-                entity.Add(new Shared.Components.Movable(new Vector2(message.movableMessage.rotation.X, message.movableMessage.rotation.Y), new Vector2(message.movableMessage.velocity.X, message.movableMessage.velocity.Y)));
+                entity.Add(new Shared.Components.Movable(new Vector2(message.movableMessage.velocity.X, message.movableMessage.velocity.Y)));
             }
 
             if (message.hasSpawnable)
@@ -182,7 +197,37 @@ namespace SnakeIO
 
             if (message.hasKeyboardControllable)
             {
-                //Do Something
+                if (message.keyboardControllableMessage.type == Shared.Controls.ControlableEntity.Player)
+                {
+                    Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
+                    entity.Add(new Shared.Components.KeyboardControllable(
+                                message.keyboardControllableMessage.enable,
+                                message.keyboardControllableMessage.type,
+                                controlManager,
+                                new (Shared.Controls.ControlContext, Shared.Controls.ControlDelegate)[4]
+                                {
+                                (Shared.Controls.ControlContext.MoveUp,
+                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
+                                     {
+                                     movable.velocity += new Vector2(0, -.2f);
+                                     })),
+                                (Shared.Controls.ControlContext.MoveDown,
+                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
+                                     {
+                                     movable.velocity += new Vector2(0, .2f);
+                                     })),
+                                (Shared.Controls.ControlContext.MoveRight,
+                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
+                                     {
+                                     movable.velocity += new Vector2(.2f, 0);
+                                     })),
+                                (Shared.Controls.ControlContext.MoveLeft,
+                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
+                                     {
+                                     movable.velocity += new Vector2(-.2f, 0);
+                                     })),
+                                }));
+                }
             }
 
             if (message.hasMouseControllable)

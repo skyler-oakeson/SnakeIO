@@ -22,35 +22,35 @@ namespace Shared.Entities
             //TODO: research if this will actually work
             player.Add(new Components.Camera(new Rectangle(rectangle.X, rectangle.Y, 1500, 1500)));
             // player.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
-            // player.Add(new Components.Renderable(texture, "Images/player", color, Color.Black));
-            player.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y)));
-            player.Add(new Shared.Components.Movable(new Vector2(0, 0), new Vector2(0, 0)));
+            player.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
+            player.Add(new Shared.Components.Movable(new Vector2(0, 0)));
             // player.Add(new Components.Audible(sound));
             Shared.Components.Movable movable = player.GetComponent<Shared.Components.Movable>();
             player.Add(new Shared.Components.KeyboardControllable(
                 true,
+                Shared.Controls.ControlableEntity.Player,
                 cm,
                 new (Shared.Controls.ControlContext, Shared.Controls.ControlDelegate)[4]
                 {
                 (Shared.Controls.ControlContext.MoveUp,
                      new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                      {
-                     movable.velocity += new Vector2(0, -.2f);
+                     movable.velocity += new Vector2(0, -.1f);
                      })),
                 (Shared.Controls.ControlContext.MoveDown,
                      new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                      {
-                     movable.velocity += new Vector2(0, .2f);
+                     movable.velocity += new Vector2(0, .1f);
                      })),
                 (Shared.Controls.ControlContext.MoveRight,
                      new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                      {
-                     movable.velocity += new Vector2(.2f, 0);
+                     movable.velocity += new Vector2(.1f, 0);
                      })),
                 (Shared.Controls.ControlContext.MoveLeft,
                      new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
                      {
-                     movable.velocity += new Vector2(-.2f, 0);
+                     movable.velocity += new Vector2(-.1f, 0);
                      })),
                 }));
             //Remove if statement for mouse controls. We will want to check what the user selects in the real game

@@ -15,11 +15,11 @@ namespace Server
         private Dictionary<uint, Shared.Entities.Entity> entities = new Dictionary<uint, Shared.Entities.Entity>(); // may not need
         private Dictionary<int, uint> clientToEntityId = new Dictionary<int, uint>();
 
-        // private Systems.KeyboardInput keyboardInput;
         private Systems.Network systemNetwork;
-        private Systems.Movement movement;
+        private Shared.Systems.Movement movement;
         private Systems.Collision collision;
         private Systems.Spawner spawner;
+        private Shared.Controls.ControlManager controlManager = new Shared.Controls.ControlManager(new Shared.DataManager());
 
         public delegate void AddDelegate(Shared.Entities.Entity entity);
         private AddDelegate addEntity;
@@ -34,8 +34,7 @@ namespace Server
 
         public bool Initialize()
         {
-            //this.keyboardInput = new Systems.KeyboardInput(controlManager, Scenes.SceneContext.Game);
-            this.movement = new Systems.Movement();
+            this.movement = new Shared.Systems.Movement();
             this.collision = new Systems.Collision();
             this.spawner = new Systems.Spawner(addEntity);
             this.systemNetwork = new Systems.Network();
@@ -52,7 +51,6 @@ namespace Server
 
         public void Update(TimeSpan elapsedTime)
         {
-            //keyboardInput.Update(gameTime);
             movement.Update(elapsedTime);
             collision.Update(elapsedTime);
             spawner.Update(elapsedTime);
@@ -65,7 +63,6 @@ namespace Server
 
         private void AddEntity(Shared.Entities.Entity entity)
         {
-            //keyboardInput.Add(entity);
             movement.Add(entity);
             collision.Add(entity);
             spawner.Add(entity);
@@ -75,7 +72,6 @@ namespace Server
 
         private void RemoveEntity(Shared.Entities.Entity entity)
         {
-            //keyboardInput.Remove(entity.id);
             movement.Remove(entity.id);
             collision.Remove(entity.id);
             spawner.Remove(entity.id);
@@ -108,7 +104,7 @@ namespace Server
             clients.Remove(clientId);
             Shared.Messages.Message message = new Shared.Messages.RemoveEntity(clientToEntityId[clientId]);
             MessageQueueServer.instance.broadcastMessage(message);
-            RemoveEntity(clientToEntityId[clientId]);
+            RemoveEntity(entities[clientToEntityId[clientId]]);
             clientToEntityId.Remove(clientId);
         }
 
@@ -128,12 +124,8 @@ namespace Server
             Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/player", Color.White, "Audio/bass-switch",
                     new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect);
             clientToEntityId[clientId] = player.id;
-            Rectangle foodRect = new Rectangle(200, 200, 10, 10);
-            Shared.Entities.Entity food = Shared.Entities.Food.Create("Images/food", foodRect);
-            clientToEntityId[clientId] = food.id;
 
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
-            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(food));
 
             // Other clients do not need this
             player.Remove<Shared.Components.MouseControllable>();
@@ -148,6 +140,7 @@ namespace Server
                     MessageQueueServer.instance.sendMessage(otherId, message);
                 }
             }
+            AddEntity(player);
         }
     }
 }

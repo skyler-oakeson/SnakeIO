@@ -7,18 +7,14 @@ namespace Shared.Components
     /// </summary>
     public class Movable : Component
     {
-        public Vector2 rotation { get; set; }
         public Vector2 velocity { get; set; }
 
-        public Movable(Vector2 rotation, Vector2 velocity)
+        public Movable(Vector2 velocity)
         {
-            this.rotation = rotation;
             this.velocity = velocity;
         }
 
         public override void Serialize(ref List<byte> data) {
-            data.AddRange(BitConverter.GetBytes(rotation.X));
-            data.AddRange(BitConverter.GetBytes(rotation.Y));
             data.AddRange(BitConverter.GetBytes(velocity.X));
             data.AddRange(BitConverter.GetBytes(velocity.Y));
         }

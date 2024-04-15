@@ -1,4 +1,6 @@
+#nullable enable
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -47,10 +49,16 @@ namespace Systems
                 if (!(bool)controlSettings.keyPressOnly && state.IsKeyDown((Keys)controlSettings.key))
                 {
                     kCon.controls[control](elapsedTime, 1.0f);
+                    List<Shared.Controls.ControlContext> inputs = new List<Shared.Controls.ControlContext>();
+                    inputs.Add(control);
+                    SnakeIO.MessageQueueClient.instance.sendMessageWithId(new Shared.Messages.Input(entity.id, inputs, elapsedTime));
                 }
                 else if ((bool)controlSettings.keyPressOnly && KeyPressed((Keys)controlSettings.key))
                 {
                     kCon.controls[control](elapsedTime, 1.0f);
+                    List<Shared.Controls.ControlContext> inputs = new List<Shared.Controls.ControlContext>();
+                    inputs.Add(control);
+                    SnakeIO.MessageQueueClient.instance.sendMessageWithId(new Shared.Messages.Input(entity.id, inputs, elapsedTime));
                 }
             }
 

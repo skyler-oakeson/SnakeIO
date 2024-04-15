@@ -10,10 +10,9 @@ namespace Shared.Entities
         {
             Entity wall = new Entity();
             // int radius = texture.Width >= texture.Height ? texture.Height/2 : texture.Width/2;
-
             // wall.Add(new Components.Renderable(texture, "Images/player", color, Color.Black, rectangle));
             wall.Add(new Components.Appearance(texture, typeof(Texture2D), color, Color.Transparent, rectangle));
-            wall.Add(new Components.Positionable(new Vector2(rectangle.X, rectangle.Y)));
+            wall.Add(new Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
 
             return wall;
         }

@@ -19,7 +19,7 @@ namespace Shared.Entities
         {
             Entity menuItem = new Entity();
             menuItem.Add(new Shared.Components.Readable(font, "Fonts/Micro5", value.ToString(), Color.Orange, Color.Black, rectangle));
-            menuItem.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y)));
+            menuItem.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
             menuItem.Add(new Shared.Components.Audible(sound));
             menuItem.Add(new Shared.Components.Selectable<T>(selected, value));
             menuItem.Add(new Shared.Components.Linkable(menu, linkPos));
@@ -32,6 +32,7 @@ namespace Shared.Entities
 
             menuItem.Add(new Shared.Components.KeyboardControllable(
                         selected,
+                        Controls.ControlableEntity.MenuItem,
                         cm,
                         new (Shared.Controls.ControlContext, Shared.Controls.ControlDelegate)[3]
                         {
