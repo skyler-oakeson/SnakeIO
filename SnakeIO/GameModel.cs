@@ -195,6 +195,14 @@ namespace SnakeIO
                 Shared.Components.Camera camera = entity.GetComponent<Shared.Components.Camera>();
             }
 
+            if (message.hasLinkable)
+            {
+                entity.Add(new Shared.Components.Linkable(
+                            message.linkableMessage.chain, 
+                            message.linkableMessage.linkPos
+                            ));
+            }
+
             if (message.hasKeyboardControllable)
             {
                 if (message.keyboardControllableMessage.type == Shared.Controls.ControlableEntity.Player)

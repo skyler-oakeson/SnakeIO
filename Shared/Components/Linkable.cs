@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Text;
 
 namespace Shared.Components 
 {
@@ -26,10 +27,13 @@ namespace Shared.Components
 
         public override void Serialize(ref List<byte> data)
         {
+            data.AddRange(BitConverter.GetBytes(chain.Length));
+            data.AddRange(Encoding.UTF8.GetBytes(chain));
+            data.AddRange(BitConverter.GetBytes((UInt16)linkPos));
         }
     }
 
-    public enum LinkPosition
+    public enum LinkPosition : UInt16
     {
         Head,
         Body,

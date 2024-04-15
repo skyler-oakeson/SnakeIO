@@ -122,7 +122,7 @@ namespace Server
 
             Rectangle playerRect = new Rectangle(0, 0, 50, 50); //TODO: update width and height
             Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/player", Color.White, "Audio/bass-switch",
-                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect);
+                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect, $"{clientId}");
             clientToEntityId[clientId] = player.id;
 
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
