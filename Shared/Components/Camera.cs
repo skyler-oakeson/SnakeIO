@@ -40,23 +40,23 @@ namespace Shared.Components
                 int radius = renderable.texture.Width >= renderable.texture.Height ? renderable.texture.Width / 2 : renderable.texture.Height / 2;
                 double circleDistanceX = Math.Abs(positionable.pos.X - rectangle.X);
                 double circleDistanceY = Math.Abs(positionable.pos.Y - rectangle.Y);
-                if (circleDistanceX > ((rectangle.Width + 10) / 2 + radius))
+                if (circleDistanceX > ((rectangle.Width + 50) / 2 + radius))
                 {
                     return false;
                 }
-                if (circleDistanceY > ((rectangle.Height + 10) / 2 + radius))
+                if (circleDistanceY > ((rectangle.Height + 50) / 2 + radius))
                 {
                     return false;
                 }
-                if (circleDistanceX <= ((rectangle.Width + 10) / 2))
+                if (circleDistanceX <= ((rectangle.Width + 50) / 2))
                 {
                     return true;
                 }
-                if (circleDistanceY <= ((rectangle.Height + 10) / 2))
+                if (circleDistanceY <= ((rectangle.Height + 50) / 2))
                 {
                     return true;
                 }
-                double cornerDistanceSQ = (circleDistanceX - rectangle.Width / 2) * (circleDistanceX - rectangle.Width / 2) + (circleDistanceY - rectangle.Height / 2) * (circleDistanceY - rectangle.Height / 2);
+                double cornerDistanceSQ = (circleDistanceX - (rectangle.Width + 50) / 2) * (circleDistanceX - (rectangle.Width + 50) / 2) + (circleDistanceY - (rectangle.Height + 50) / 2) * (circleDistanceY - (rectangle.Height + 50) / 2);
                 return (cornerDistanceSQ <= (radius * radius));
             }
             return true;
