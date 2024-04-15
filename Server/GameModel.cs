@@ -52,7 +52,7 @@ namespace Server
         {
             movement.Update(elapsedTime);
             collision.Update(elapsedTime);
-            // spawner.Update(elapsedTime);
+            spawner.Update(elapsedTime);
             systemNetwork.update(elapsedTime, MessageQueueServer.instance.getMessages());
         }
 

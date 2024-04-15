@@ -153,7 +153,7 @@ namespace SnakeIO
                 {
                     if (appearance.animatable)
                     {
-                        entity.Add(new Shared.Components.Animatable(texture, new int[] { 100, 100, 100, 100, 100, 100 }));
+                        entity.Add(new Shared.Components.Animatable(texture, new int[] { 200, 200, 200, 200, 200, 200 }));
                     }
                     entity.Add(new Shared.Components.Renderable(texture, appearance.texturePath, appearance.color, appearance.stroke, rectangle, appearance.animatable));
                 }
