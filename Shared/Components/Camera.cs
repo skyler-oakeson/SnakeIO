@@ -25,7 +25,8 @@ namespace Shared.Components
         public void Follow(Shared.Entities.Entity target)
         {
             Shared.Components.Renderable renderable = target.GetComponent<Shared.Components.Renderable>();
-            Matrix position = Matrix.CreateTranslation(-renderable.rectangle.X - (renderable.rectangle.Width / 2), -renderable.rectangle.Y - (renderable.rectangle.Height / 2), 0);
+            Shared.Components.Positionable positionable = target.GetComponent<Shared.Components.Positionable>();
+            Matrix position = Matrix.CreateTranslation(-positionable.pos.X - (renderable.rectangle.Width / 2), -positionable.pos.Y - (renderable.rectangle.Height / 2), 0);
             Matrix offset = Matrix.CreateTranslation(rectangle.Width / 2, rectangle.Height / 2, 0);
             Transform = position * offset;
         }
@@ -39,19 +40,19 @@ namespace Shared.Components
                 int radius = renderable.texture.Width >= renderable.texture.Height ? renderable.texture.Width / 2 : renderable.texture.Height / 2;
                 double circleDistanceX = Math.Abs(positionable.pos.X - rectangle.X);
                 double circleDistanceY = Math.Abs(positionable.pos.Y - rectangle.Y);
-                if (circleDistanceX > (rectangle.Width / 2 + radius))
+                if (circleDistanceX > ((rectangle.Width + 10) / 2 + radius))
                 {
                     return false;
                 }
-                if (circleDistanceY > (rectangle.Height / 2 + radius))
+                if (circleDistanceY > ((rectangle.Height + 10) / 2 + radius))
                 {
                     return false;
                 }
-                if (circleDistanceX <= (rectangle.Width / 2))
+                if (circleDistanceX <= ((rectangle.Width + 10) / 2))
                 {
                     return true;
                 }
-                if (circleDistanceX <= (rectangle.Width / 2))
+                if (circleDistanceY <= ((rectangle.Height + 10) / 2))
                 {
                     return true;
                 }

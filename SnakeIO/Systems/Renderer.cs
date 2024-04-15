@@ -98,6 +98,7 @@ namespace Systems
             {
                 if (camera != null)
                 {
+                    // Console.WriteLine(camera.Transform);
                     Matrix newMatrix = Matrix.Lerp(Matrix.Identity, camera.Transform, camera.LerpAmount);
                     sb.Begin(transformMatrix: newMatrix);
                 }

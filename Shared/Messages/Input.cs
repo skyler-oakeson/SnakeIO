@@ -26,7 +26,7 @@ namespace Shared.Messages
             List<byte> data = new List<byte>();
             data.AddRange(base.serialize());
             data.AddRange(BitConverter.GetBytes(entityId));
-            
+
             data.AddRange(BitConverter.GetBytes(inputs.Count));
             foreach (Shared.Controls.ControlContext con in inputs)
             {
@@ -48,7 +48,7 @@ namespace Shared.Messages
             offset += sizeof(UInt32);
             for (int i = 0; i < inputCount; i++)
             {
-                Shared.Controls.ControlContext cc = (Shared.Controls.ControlContext)BitConverter.ToUInt16(data, offset); 
+                Shared.Controls.ControlContext cc = (Shared.Controls.ControlContext)BitConverter.ToUInt16(data, offset);
                 offset += sizeof(UInt16);
                 inputs.Add(cc);
             }

@@ -37,8 +37,6 @@ namespace Shared.Systems
                 return;
             }
 
-            Console.WriteLine($"PrevPos: {positionable.prevPos} Pos: {positionable.pos} Ori: {positionable.orientation}");
-
             // Cap velocity
             if (Math.Abs(movable.velocity.X) > 1) { movable.velocity = new Vector2(movable.velocity.X > 0 ? 1 : -1, movable.velocity.Y); }
             if (Math.Abs(movable.velocity.Y) > 1) { movable.velocity = new Vector2(movable.velocity.X, movable.velocity.Y > 0 ? 1 : -1); }
@@ -47,13 +45,11 @@ namespace Shared.Systems
             positionable.prevPos = positionable.pos;
             positionable.pos = newpos;
 
-            Console.WriteLine("Movement");
             // if it has camera, update camera center
             if (entity.ContainsComponent<Shared.Components.Camera>())
             {
-                Console.WriteLine("Camera");
                 Shared.Components.Camera camera = entity.GetComponent<Shared.Components.Camera>();
-                camera.rectangle = new Rectangle((int)positionable.pos.X - camera.rectangle.Width, (int)positionable.pos.Y - camera.rectangle.Height, camera.rectangle.Width, camera.rectangle.Height);
+                camera.rectangle = new Rectangle((int)positionable.pos.X, (int)positionable.pos.Y, camera.rectangle.Width, camera.rectangle.Height);
                 camera.center = new Point((int)positionable.pos.X, (int)positionable.pos.Y);
                 camera.Follow(entity);
             }

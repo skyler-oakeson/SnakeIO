@@ -11,7 +11,7 @@ namespace Shared.Entities
             Entity tile = new Entity();
 
             tile.Add(new Components.Appearance(texture, typeof(Texture2D),  color, Color.Transparent, rectangle));
-            tile.Add(new Components.Positionable(new Vector2(rectangle.X, rectangle.Y)));
+            tile.Add(new Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
 
             return tile;
         }
