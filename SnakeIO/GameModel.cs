@@ -49,7 +49,7 @@ namespace SnakeIO
             this.movement = new Shared.Systems.Movement();
             network.registerNewEntityHandler(handleNewEntity);
             network.registerRemoveEntityHandler(handleRemoveEntity);
-            this.keyboardInput = new Systems.KeyboardInput(controlManager, MessageQueueClient.instance);
+            this.keyboardInput = new Systems.KeyboardInput(controlManager);
             this.mouseInput = new Systems.MouseInput(controlManager);
             this.audio = new Systems.Audio();
             this.linker = new Systems.Linker();

@@ -14,15 +14,13 @@ namespace Systems
     {
         KeyboardState statePrevious;
         Shared.Controls.ControlManager controlManager;
-        SnakeIO.MessageQueueClient? messageQueue;
 
-        public KeyboardInput(Shared.Controls.ControlManager controlManager, SnakeIO.MessageQueueClient? messageQueue = null)
+        public KeyboardInput(Shared.Controls.ControlManager controlManager)
             : base(
                    typeof(Shared.Components.KeyboardControllable)
                    )
         {
             this.controlManager = controlManager;
-            this.messageQueue = messageQueue;
         }
 
         public override void Update(TimeSpan elapsedTime)
@@ -51,22 +49,16 @@ namespace Systems
                 if (!(bool)controlSettings.keyPressOnly && state.IsKeyDown((Keys)controlSettings.key))
                 {
                     kCon.controls[control](elapsedTime, 1.0f);
-                    if (messageQueue != null)
-                    {
-                        List<Shared.Controls.ControlContext> inputs = new List<Shared.Controls.ControlContext>();
-                        inputs.Add(control);
-                        messageQueue.sendMessageWithId(new Shared.Messages.Input(entity.id, inputs, elapsedTime));
-                    }
+                    List<Shared.Controls.ControlContext> inputs = new List<Shared.Controls.ControlContext>();
+                    inputs.Add(control);
+                    SnakeIO.MessageQueueClient.instance.sendMessageWithId(new Shared.Messages.Input(entity.id, inputs, elapsedTime));
                 }
                 else if ((bool)controlSettings.keyPressOnly && KeyPressed((Keys)controlSettings.key))
                 {
                     kCon.controls[control](elapsedTime, 1.0f);
-                    if (messageQueue != null)
-                    {
-                        List<Shared.Controls.ControlContext> inputs = new List<Shared.Controls.ControlContext>();
-                        inputs.Add(control);
-                        messageQueue.sendMessageWithId(new Shared.Messages.Input(entity.id, inputs, elapsedTime));
-                    }
+                    List<Shared.Controls.ControlContext> inputs = new List<Shared.Controls.ControlContext>();
+                    inputs.Add(control);
+                    SnakeIO.MessageQueueClient.instance.sendMessageWithId(new Shared.Messages.Input(entity.id, inputs, elapsedTime));
                 }
             }
 
