@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
-namespace Systems
+namespace Shared.Systems
 {
     public class Linker : Shared.Systems.System
     {

@@ -25,36 +25,11 @@ namespace Shared.Entities
             menuItem.Add(new Shared.Components.Linkable(menu, linkPos));
 
             Shared.Components.Readable readable = menuItem.GetComponent<Shared.Components.Readable>();
-            Shared.Components.Selectable<T> selectable = menuItem.GetComponent<Shared.Components.Selectable<T>>();
-
-            Shared.Components.Linkable link = menuItem.GetComponent<Shared.Components.Linkable>();
             Shared.Components.Audible audio = menuItem.GetComponent<Shared.Components.Audible>();
+            Shared.Components.Selectable<T> selectable = menuItem.GetComponent<Shared.Components.Selectable<T>>();
+            Shared.Components.Linkable link = menuItem.GetComponent<Shared.Components.Linkable>();
 
-            menuItem.Add(new Shared.Components.KeyboardControllable(
-                        selected,
-                        Controls.ControlableEntity.MenuItem,
-                        cm,
-                        new (Shared.Controls.ControlContext, Shared.Controls.ControlDelegate)[3]
-                        {
-                        (Shared.Controls.ControlContext.MenuUp,
-                         new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
-                             {
-                             link.prevEntity.GetComponent<Components.Selectable<T>>().selected = true;
-                             selectable.selected = false;
-                             })),
-                        (Shared.Controls.ControlContext.MenuDown,
-                         new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
-                             {
-                             link.nextEntity.GetComponent<Components.Selectable<T>>().selected = true;
-                             selectable.selected = false;
-                             })),
-                        (Shared.Controls.ControlContext.Confirm,
-                         new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
-                             {
-                             selectable.interacted = true;
-                             })),
-                        }));
-
+            menuItem.Add(new Shared.Components.KeyboardControllable(selected, typeof(Shared.Entities.MenuItem<T>), MenuControls));
             // Menu is a options menu item
             if (typeof(T) == typeof(Shared.Controls.Control))
             {
@@ -80,5 +55,44 @@ namespace Shared.Entities
 
             return menuItem;
         }
-    }
+
+        public static Dictionary<Shared.Controls.ControlContext, Shared.Controls.ControlDelegate> MenuControls = new Dictionary<Shared.Controls.ControlContext, Shared.Controls.ControlDelegate>
+        {
+            {
+                Shared.Controls.ControlContext.MenuUp,
+                    new Shared.Controls.ControlDelegate((Entities.Entity entity, TimeSpan elapsedTime) =>
+                            {
+                            Shared.Components.Selectable<T> selectable = entity.GetComponent<Shared.Components.Selectable<T>>();
+                            Shared.Components.Linkable link = entity.GetComponent<Shared.Components.Linkable>();
+                            if (link.prevEntity != null)
+                            {
+                            link.prevEntity.GetComponent<Components.Selectable<T>>().selected = true;
+                            selectable.selected = false;
+                            }
+                            })
+            },
+            {
+                Shared.Controls.ControlContext.MenuDown,
+                    new Shared.Controls.ControlDelegate((Entities.Entity entity, TimeSpan elapsedTime) =>
+                            {
+                            Shared.Components.Selectable<T> selectable = entity.GetComponent<Shared.Components.Selectable<T>>();
+                            Shared.Components.Linkable link = entity.GetComponent<Shared.Components.Linkable>();
+                            if (link.prevEntity != null)
+                            {
+                            link.nextEntity.GetComponent<Components.Selectable<T>>().selected = true;
+                            selectable.selected = false;
+                            }
+                            })
+            },
+            {
+                Shared.Controls.ControlContext.Confirm,
+                new Shared.Controls.ControlDelegate((Entities.Entity entity, TimeSpan elapsedTime) =>
+                        {
+                        Shared.Components.Selectable<T> selectable = entity.GetComponent<Shared.Components.Selectable<T>>();
+                        Shared.Components.Linkable link = entity.GetComponent<Shared.Components.Linkable>();
+                        selectable.interacted = true;
+                        })
+            }
+        };
+}
 }

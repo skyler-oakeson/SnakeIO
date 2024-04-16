@@ -13,7 +13,7 @@ namespace Scenes
         private KeyboardInput keyboardInput;
         private Selector<SceneContext> selector;
         private Audio audio;
-        private Linker linker;
+        private Shared.Systems.Linker linker;
 
         public MainMenuScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
         {
@@ -24,16 +24,25 @@ namespace Scenes
             this.selector = new Systems.Selector<SceneContext>();
             this.renderer = new Renderer(spriteBatch);
             this.audio = new Audio();
-            this.linker = new Linker();
+            this.linker = new Shared.Systems.Linker();
         }
 
         override public void LoadContent(ContentManager contentManager)
         {
             SpriteFont font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
-            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(font, SceneContext.Game, "main", true, sound, Shared.Components.LinkPosition.Head, controlManager, new Rectangle(50, 50, 0, 0)));
-            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(font, SceneContext.Options, "main", false, sound, Shared.Components.LinkPosition.Body, controlManager, new Rectangle(50, 100, 0, 0)));
-            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(font, SceneContext.Exit, "main",  false, sound, Shared.Components.LinkPosition.Tail, controlManager, new Rectangle(50, 150, 0, 0)));
+            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
+                        font, SceneContext.Game, "main", 
+                        true, sound, Shared.Components.LinkPosition.Head, 
+                        controlManager, new Rectangle(50, 50, 0, 0)));
+            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
+                        font, SceneContext.Options, "main", false,
+                        sound, Shared.Components.LinkPosition.Body,
+                        controlManager, new Rectangle(50, 100, 0, 0)));
+            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
+                        font, SceneContext.Exit, "main",
+                        false, sound, Shared.Components.LinkPosition.Tail,
+                        controlManager, new Rectangle(50, 150, 0, 0)));
         }
 
         override public SceneContext ProcessInput(GameTime gameTime)

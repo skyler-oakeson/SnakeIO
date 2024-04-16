@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace Shared.Parsers
 {
     public class KeyboardControllableParser : Parser
@@ -14,12 +16,14 @@ namespace Shared.Parsers
             // Parse the data
             bool enable = BitConverter.ToBoolean(data, offset);
             offset += sizeof(Boolean);
-            UInt16 type = BitConverter.ToUInt16(data, offset);
-            offset += sizeof(UInt16);
+            int typeSize = BitConverter.ToInt32(data, offset);
+            offset += sizeof(Int32);
+            System.Type type = System.Type.GetType(Encoding.UTF8.GetString(data, offset, typeSize));
+            offset += typeSize;
             this.message = new KeyboardControllableMessage() 
             {
                 enable = enable,
-                type = (Shared.Controls.ControlableEntity)type
+                type = type
             };
         }
 
@@ -31,7 +35,7 @@ namespace Shared.Parsers
         public struct KeyboardControllableMessage
         {
             public bool enable { get; set; }
-            public Shared.Controls.ControlableEntity type { get; set; }
+            public Type type { get; set; }
         }
     }
 }

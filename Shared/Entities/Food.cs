@@ -23,10 +23,10 @@ namespace Shared.Entities
             food.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
             food.Add(new Components.Consumable(1.0f));
             food.Add(new Components.Spawnable(TimeSpan.FromMilliseconds(5000), 5, typeof(Food)));
+            food.Add(new Components.Movable(new Vector2(0, 0)));
             // Components.Animatable animatable = food.GetComponent<Components.Animatable>();
             // int radius = animatable.subImageWidth >= animatable.spriteSheet.Height ? animatable.subImageWidth/2 : animatable.spriteSheet.Height/2;
             // food.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
-            food.Add(new Components.Movable(new Vector2(0, 0)));
 
             return food;
         }

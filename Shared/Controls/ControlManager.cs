@@ -4,8 +4,8 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Shared.Controls
 {
-    public delegate void ControlDelegate(TimeSpan ElapsedTime, float value);
-    public delegate void ControlDelegatePosition(TimeSpan ElapsedTime, int x, int y);
+    public delegate void ControlDelegate(Entities.Entity entity, TimeSpan ElapsedTime);
+    public delegate void ControlDelegatePosition(Entities.Entity entity, TimeSpan ElapsedTime, int x, int y);
 
     public class ControlManager
     {

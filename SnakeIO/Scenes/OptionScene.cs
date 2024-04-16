@@ -14,7 +14,7 @@ namespace Scenes
         private KeyboardInput keyboardInput;
         private Selector<Shared.Controls.Control> selector;
         private Audio audio;
-        private Linker linker;
+        private Shared.Systems.Linker linker;
 
         public OptionScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
         {
@@ -25,7 +25,7 @@ namespace Scenes
             this.selector = new Systems.Selector<Shared.Controls.Control>();
             this.renderer = new Renderer(spriteBatch);
             this.audio = new Audio();
-            this.linker = new Linker();
+            this.linker = new Shared.Systems.Linker();
         }
 
         override public void LoadContent(ContentManager contentManager)

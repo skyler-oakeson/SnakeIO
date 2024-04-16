@@ -21,7 +21,7 @@ namespace SnakeIO
         private Systems.Network network;
         private Systems.Interpolation interpolation;
         private Systems.MouseInput mouseInput;
-        private Systems.Linker linker;
+        private Shared.Systems.Linker linker;
         private Shared.Systems.Movement movement;
         private Systems.Audio audio;
 
@@ -53,7 +53,7 @@ namespace SnakeIO
             this.keyboardInput = new Systems.KeyboardInput(controlManager);
             this.mouseInput = new Systems.MouseInput(controlManager);
             this.audio = new Systems.Audio();
-            this.linker = new Systems.Linker();
+            this.linker = new Shared.Systems.Linker();
             this.contentManager = contentManager;
 
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
@@ -68,8 +68,8 @@ namespace SnakeIO
             keyboardInput.Update(elapsedTime);
             mouseInput.Update(elapsedTime);
             linker.Update(elapsedTime);
-            interpolation.Update(elapsedTime);
             movement.Update(elapsedTime);
+            interpolation.Update(elapsedTime);
             audio.Update(elapsedTime);
         }
 
@@ -195,39 +195,40 @@ namespace SnakeIO
                 Shared.Components.Camera camera = entity.GetComponent<Shared.Components.Camera>();
             }
 
+            if (message.hasLinkable)
+            {
+                entity.Add(new Shared.Components.Linkable(
+                            message.linkableMessage.chain, 
+                            message.linkableMessage.linkPos
+                            ));
+                if (message.linkableMessage.linkPos != Shared.Components.LinkPosition.Head && message.hasPosition && message.hasMovement)
+                {
+                    entity.GetComponent<Shared.Components.Linkable>().linkDelegate = 
+                        (new Shared.Components.LinkDelegate((Shared.Entities.Entity root) => 
+                        {
+                        Shared.Components.Linkable rootLink = root.GetComponent<Shared.Components.Linkable>();
+                        Shared.Components.Positionable rootPos = root.GetComponent<Shared.Components.Positionable>();
+                        Shared.Components.Movable rootMov = root.GetComponent<Shared.Components.Movable>();
+                        if (rootLink.prevEntity != null)
+                        {
+                            Shared.Components.Positionable prevPos = rootLink.prevEntity.GetComponent<Shared.Components.Positionable>();
+                            Shared.Components.Movable prevMov = rootLink.prevEntity.GetComponent<Shared.Components.Movable>();
+
+                            // rootPos.prevPos = rootPos.pos;
+                            // rootPos.pos = prevPos.prevPos;
+                            
+                            rootPos.prevPos = rootPos.pos;
+                            rootPos.pos = prevPos.prevPos;
+                        }
+                        }
+                       ));
+                }
+            }
+
             if (message.hasKeyboardControllable)
             {
-                if (message.keyboardControllableMessage.type == Shared.Controls.ControlableEntity.Player)
-                {
-                    Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
-                    entity.Add(new Shared.Components.KeyboardControllable(
-                                message.keyboardControllableMessage.enable,
-                                message.keyboardControllableMessage.type,
-                                controlManager,
-                                new (Shared.Controls.ControlContext, Shared.Controls.ControlDelegate)[4]
-                                {
-                                (Shared.Controls.ControlContext.MoveUp,
-                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
-                                     {
-                                     movable.velocity += new Vector2(0, -.2f);
-                                     })),
-                                (Shared.Controls.ControlContext.MoveDown,
-                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
-                                     {
-                                     movable.velocity += new Vector2(0, .2f);
-                                     })),
-                                (Shared.Controls.ControlContext.MoveRight,
-                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
-                                     {
-                                     movable.velocity += new Vector2(.2f, 0);
-                                     })),
-                                (Shared.Controls.ControlContext.MoveLeft,
-                                 new Shared.Controls.ControlDelegate((TimeSpan elapsedTime, float value) =>
-                                     {
-                                     movable.velocity += new Vector2(-.2f, 0);
-                                     })),
-                                }));
-                }
+                Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
+                entity.Add(new Shared.Components.KeyboardControllable(message.keyboardControllableMessage.enable, message.keyboardControllableMessage.type, Shared.Entities.Player.PlayerKeyboardControls));
             }
 
             if (message.hasMouseControllable)
