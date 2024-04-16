@@ -57,7 +57,6 @@ namespace Systems
             Shared.Components.Spawnable spawnable = entity.GetComponent<Shared.Components.Spawnable>();
             Shared.Components.Appearance appearance = entity.GetComponent<Shared.Components.Appearance>();
             Type spawnableType = spawnable.type;
-            Console.WriteLine(spawnableType);
             MethodInfo createMethod = spawnableType.GetMethod("Create");
             for (int i = 0; i < spawnable.spawnCount; i++)
             {

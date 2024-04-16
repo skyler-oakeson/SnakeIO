@@ -21,7 +21,7 @@ namespace Shared.Entities
             player.Add(new Components.Appearance(texture, typeof(Texture2D), color, Color.Black, rectangle));
             player.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
             player.Add(new Shared.Components.Movable(new Vector2(0, 0)));
-            player.Add(new Shared.Components.KeyboardControllable(true, PlayerKeyboardControls));
+            player.Add(new Shared.Components.KeyboardControllable(true, typeof(Shared.Entities.Player), PlayerKeyboardControls));
             player.Add(new Components.Camera(new Rectangle(rectangle.X, rectangle.Y, 1500, 1500)));
             // player.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
             // player.Add(new Components.Audible(sound));

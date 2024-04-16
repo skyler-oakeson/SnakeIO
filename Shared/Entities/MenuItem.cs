@@ -29,7 +29,7 @@ namespace Shared.Entities
             Shared.Components.Selectable<T> selectable = menuItem.GetComponent<Shared.Components.Selectable<T>>();
             Shared.Components.Linkable link = menuItem.GetComponent<Shared.Components.Linkable>();
 
-            menuItem.Add(new Shared.Components.KeyboardControllable( selected, MenuControls));
+            menuItem.Add(new Shared.Components.KeyboardControllable(selected, typeof(Shared.Entities.MenuItem<T>), MenuControls));
             // Menu is a options menu item
             if (typeof(T) == typeof(Shared.Controls.Control))
             {

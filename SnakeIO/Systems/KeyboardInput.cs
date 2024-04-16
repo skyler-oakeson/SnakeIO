@@ -45,20 +45,23 @@ namespace Systems
             KeyboardState state = Keyboard.GetState();
             foreach (Shared.Controls.ControlContext control in kCon.controls.Keys)
             {
+                List<Shared.Controls.ControlContext> inputs = new List<Shared.Controls.ControlContext>();
                 Shared.Controls.Control controlSettings = controlManager.GetControl(control);
                 if (!(bool)controlSettings.keyPressOnly && state.IsKeyDown((Keys)controlSettings.key))
                 {
-                    List<Shared.Controls.ControlContext> inputs = new List<Shared.Controls.ControlContext>();
                     inputs.Add(control);
-                    SnakeIO.MessageQueueClient.instance.sendMessageWithId(new Shared.Messages.Input(entity.id, inputs, elapsedTime));
                     kCon.controls[control](entity, elapsedTime);
                 }
                 else if ((bool)controlSettings.keyPressOnly && KeyPressed((Keys)controlSettings.key))
                 {
-                    List<Shared.Controls.ControlContext> inputs = new List<Shared.Controls.ControlContext>();
                     inputs.Add(control);
-                    SnakeIO.MessageQueueClient.instance.sendMessageWithId(new Shared.Messages.Input(entity.id, inputs, elapsedTime));
                     kCon.controls[control](entity, elapsedTime);
+                }
+
+                // Send input to server if it is a player
+                if (kCon.type == typeof(Shared.Entities.Player))
+                {
+                    SnakeIO.MessageQueueClient.instance.sendMessageWithId(new Shared.Messages.Input(entity.id, inputs, elapsedTime));
                 }
             }
 
