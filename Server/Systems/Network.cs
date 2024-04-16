@@ -108,7 +108,7 @@ namespace Systems
                 Shared.Components.KeyboardControllable con = entity.GetComponent<Shared.Components.KeyboardControllable>();
                 foreach (Shared.Controls.ControlContext input in message.inputs)
                 {
-                    con.controls[input].Invoke(message.elapsedTime, 1.0f);
+                    con.controls[input].Invoke(entity, message.elapsedTime);
                 }
                 reportThese.Add(entity.id);
             }

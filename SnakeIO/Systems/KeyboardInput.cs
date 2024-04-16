@@ -48,14 +48,14 @@ namespace Systems
                 Shared.Controls.Control controlSettings = controlManager.GetControl(control);
                 if (!(bool)controlSettings.keyPressOnly && state.IsKeyDown((Keys)controlSettings.key))
                 {
-                    kCon.controls[control](elapsedTime, 1.0f);
+                    kCon.controls[control](entity, elapsedTime);
                     List<Shared.Controls.ControlContext> inputs = new List<Shared.Controls.ControlContext>();
                     inputs.Add(control);
                     SnakeIO.MessageQueueClient.instance.sendMessageWithId(new Shared.Messages.Input(entity.id, inputs, elapsedTime));
                 }
                 else if ((bool)controlSettings.keyPressOnly && KeyPressed((Keys)controlSettings.key))
                 {
-                    kCon.controls[control](elapsedTime, 1.0f);
+                    kCon.controls[control](entity, elapsedTime);
                     List<Shared.Controls.ControlContext> inputs = new List<Shared.Controls.ControlContext>();
                     inputs.Add(control);
                     SnakeIO.MessageQueueClient.instance.sendMessageWithId(new Shared.Messages.Input(entity.id, inputs, elapsedTime));

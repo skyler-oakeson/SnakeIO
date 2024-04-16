@@ -40,7 +40,7 @@ namespace Systems
             MouseState state = Mouse.GetState();
             foreach (Shared.Controls.ControlContext control in mCon.controls.Keys)
             {
-                mCon.controls[control](elapsedTime, state.X, state.Y);
+                mCon.controls[control](entity, elapsedTime, state.X, state.Y);
             }
             // Move the current state to the previous state for the next time around
             statePrevious = state;
