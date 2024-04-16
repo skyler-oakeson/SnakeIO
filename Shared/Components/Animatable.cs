@@ -8,20 +8,27 @@ namespace Shared.Components
         public Texture2D spriteSheet;
         public int[] spriteTime;
         public int subImageWidth;
-        public int subImageIndex { get; set;}
+        public int subImageIndex { get; set; }
         public TimeSpan timeSinceLastFrame { get; set; } = TimeSpan.Zero;
 
-        public Animatable(Texture2D spriteSheet, int[] spriteTime)
+        public Animatable(int[] spriteTime, Texture2D spriteSheet = null)
         {
             this.spriteSheet = spriteSheet;
             this.spriteTime = spriteTime;
-            this.subImageWidth = spriteSheet.Width / spriteTime.Length;
-            this.subImageIndex = 0;
+            if (spriteSheet != null)
+            {
+                this.subImageWidth = spriteSheet.Width / spriteTime.Length;
+                this.subImageIndex = 0;
+            }
         }
 
-        // TODO: Parse everything except for Texture2D
         public override void Serialize(ref List<byte> data)
         {
+            data.AddRange(BitConverter.GetBytes(spriteTime.Length));
+            foreach (int time in spriteTime)
+            {
+                data.AddRange(BitConverter.GetBytes(time));
+            }
         }
     }
 }

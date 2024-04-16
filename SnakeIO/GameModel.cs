@@ -146,21 +146,21 @@ namespace SnakeIO
                             message.appearanceMessage.type,
                             message.appearanceMessage.color,
                             message.appearanceMessage.stroke,
-                            rectangle,
-                            message.appearanceMessage.animatable));
+                            rectangle
+                            ));
                 Shared.Components.Appearance appearance = entity.GetComponent<Shared.Components.Appearance>();
                 Texture2D texture = contentManager.Load<Texture2D>(appearance.texturePath);
                 if (appearance.type == typeof(Texture2D))
                 {
-                    if (appearance.animatable)
+                    if (message.hasAnimatable)
                     {
-                        entity.Add(new Shared.Components.Animatable(texture, new int[] { 200, 200, 200, 200, 200, 200 }));
+                        entity.Add(new Shared.Components.Animatable(message.animatableMessage.spriteTime, texture));
                     }
-                    entity.Add(new Shared.Components.Renderable(texture, appearance.texturePath, appearance.color, appearance.stroke, rectangle, appearance.animatable));
+                    entity.Add(new Shared.Components.Renderable(texture, appearance.texturePath, appearance.color, appearance.stroke, rectangle));
                 }
                 else
                 {
-                    entity.Add(new Shared.Components.Renderable(texture, appearance.texturePath, appearance.color, appearance.stroke, rectangle, appearance.animatable));
+                    entity.Add(new Shared.Components.Renderable(texture, appearance.texturePath, appearance.color, appearance.stroke, rectangle));
                 }
             }
 

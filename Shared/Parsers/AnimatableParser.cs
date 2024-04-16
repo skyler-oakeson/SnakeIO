@@ -19,6 +19,7 @@ namespace Shared.Parsers
                 messageSpriteTime[i] = BitConverter.ToInt32(data, offset);
                 offset += sizeof(Int32);
             }
+
             this.message = new AnimatableMessage
             {
                 spriteTime = messageSpriteTime,

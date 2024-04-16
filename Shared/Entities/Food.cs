@@ -17,9 +17,9 @@ namespace Shared.Entities
             int g = random.Next(0, 255);
             int b = random.Next(0, 255);
 
-            food.Add(new Components.Appearance("Images/food", typeof(Texture2D), new Color(r, g, b), Color.White, rectangle, true));
+            food.Add(new Components.Appearance("Images/food", typeof(Texture2D), new Color(r, g, b), Color.White, rectangle));
             // food.Add(new Components.Renderable(texture, "Images/food", new Color(r, g, b), Color.White));
-            // food.Add(new Components.Animatable(texture, new int[] { 100, 100, 100, 100, 100, 100 }));
+            food.Add(new Components.Animatable(new int[] { 200, 200, 200, 200, 200, 200 }));
             food.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
             food.Add(new Components.Consumable(1.0f));
             food.Add(new Components.Spawnable(TimeSpan.FromMilliseconds(5000), 5, typeof(Food)));
