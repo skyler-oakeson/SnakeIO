@@ -229,7 +229,6 @@ namespace SnakeIO
             {
                 Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
                 entity.Add(new Shared.Components.KeyboardControllable(message.keyboardControllableMessage.enable, message.keyboardControllableMessage.type, Shared.Entities.Player.PlayerKeyboardControls));
-                Console.WriteLine(message.keyboardControllableMessage.enable);
             }
 
             if (message.hasMouseControllable)
