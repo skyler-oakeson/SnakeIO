@@ -227,15 +227,11 @@ namespace SnakeIO
 
             if (message.hasKeyboardControllable)
             {
-                if (message.keyboardControllableMessage.type == Shared.Controls.ControlableEntity.Player)
-                {
-                    Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
-                    entity.Add(new Shared.Components.KeyboardControllable(
-                                message.keyboardControllableMessage.enable,
-                                message.keyboardControllableMessage.type,
-                                controlManager,
-                                Shared.Entities.Player.PlayerKeyboardControls));
-                }
+                Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
+                entity.Add(new Shared.Components.KeyboardControllable(
+                            message.keyboardControllableMessage.enable,
+                            controlManager,
+                            Shared.Entities.Player.PlayerKeyboardControls));
             }
 
             if (message.hasMouseControllable)

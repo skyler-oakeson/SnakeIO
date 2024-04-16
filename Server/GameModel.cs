@@ -137,7 +137,7 @@ namespace Server
             // Other clients do not need this
             // player.Remove<Shared.Components.MouseControllable>();
             // player.Remove<Shared.Components.KeyboardControllable>();
-            player.Remove<Shared.Components.Camera>();
+            // player.Remove<Shared.Components.Camera>();
 
             Shared.Messages.Message message = new Shared.Messages.NewEntity(player);
             foreach (int otherId in clients)
