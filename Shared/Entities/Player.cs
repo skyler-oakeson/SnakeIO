@@ -62,17 +62,19 @@ namespace Shared.Entities
             }
         };
 
-        public static (Shared.Controls.ControlContext, Shared.Controls.ControlDelegatePosition)[] PlayerMouseControls = 
-            new (Shared.Controls.ControlContext, Shared.Controls.ControlDelegatePosition)[1]
+        public static Dictionary<Shared.Controls.ControlContext, Shared.Controls.ControlDelegatePosition> PlayerMouseControls = 
+            new Dictionary<Shared.Controls.ControlContext, Shared.Controls.ControlDelegatePosition>
         {
-            (Shared.Controls.ControlContext.MoveLeft, new Shared.Controls.ControlDelegatePosition((Shared.Entities.Entity entity, TimeSpan elapsedTime, int x, int y) =>
             {
-                Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
-                Vector2 pos = entity.GetComponent<Shared.Components.Positionable>().pos;
-                Vector2 dir = new Vector2(x, y) - pos;
-                dir.Normalize();
-                movable.velocity += dir * .2f; //direction * by speed
-            }))
+                Shared.Controls.ControlContext.MoveLeft, new Shared.Controls.ControlDelegatePosition((Shared.Entities.Entity entity, TimeSpan elapsedTime, int x, int y) =>
+                        {
+                        Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
+                        Vector2 pos = entity.GetComponent<Shared.Components.Positionable>().pos;
+                        Vector2 dir = new Vector2(x, y) - pos;
+                        dir.Normalize();
+                        movable.velocity += dir * .2f; //direction * by speed
+                        })
+            }
         };
     }
 }

@@ -9,16 +9,17 @@ namespace Shared.Components
     public class MouseControllable : Component
     {
         public Dictionary<ControlContext, ControlDelegatePosition> controls = new Dictionary<ControlContext, ControlDelegatePosition>();
+        public bool enable;
+
         public MouseControllable(
-                Controls.ControlManager cm,
-                (Controls.ControlContext, ControlDelegatePosition)[] actions
+                bool enable,
+                Dictionary<ControlContext, ControlDelegatePosition> controls 
                 )
         {
-            foreach ((ControlContext con, ControlDelegatePosition del) in actions)
-            {
-                controls.Add(con, del);
-            }
+            this.controls = controls;
+            this.enable = enable;
         }
+
         public override void Serialize(ref List<byte> data)
         {
         }

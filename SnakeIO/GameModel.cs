@@ -203,25 +203,7 @@ namespace SnakeIO
                             ));
                 if (message.linkableMessage.linkPos != Shared.Components.LinkPosition.Head && message.hasPosition && message.hasMovement)
                 {
-                    entity.GetComponent<Shared.Components.Linkable>().linkDelegate = 
-                        (new Shared.Components.LinkDelegate((Shared.Entities.Entity root) => 
-                        {
-                        Shared.Components.Linkable rootLink = root.GetComponent<Shared.Components.Linkable>();
-                        Shared.Components.Positionable rootPos = root.GetComponent<Shared.Components.Positionable>();
-                        Shared.Components.Movable rootMov = root.GetComponent<Shared.Components.Movable>();
-                        if (rootLink.prevEntity != null)
-                        {
-                            Shared.Components.Positionable prevPos = rootLink.prevEntity.GetComponent<Shared.Components.Positionable>();
-                            Shared.Components.Movable prevMov = rootLink.prevEntity.GetComponent<Shared.Components.Movable>();
-
-                            // rootPos.prevPos = rootPos.pos;
-                            // rootPos.pos = prevPos.prevPos;
-                            
-                            rootPos.prevPos = rootPos.pos;
-                            rootPos.pos = prevPos.prevPos;
-                        }
-                        }
-                       ));
+                    entity.GetComponent<Shared.Components.Linkable>().linkDelegate = Shared.Entities.Body.BodyLinking;
                 }
             }
 

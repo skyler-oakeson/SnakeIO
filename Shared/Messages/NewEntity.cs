@@ -226,11 +226,11 @@ namespace Shared.Messages
             }
 
             // // Linkable
-            // data.AddRange(BitConverter.GetBytes(linkable != null));
-            // if (linkable != null)
-            // {
-            //     linkable.Serialize(ref data);
-            // }
+            data.AddRange(BitConverter.GetBytes(linkable != null));
+            if (linkable != null)
+            {
+                linkable.Serialize(ref data);
+            }
 
             // Keyboard
             data.AddRange(BitConverter.GetBytes(keyboardControllable != null));
@@ -348,14 +348,14 @@ namespace Shared.Messages
             }
 
             // Linkable
-            // this.hasLinkable = BitConverter.ToBoolean(data, offset);
-            // offset += sizeof(bool);
-            // if (hasLinkable)
-            // {
-            //     Parsers.LinkableParser parser = new Parsers.LinkableParser();
-            //     parser.Parse(ref data, ref offset);
-            //     this.linkableMessage = parser.GetMessage();
-            // }
+            this.hasLinkable = BitConverter.ToBoolean(data, offset);
+            offset += sizeof(bool);
+            if (hasLinkable)
+            {
+                Parsers.LinkableParser parser = new Parsers.LinkableParser();
+                parser.Parse(ref data, ref offset);
+                this.linkableMessage = parser.GetMessage();
+            }
 
             // Keyboard
             this.hasKeyboardControllable = BitConverter.ToBoolean(data, offset);
