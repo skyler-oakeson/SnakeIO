@@ -45,7 +45,7 @@ namespace Systems
             }
             foreach (var entity in entitiesToSpawn)
             {
-                // addEntity(entity);
+                addEntity(entity);
                 Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(entity));
             }
             entitiesToSpawn.Clear();
@@ -57,6 +57,7 @@ namespace Systems
             Shared.Components.Spawnable spawnable = entity.GetComponent<Shared.Components.Spawnable>();
             Shared.Components.Appearance appearance = entity.GetComponent<Shared.Components.Appearance>();
             Type spawnableType = spawnable.type;
+            Console.WriteLine(spawnableType);
             MethodInfo createMethod = spawnableType.GetMethod("Create");
             for (int i = 0; i < spawnable.spawnCount; i++)
             {

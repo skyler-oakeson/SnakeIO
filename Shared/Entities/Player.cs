@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -9,7 +10,7 @@ namespace Shared.Entities
 {
     public class Player
     {
-        public static Entity Create(string texture, Color color, string sound, Shared.Controls.ControlManager cm, Rectangle rectangle, string chain = null)
+        public static Entity Create(string texture, Color color, string sound, Rectangle rectangle, string chain = null)
         {
             Entity player = new Entity();
 
@@ -17,46 +18,48 @@ namespace Shared.Entities
             {
                 player.Add(new Shared.Components.Linkable(chain, Shared.Components.LinkPosition.Head));
             }
-
             player.Add(new Components.Appearance(texture, typeof(Texture2D), color, Color.Black, rectangle));
             player.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
             player.Add(new Shared.Components.Movable(new Vector2(0, 0)));
-            player.Add(new Shared.Components.KeyboardControllable(true, cm, PlayerKeyboardControls));
+            player.Add(new Shared.Components.KeyboardControllable(true, PlayerKeyboardControls));
             player.Add(new Components.Camera(new Rectangle(rectangle.X, rectangle.Y, 1500, 1500)));
             // player.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
             // player.Add(new Components.Audible(sound));
-            //
-            //Remove if statement for mouse controls. We will want to check what the user selects in the real game
-            if (false)
-            {
-                player.Add(new Shared.Components.MouseControllable(cm, PlayerMouseControls));
-            }
 
             return player;
         }
 
-        public static (Shared.Controls.ControlContext, Shared.Controls.ControlDelegate)[] PlayerKeyboardControls = new (Shared.Controls.ControlContext, Shared.Controls.ControlDelegate)[4]
+        public static Dictionary<Shared.Controls.ControlContext, Shared.Controls.ControlDelegate> PlayerKeyboardControls = 
+            new Dictionary<Controls.ControlContext, Controls.ControlDelegate>
         {
-            (Shared.Controls.ControlContext.MoveUp, new Shared.Controls.ControlDelegate((Shared.Entities.Entity entity, TimeSpan elapsedTime) =>
             {
-            Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
-            movable.velocity += new Vector2(0, -.1f);
-            })),
-            (Shared.Controls.ControlContext.MoveDown, new Shared.Controls.ControlDelegate((Shared.Entities.Entity entity, TimeSpan elapsedTime) =>
+                Shared.Controls.ControlContext.MoveUp, new Shared.Controls.ControlDelegate((Shared.Entities.Entity entity, TimeSpan elapsedTime) =>
+                        {
+                        Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
+                        movable.velocity += new Vector2(0, -.1f);
+                        })
+            },
             {
-            Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
-            movable.velocity += new Vector2(0, .1f);
-            })),
-            (Shared.Controls.ControlContext.MoveRight, new Shared.Controls.ControlDelegate((Shared.Entities.Entity entity, TimeSpan elapsedTime) =>
+                Shared.Controls.ControlContext.MoveDown, new Shared.Controls.ControlDelegate((Shared.Entities.Entity entity, TimeSpan elapsedTime) =>
+                        {
+                        Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
+                        movable.velocity += new Vector2(0, .1f);
+                        })
+            },
             {
-            Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
-            movable.velocity += new Vector2(.1f, 0);
-            })),
-            (Shared.Controls.ControlContext.MoveLeft, new Shared.Controls.ControlDelegate((Shared.Entities.Entity entity, TimeSpan elapsedTime) =>
+                Shared.Controls.ControlContext.MoveRight, new Shared.Controls.ControlDelegate((Shared.Entities.Entity entity, TimeSpan elapsedTime) =>
+                        {
+                        Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
+                        movable.velocity += new Vector2(.1f, 0);
+                        })
+            },
             {
-            Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
-            movable.velocity += new Vector2(-.1f, 0);
-            })),
+                Shared.Controls.ControlContext.MoveLeft, new Shared.Controls.ControlDelegate((Shared.Entities.Entity entity, TimeSpan elapsedTime) =>
+                        {
+                        Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
+                        movable.velocity += new Vector2(-.1f, 0);
+                        })
+            }
         };
 
         public static (Shared.Controls.ControlContext, Shared.Controls.ControlDelegatePosition)[] PlayerMouseControls = 
@@ -64,11 +67,11 @@ namespace Shared.Entities
         {
             (Shared.Controls.ControlContext.MoveLeft, new Shared.Controls.ControlDelegatePosition((Shared.Entities.Entity entity, TimeSpan elapsedTime, int x, int y) =>
             {
-            Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
-            Vector2 pos = entity.GetComponent<Shared.Components.Positionable>().pos;
-            Vector2 dir = new Vector2(x, y) - pos;
-            dir.Normalize();
-            movable.velocity += dir * .2f; //direction * by speed
+                Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
+                Vector2 pos = entity.GetComponent<Shared.Components.Positionable>().pos;
+                Vector2 dir = new Vector2(x, y) - pos;
+                dir.Normalize();
+                movable.velocity += dir * .2f; //direction * by speed
             }))
         };
     }

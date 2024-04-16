@@ -105,10 +105,9 @@ namespace Systems
             if (entities.ContainsKey(message.entityId))
             {
                 Shared.Entities.Entity entity = entities[message.entityId];
-                Shared.Components.KeyboardControllable con = entity.GetComponent<Shared.Components.KeyboardControllable>();
                 foreach (Shared.Controls.ControlContext input in message.inputs)
                 {
-                    con.controls[input].Invoke(entity, message.elapsedTime);
+                    Shared.Entities.Player.PlayerKeyboardControls[input].Invoke(entity, message.elapsedTime);
                 }
                 reportThese.Add(entity.id);
             }

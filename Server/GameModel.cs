@@ -44,8 +44,8 @@ namespace Server
             systemNetwork.registerJoinHandler(handleJoin);
             systemNetwork.registerDisconnectHandler(handleDisconnect);
             MessageQueueServer.instance.registerConnectHandler(handleConnect);
-            Rectangle rectangle = new Rectangle(100, 100, 10, 10);
-            AddEntity(Shared.Entities.Food.Create("Images/food", rectangle));
+            // Rectangle rectangle = new Rectangle(100, 100, 10, 10);
+            // AddEntity(Shared.Entities.Food.Create("Images/food", rectangle));
             new Utils.WorldGenerator(addEntity);
 
             return true;
@@ -53,11 +53,11 @@ namespace Server
 
         public void Update(TimeSpan elapsedTime)
         {
+            systemNetwork.update(elapsedTime, MessageQueueServer.instance.getMessages());
             linker.Update(elapsedTime);
             movement.Update(elapsedTime);
             collision.Update(elapsedTime);
             spawner.Update(elapsedTime);
-            systemNetwork.update(elapsedTime, MessageQueueServer.instance.getMessages());
         }
 
         public void Render(GameTime gameTime)
@@ -116,9 +116,9 @@ namespace Server
 
         private void reportAllEntities(int clientId)
         {
-            foreach (var item in entities)
+            foreach (Shared.Entities.Entity item in entities.Values)
             {
-                MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(item.Value));
+                MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(item));
             }
         }
 
@@ -127,26 +127,24 @@ namespace Server
             reportAllEntities(clientId);
 
             Rectangle playerRect = new Rectangle(0, 0, 50, 50); //TODO: update width and height
-            Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/player", Color.White, "Audio/bass-switch",
-                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect, "player");
-
-            clientToEntityId[clientId] = player.id;
+            Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/player", Color.White, "Audio/bass-switch", playerRect, $"{clientId}");
 
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
 
-            // Other clients do not need this
-            // player.Remove<Shared.Components.MouseControllable>();
-            // player.Remove<Shared.Components.KeyboardControllable>();
-            // player.Remove<Shared.Components.Camera>();
+            clientToEntityId[clientId] = player.id;
 
-            Shared.Messages.Message message = new Shared.Messages.NewEntity(player);
+            // Other clients do not need this
+            player.Remove<Shared.Components.Camera>();
+            player.Remove<Shared.Components.KeyboardControllable>();
+
             foreach (int otherId in clients)
             {
                 if (otherId != clientId)
                 {
-                    MessageQueueServer.instance.sendMessage(otherId, message);
+                    MessageQueueServer.instance.sendMessage(otherId, new Shared.Messages.NewEntity(player));
                 }
             }
+
             AddEntity(player);
         }
     }

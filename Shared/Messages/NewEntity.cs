@@ -24,6 +24,11 @@ namespace Shared.Messages
                 this.camera = entity.GetComponent<Shared.Components.Camera>();
             }
 
+            if (entity.ContainsComponent<Shared.Components.Positionable>())
+            {
+                this.positionable = entity.GetComponent<Positionable>();
+            }
+
             // Spawnable and consumable Components
             if (entity.ContainsComponent<Shared.Components.Spawnable>())
             {
@@ -39,11 +44,6 @@ namespace Shared.Messages
             if (entity.ContainsComponent<Shared.Components.Animatable>())
             {
                 this.animatable = entity.GetComponent<Animatable>();
-            }
-
-            if (entity.ContainsComponent<Shared.Components.Positionable>())
-            {
-                this.positionable = entity.GetComponent<Positionable>();
             }
 
             if (entity.ContainsComponent<Shared.Components.Audible>())
@@ -93,7 +93,7 @@ namespace Shared.Messages
         public Components.Appearance? appearance { get; private set; } = null;
         public Parsers.AppearanceParser.AppearanceMessage appearanceMessage { get; private set; }
 
-        //Camera
+        // Camera
         public bool hasCamera { get; private set; }
         public Components.Camera? camera { get; private set; } = null;
         public Parsers.CameraParser.CameraMessage cameraMessage { get; private set; }
@@ -108,7 +108,7 @@ namespace Shared.Messages
         public Components.Audible? audible { get; private set; } = null;
         public Parsers.AudibleParser.AudibleMessage audibleMessage { get; private set; }
 
-        //Sound
+        // Sound
         public bool hasSound { get; private set; }
         public Components.Sound? sound { get; private set; } = null;
         public Parsers.SoundParser.SoundMessage soundMessage { get; private set; }
@@ -149,8 +149,8 @@ namespace Shared.Messages
         public Components.KeyboardControllable? keyboardControllable { get; private set; } = null;
         public Parsers.KeyboardControllableParser.KeyboardControllableMessage keyboardControllableMessage { get; private set; }
 
-        //Mouse Input
-        //TODO: fix this when new input
+        // Mouse Input
+        // TODO: fix this when new input
         public bool hasMouseControllable { get; private set; }
         public Components.MouseControllable? mouseControllable { get; private set; } = null;
         public Parsers.MouseControllableParser.MouseControllableMessage mouseControllableMessage { get; private set; }
@@ -162,65 +162,75 @@ namespace Shared.Messages
             data.AddRange(base.serialize());
             data.AddRange(BitConverter.GetBytes(id));
 
+            // Appearance
             data.AddRange(BitConverter.GetBytes(appearance != null));
             if (appearance != null)
             {
                 appearance.Serialize(ref data);
             }
 
+            // Camera
             data.AddRange(BitConverter.GetBytes(camera != null));
             if (camera != null)
             {
                 camera.Serialize(ref data);
             }
 
+            // Positionable
             data.AddRange(BitConverter.GetBytes(positionable != null));
             if (positionable != null)
             {
                 positionable.Serialize(ref data);
             }
 
+            // Audible
             data.AddRange(BitConverter.GetBytes(audible != null));
             if (audible != null)
             {
                 audible.Serialize(ref data);
             }
 
+            // Sound
             data.AddRange(BitConverter.GetBytes(sound != null));
             if (sound != null)
             {
                 sound.Serialize(ref data);
             }
 
+            // Movable
             data.AddRange(BitConverter.GetBytes(movable != null));
             if (movable != null)
             {
                 movable.Serialize(ref data);
             }
 
+            // Collidable
             data.AddRange(BitConverter.GetBytes(collidable != null));
             if (collidable != null)
             {
                 collidable.Serialize(ref data);
             }
 
+            // Spawnable
             data.AddRange(BitConverter.GetBytes(spawnable != null));
             if (spawnable != null)
             {
                 spawnable.Serialize(ref data);
             }
 
+            // Consumable
             data.AddRange(BitConverter.GetBytes(consumable != null));
             if (consumable != null)
             {
                 consumable.Serialize(ref data);
             }
 
-            data.AddRange(BitConverter.GetBytes(linkable != null));
-            if (linkable != null)
-            {
-                linkable.Serialize(ref data);
-            }
+            // // Linkable
+            // data.AddRange(BitConverter.GetBytes(linkable != null));
+            // if (linkable != null)
+            // {
+            //     linkable.Serialize(ref data);
+            // }
 
             // Keyboard
             data.AddRange(BitConverter.GetBytes(keyboardControllable != null));
@@ -338,14 +348,14 @@ namespace Shared.Messages
             }
 
             // Linkable
-            this.hasLinkable = BitConverter.ToBoolean(data, offset);
-            offset += sizeof(bool);
-            if (hasLinkable)
-            {
-                Parsers.LinkableParser parser = new Parsers.LinkableParser();
-                parser.Parse(ref data, ref offset);
-                this.linkableMessage = parser.GetMessage();
-            }
+            // this.hasLinkable = BitConverter.ToBoolean(data, offset);
+            // offset += sizeof(bool);
+            // if (hasLinkable)
+            // {
+            //     Parsers.LinkableParser parser = new Parsers.LinkableParser();
+            //     parser.Parse(ref data, ref offset);
+            //     this.linkableMessage = parser.GetMessage();
+            // }
 
             // Keyboard
             this.hasKeyboardControllable = BitConverter.ToBoolean(data, offset);

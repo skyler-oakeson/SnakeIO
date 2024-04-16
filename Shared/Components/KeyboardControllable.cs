@@ -15,15 +15,11 @@ namespace Shared.Components
 
         public KeyboardControllable(
                 bool enable,
-                Shared.Controls.ControlManager cm,
-                (Shared.Controls.ControlContext, Shared.Controls.ControlDelegate)[] actions
+                Dictionary<Shared.Controls.ControlContext, Shared.Controls.ControlDelegate> controls 
                 )
         {
             this.enable = enable;
-            foreach ((Shared.Controls.ControlContext con, Shared.Controls.ControlDelegate del) in actions)
-            {
-                controls.Add(con, del);
-            }
+            this.controls = controls;
         }
 
         // Input will be changing, do this with changed input
