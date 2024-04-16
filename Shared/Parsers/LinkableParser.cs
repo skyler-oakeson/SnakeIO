@@ -12,10 +12,10 @@ namespace Shared.Parsers
 
         public override void Parse(ref byte[] data, ref int offset)
         {
-            int chainNameLength = BitConverter.ToInt32(data, offset);
-            offset += sizeof(int);
-            string chain = Encoding.ASCII.GetString(data, offset, chainNameLength);
-            offset += chainNameLength;
+            int chainIdLength = BitConverter.ToInt32(data, offset);
+            offset += sizeof(Int32);
+            string chain = Encoding.UTF8.GetString(data, offset, 6);
+            offset += 6;
             UInt16 linkPos = BitConverter.ToUInt16(data, offset);
             offset += sizeof(UInt16);
 

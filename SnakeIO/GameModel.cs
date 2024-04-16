@@ -21,7 +21,7 @@ namespace SnakeIO
         private Systems.Network network;
         private Systems.Interpolation interpolation;
         private Systems.MouseInput mouseInput;
-        private Systems.Linker linker;
+        private Shared.Systems.Linker linker;
         private Shared.Systems.Movement movement;
         private Systems.Audio audio;
 
@@ -53,7 +53,7 @@ namespace SnakeIO
             this.keyboardInput = new Systems.KeyboardInput(controlManager);
             this.mouseInput = new Systems.MouseInput(controlManager);
             this.audio = new Systems.Audio();
-            this.linker = new Systems.Linker();
+            this.linker = new Shared.Systems.Linker();
             this.contentManager = contentManager;
 
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
@@ -68,8 +68,8 @@ namespace SnakeIO
             keyboardInput.Update(elapsedTime);
             mouseInput.Update(elapsedTime);
             linker.Update(elapsedTime);
-            interpolation.Update(elapsedTime);
             movement.Update(elapsedTime);
+            interpolation.Update(elapsedTime);
             audio.Update(elapsedTime);
         }
 
@@ -201,6 +201,28 @@ namespace SnakeIO
                             message.linkableMessage.chain, 
                             message.linkableMessage.linkPos
                             ));
+                if (message.linkableMessage.linkPos != Shared.Components.LinkPosition.Head && message.hasPosition && message.hasMovement)
+                {
+                    entity.GetComponent<Shared.Components.Linkable>().linkDelegate = 
+                        (new Shared.Components.LinkDelegate((Shared.Entities.Entity root) => 
+                        {
+                        Shared.Components.Linkable rootLink = root.GetComponent<Shared.Components.Linkable>();
+                        Shared.Components.Positionable rootPos = root.GetComponent<Shared.Components.Positionable>();
+                        Shared.Components.Movable rootMov = root.GetComponent<Shared.Components.Movable>();
+                        if (rootLink.prevEntity != null)
+                        {
+                            Shared.Components.Positionable prevPos = rootLink.prevEntity.GetComponent<Shared.Components.Positionable>();
+                            Shared.Components.Movable prevMov = rootLink.prevEntity.GetComponent<Shared.Components.Movable>();
+
+                            // rootPos.prevPos = rootPos.pos;
+                            // rootPos.pos = prevPos.prevPos;
+                            
+                            rootPos.prevPos = rootPos.pos;
+                            rootPos.pos = prevPos.prevPos;
+                        }
+                        }
+                       ));
+                }
             }
 
             if (message.hasKeyboardControllable)

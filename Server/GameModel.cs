@@ -19,6 +19,7 @@ namespace Server
         private Shared.Systems.Movement movement;
         private Systems.Collision collision;
         private Systems.Spawner spawner;
+        private Shared.Systems.Linker linker;
         private Shared.Controls.ControlManager controlManager = new Shared.Controls.ControlManager(new Shared.DataManager());
 
         public delegate void AddDelegate(Shared.Entities.Entity entity);
@@ -38,6 +39,7 @@ namespace Server
             this.collision = new Systems.Collision();
             this.spawner = new Systems.Spawner(addEntity);
             this.systemNetwork = new Systems.Network();
+            this.linker = new Shared.Systems.Linker();
 
             systemNetwork.registerJoinHandler(handleJoin);
             systemNetwork.registerDisconnectHandler(handleDisconnect);
@@ -51,6 +53,7 @@ namespace Server
 
         public void Update(TimeSpan elapsedTime)
         {
+            linker.Update(elapsedTime);
             movement.Update(elapsedTime);
             collision.Update(elapsedTime);
             spawner.Update(elapsedTime);
@@ -66,6 +69,7 @@ namespace Server
             movement.Add(entity);
             collision.Add(entity);
             spawner.Add(entity);
+            linker.Add(entity);
             systemNetwork.Add(entity);
             entities[entity.id] = entity;
         }
@@ -75,6 +79,7 @@ namespace Server
             movement.Remove(entity.id);
             collision.Remove(entity.id);
             spawner.Remove(entity.id);
+            linker.Remove(entity.id);
             systemNetwork.Remove(entity.id);
             entities.Remove(entity.id);
         }
@@ -84,6 +89,7 @@ namespace Server
             movement.Remove(id);
             collision.Remove(id);
             spawner.Remove(id);
+            linker.Remove(id);
             systemNetwork.Remove(id);
             entities.Remove(id);
         }
@@ -122,10 +128,53 @@ namespace Server
 
             Rectangle playerRect = new Rectangle(0, 0, 50, 50); //TODO: update width and height
             Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/player", Color.White, "Audio/bass-switch",
-                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect, $"{clientId}");
+                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect, "player");
+            Shared.Entities.Entity tail = Shared.Entities.Tail.Create("Images/player", Color.White, "Audio/bass-switch",
+                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect, "player");
+            Shared.Entities.Entity body1 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch",
+                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect, "player");
+            Shared.Entities.Entity body2 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch",
+                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect, "player");
+            Shared.Entities.Entity body3 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch",
+                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect, "player");
+            Shared.Entities.Entity body4 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch",
+                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect, "player");
+            Shared.Entities.Entity body5 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch",
+                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect, "player");
+            Shared.Entities.Entity body6 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch",
+                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect, "player");
+            Shared.Entities.Entity body7 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch",
+                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect, "player");
+            Shared.Entities.Entity body8 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch",
+                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect, "player");
+            Shared.Entities.Entity body9 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch",
+                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect, "player");
+            Shared.Entities.Entity body10 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch",
+                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect, "player");
+            Shared.Entities.Entity body11 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch",
+                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect, "player");
+            Shared.Entities.Entity body12 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch",
+                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect, "player");
+            Shared.Entities.Entity body13 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch",
+                    new Shared.Controls.ControlManager(new Shared.DataManager()), playerRect, "player");
+
             clientToEntityId[clientId] = player.id;
 
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(tail));
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body1));
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body2));
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body3));
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body4));
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body5));
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body6));
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body7));
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body8));
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body9));
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body10));
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body11));
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body12));
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body13));
 
             // Other clients do not need this
             // player.Remove<Shared.Components.MouseControllable>();
