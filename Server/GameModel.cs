@@ -8,9 +8,6 @@ namespace Server
 {
     public class GameModel
     {
-        public int HEIGHT { get; private set; }
-        public int WIDTH { get; private set; }
-
         private HashSet<int> clients = new HashSet<int>();
         private Dictionary<uint, Shared.Entities.Entity> entities = new Dictionary<uint, Shared.Entities.Entity>(); // may not need
         private Dictionary<int, uint> clientToEntityId = new Dictionary<int, uint>();
