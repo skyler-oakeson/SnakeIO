@@ -22,7 +22,11 @@ namespace Shared.Entities
             player.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
             player.Add(new Shared.Components.Movable(new Vector2(0, 0)));
             //TODO: Change this to match the vision
-            player.Add(new Shared.Components.Animatable(new int[7] { 80, 80, 80, 80, 80, 80, 80}));
+            player.Add(new Shared.Components.Animatable(new int[25] { 40, 40, 40, 40, 40, 
+                                                                      40, 40, 40, 40, 40, 
+                                                                      40, 40, 40, 40, 40, 
+                                                                      40, 40, 40, 40, 40, 
+                                                                      40, 40, 40, 40, 40 }));
             player.Add(new Shared.Components.KeyboardControllable(true, typeof(Shared.Entities.Player), PlayerKeyboardControls));
             player.Add(new Components.Camera(new Rectangle(rectangle.X, rectangle.Y, 1500, 1500)));
             // player.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
