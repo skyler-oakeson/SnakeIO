@@ -98,7 +98,6 @@ namespace Systems
             {
                 if (camera != null)
                 {
-                    // Console.WriteLine(camera.Transform);
                     Matrix newMatrix = Matrix.Lerp(Matrix.Identity, camera.Transform, camera.LerpAmount);
                     sb.Begin(transformMatrix: newMatrix);
                 }
@@ -148,8 +147,8 @@ namespace Systems
                     new Rectangle(
                         (int)positionable.pos.X,
                         (int)positionable.pos.Y,
-                        animatable.subImageWidth,
-                        animatable.spriteSheet.Height
+                        renderable.rectangle.Width,
+                        renderable.rectangle.Height
                         ),
                     new Rectangle(animatable.subImageIndex * animatable.subImageWidth, 0, animatable.subImageWidth, animatable.spriteSheet.Height), // Source sub-texture
                     renderable.color,

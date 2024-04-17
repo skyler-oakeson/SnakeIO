@@ -198,7 +198,7 @@ namespace SnakeIO
             if (message.hasLinkable)
             {
                 entity.Add(new Shared.Components.Linkable(
-                            message.linkableMessage.chain, 
+                            message.linkableMessage.chain,
                             message.linkableMessage.linkPos
                             ));
                 if (message.linkableMessage.linkPos != Shared.Components.LinkPosition.Head && message.hasPosition && message.hasMovement)
