@@ -42,8 +42,7 @@ namespace Shared.Systems
             if (Math.Abs(movable.velocity.Y) > 1) { movable.velocity = new Vector2(movable.velocity.X, movable.velocity.Y > 0 ? 1 : -1); }
 
             Vector2 newpos = movable.velocity * elapsedTime.Milliseconds + positionable.pos;
-            positionable.prevPos = positionable.pos;
-            positionable.pos = newpos;
+            positionable.UpdatePoistion(newpos);
 
             // if it has camera, update camera center
             if (entity.ContainsComponent<Shared.Components.Camera>())

@@ -18,7 +18,6 @@ namespace Shared.Entities
             body.Add(new Components.Appearance(texture, typeof(Texture2D), color, Color.Black, rectangle));
             body.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
             body.Add(new Shared.Components.Movable(new Vector2(0, 0)));
-            body.Add(new Components.Camera(new Rectangle(rectangle.X, rectangle.Y, 1500, 1500)));
             // body.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
             // body.Add(new Components.Audible(sound));
 
@@ -35,9 +34,8 @@ namespace Shared.Entities
 
             Vector2 offset = prevMov.velocity;
             // offset = offset * radius;
-            rootPos.prevPos = rootPos.pos;
             // rootPos.pos = prevPos.prevPos - offset;
-            rootPos.pos = prevPos.prevPos;
+            rootPos.UpdatePoistion(prevPos.prevPos);
         });
     }
 }

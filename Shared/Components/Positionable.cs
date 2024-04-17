@@ -19,12 +19,17 @@ namespace Shared.Components
             this.orientation = orientation;
         }
 
+        public void UpdatePoistion(Vector2 pos)
+        {
+            this.prevPos = this.pos;
+            this.pos = pos;
+        }
+
         public override void Serialize(ref List<byte> data)
         {
             data.AddRange(BitConverter.GetBytes(pos.X));
             data.AddRange(BitConverter.GetBytes(pos.Y));
             data.AddRange(BitConverter.GetBytes(orientation));
         }
-
     }
 }

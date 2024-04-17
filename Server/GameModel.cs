@@ -128,22 +128,14 @@ namespace Server
 
             Rectangle playerRect = new Rectangle(0, 0, 50, 50); //TODO: update width and height
             Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/player", Color.White, "Audio/bass-switch", playerRect, $"{clientId}");
-            Shared.Entities.Entity body = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
-            // Shared.Entities.Entity body1 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
-            // Shared.Entities.Entity body2 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
-            // Shared.Entities.Entity body3 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
-            // Shared.Entities.Entity body4 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
-            // Shared.Entities.Entity body5 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
-            // Shared.Entities.Entity body6 = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
-
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
-            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body));
-            // MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body1));
-            // MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body2));
-            // MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body3));
-            // MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body4));
-            // MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body5));
-            // MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body6));
+
+            for (int i = 0; i < 50; i++)
+            {
+                Shared.Entities.Entity body = Shared.Entities.Body.Create("Images/player", Color.White, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
+                MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body));
+            }
+
 
             clientToEntityId[clientId] = player.id;
 
