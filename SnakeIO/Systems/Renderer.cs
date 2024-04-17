@@ -13,8 +13,7 @@ namespace Systems
         private Shared.Components.Camera? camera = null;
 
         public Renderer(SpriteBatch sb)
-            : base(
-                    typeof(Shared.Components.Appearance))
+            : base(typeof(Shared.Components.Appearance))
         {
             this.sb = sb;
 
@@ -39,11 +38,6 @@ namespace Systems
                 if (entity.ContainsComponent<Shared.Components.Camera>())
                 {
                     camera = entity.GetComponent<Shared.Components.Camera>();
-                }
-                if (entity.ContainsComponent<Shared.Components.Readable>())
-                {
-                    Console.WriteLine("Read");
-                    RenderText(entity);
                 }
                 if (entity.ContainsComponent<Shared.Components.Animatable>())
                 {
@@ -89,6 +83,10 @@ namespace Systems
                         }
                     }
                     // RenderHitbox(entity);
+                    if (entity.ContainsComponent<Shared.Components.Readable>())
+                    {
+                        RenderText(entity);
+                    }
                 }
             }
         }
