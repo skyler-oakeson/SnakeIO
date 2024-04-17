@@ -88,6 +88,23 @@ namespace Systems
                 e2Mov.velocity -= n * .5f;
                 e1Mov.velocity += n * .5f;
             }
+
+            //Consumables
+            if (e1.ContainsComponent<Shared.Components.Consumable>() || e2.ContainsComponent<Shared.Components.Consumable>())
+            {
+                Console.WriteLine("Consumable hit!");
+                if (e1.ContainsComponent<Shared.Components.Consumable>())
+                {
+                    Shared.Components.Consumable consumable = e1.GetComponent<Shared.Components.Consumable>();
+                    Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(e1.id));
+                }
+                else
+                {
+                    Shared.Components.Consumable consumable = e2.GetComponent<Shared.Components.Consumable>();
+                    Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(e2.id));
+
+                }
+            }
         }
     }
 }

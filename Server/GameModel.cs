@@ -127,11 +127,11 @@ namespace Server
             Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/NoHeadSS", Color.White, "Audio/bass-switch", playerRect, $"{clientId}");
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
 
-            for (int i = 0; i < 20; i++)
-            {
-                Shared.Entities.Entity body = Shared.Entities.Body.Create("Images/BodySS", Color.White, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
-                MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body));
-            }
+            // for (int i = 0; i < 20; i++)
+            // {
+            //     Shared.Entities.Entity body = Shared.Entities.Body.Create("Images/BodySS", Color.White, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
+            //     MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body));
+            // }
 
 
             clientToEntityId[clientId] = player.id;

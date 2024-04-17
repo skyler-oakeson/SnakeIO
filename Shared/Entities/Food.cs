@@ -26,7 +26,7 @@ namespace Shared.Entities
             food.Add(new Components.Movable(new Vector2(0, 0)));
             // Components.Animatable animatable = food.GetComponent<Components.Animatable>();
             // int radius = animatable.subImageWidth >= animatable.spriteSheet.Height ? animatable.subImageWidth/2 : animatable.spriteSheet.Height/2;
-            // food.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
+            food.Add(new Components.Collidable(new Vector3(rectangle.X, rectangle.Y, 0)));
 
             return food;
         }

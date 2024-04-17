@@ -62,7 +62,7 @@ namespace Systems
                     {
                         RenderAnimatable(entity);
                     }
-                    // RenderHitbox(entity);
+                    RenderHitbox(entity);
                 }
                 else
                 {

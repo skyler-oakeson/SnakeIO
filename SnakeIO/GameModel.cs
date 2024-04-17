@@ -174,7 +174,7 @@ namespace SnakeIO
             if (message.hasCollidable)
             {
                 Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
-                int radius = renderable.texture.Width >= renderable.texture.Height ? renderable.texture.Width / 2 : renderable.texture.Height / 2;
+                int radius = renderable.rectangle.Width >= renderable.rectangle.Height ? renderable.rectangle.Width / 2 : renderable.rectangle.Height / 2;
                 entity.Add(new Shared.Components.Collidable(new Vector3(message.positionableMessage.pos.X, message.positionableMessage.pos.Y, radius)));
             }
 
