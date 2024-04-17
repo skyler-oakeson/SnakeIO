@@ -40,7 +40,6 @@ namespace Shared.Messages
                 this.consumable = entity.GetComponent<Consumable>();
             }
 
-            // TODO: Add Animatable component parsing/serializing (notes in files)
             if (entity.ContainsComponent<Shared.Components.Animatable>())
             {
                 this.animatable = entity.GetComponent<Animatable>();
@@ -169,6 +168,12 @@ namespace Shared.Messages
                 appearance.Serialize(ref data);
             }
 
+            data.AddRange(BitConverter.GetBytes(animatable != null));
+            if (animatable != null)
+            {
+                animatable.Serialize(ref data);
+            }
+
             // Camera
             data.AddRange(BitConverter.GetBytes(camera != null));
             if (camera != null)
@@ -264,6 +269,15 @@ namespace Shared.Messages
                 Parsers.AppearanceParser parser = new Parsers.AppearanceParser();
                 parser.Parse(ref data, ref offset);
                 this.appearanceMessage = parser.GetMessage();
+            }
+
+            this.hasAnimatable = BitConverter.ToBoolean(data, offset);
+            offset += sizeof(bool);
+            if (hasAnimatable)
+            {
+                Parsers.AnimatableParser parser = new Parsers.AnimatableParser();
+                parser.Parse(ref data, ref offset);
+                this.animatableMessage = parser.GetMessage();
             }
 
             // Camera

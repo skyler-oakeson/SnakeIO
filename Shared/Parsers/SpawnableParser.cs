@@ -1,7 +1,7 @@
 using System.Text;
 namespace Shared.Parsers
 {
-    public class SpawnableParser : Parser 
+    public class SpawnableParser : Parser
     {
         private SpawnableMessage message { get; set; }
         public SpawnableMessage Message
@@ -12,7 +12,8 @@ namespace Shared.Parsers
 
         public override void Parse(ref byte[] data, ref int offset)
         {
-            TimeSpan messageSpawnRate = new TimeSpan(BitConverter.ToInt32(data, offset));
+            int rate = BitConverter.ToInt32(data, offset);
+            TimeSpan messageSpawnRate = new TimeSpan(rate);
             offset += sizeof(Int32);
             int messageSpawnCount = BitConverter.ToInt32(data, offset);
             offset += sizeof(Int32);

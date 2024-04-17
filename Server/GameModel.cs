@@ -44,8 +44,8 @@ namespace Server
             systemNetwork.registerJoinHandler(handleJoin);
             systemNetwork.registerDisconnectHandler(handleDisconnect);
             MessageQueueServer.instance.registerConnectHandler(handleConnect);
-            // Rectangle rectangle = new Rectangle(100, 100, 10, 10);
-            // AddEntity(Shared.Entities.Food.Create("Images/food", rectangle));
+            Rectangle rectangle = new Rectangle(100, 100, 10, 10);
+            AddEntity(Shared.Entities.Food.Create("Images/food", rectangle));
             new Utils.WorldGenerator(addEntity);
 
             return true;
