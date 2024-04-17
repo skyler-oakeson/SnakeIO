@@ -152,7 +152,7 @@ namespace Systems
                         ),
                     new Rectangle(animatable.subImageIndex * animatable.subImageWidth, 0, animatable.subImageWidth, animatable.spriteSheet.Height), // Source sub-texture
                     renderable.color,
-                    0, // Angular rotation
+                    positionable.orientation, // Angular rotation
                     new Vector2(animatable.subImageWidth / 2, animatable.spriteSheet.Height / 2), // Center point of rotation
                     SpriteEffects.None, 0);
             sb.End();
