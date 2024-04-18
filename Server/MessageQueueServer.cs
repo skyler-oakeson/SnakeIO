@@ -228,7 +228,7 @@ namespace Server
                             {
                                 try
                                 {
-                                    Console.WriteLine("Sending message {0} to {1}", item.Item3.type, item.Item1);
+                                    // Console.WriteLine("Sending message {0} to {1}", item.Item3.type, item.Item1);
                                     // Three items are sent: type, size, message body
                                     byte[] type = BitConverter.GetBytes((UInt16)item.Item3.type);
                                     byte[] body = item.Item3.serialize();
