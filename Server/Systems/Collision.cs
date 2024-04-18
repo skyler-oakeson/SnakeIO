@@ -9,12 +9,15 @@ namespace Systems
     /// </summary>
     public class Collision : Shared.Systems.System
     {
-        public Collision()
+        private List<Shared.Entities.Entity> removeThese = new List<Shared.Entities.Entity>();
+        private Server.GameModel.RemoveDelegate removeEntity;
+        public Collision(Server.GameModel.RemoveDelegate removeEntity)
             : base(
                     typeof(Shared.Components.Collidable),
                     typeof(Shared.Components.Positionable)
                     )
         {
+            this.removeEntity = removeEntity;
         }
 
         public override void Update(TimeSpan elapsedTime)
@@ -36,6 +39,10 @@ namespace Systems
                     }
                 }
             }
+            foreach (Shared.Entities.Entity entity in removeThese)
+            {
+                removeEntity(entity);
+            }
         }
 
         private bool DidCollide(Shared.Entities.Entity e1, Shared.Entities.Entity e2)
@@ -47,8 +54,10 @@ namespace Systems
 
             Shared.Components.Collidable e1Col = e1.GetComponent<Shared.Components.Collidable>();
             Shared.Components.Collidable e2Col = e2.GetComponent<Shared.Components.Collidable>();
+            Shared.Components.Positionable e1Pos = e1.GetComponent<Shared.Components.Positionable>();
+            Shared.Components.Positionable e2Pos = e2.GetComponent<Shared.Components.Positionable>();
             double hitDist = Math.Pow(e1Col.hitBox.Z + e2Col.hitBox.Z, 2);
-            double dist = Math.Pow(Math.Abs(e1Col.hitBox.X - e2Col.hitBox.X), 2) + Math.Pow(Math.Abs(e1Col.hitBox.Y - e2Col.hitBox.Y), 2);
+            double dist = Math.Pow(Math.Abs(e1Pos.pos.X - e2Pos.pos.X), 2) + Math.Pow(Math.Abs(e1Pos.pos.Y - e2Pos.pos.Y), 2);
 
             if (dist < hitDist)
             {
@@ -65,8 +74,8 @@ namespace Systems
             Vector2 n = (e1Pos.pos - e2Pos.pos);
             n.Normalize();
 
-            e1Pos.pos = e1Pos.prevPos;
-            e2Pos.pos = e2Pos.prevPos;
+            // e1Pos.pos = e1Pos.prevPos;
+            // e2Pos.pos = e2Pos.prevPos;
 
             //if (e1.ContainsComponent<Shared.Components.Audible>())
             //{
@@ -74,34 +83,35 @@ namespace Systems
             //}
 
             // Movables - Non-Movables
-            if (e1.ContainsComponent<Shared.Components.Movable>() && !e2.ContainsComponent<Shared.Components.Movable>())
-            {
-                Shared.Components.Movable e1Mov = e1.GetComponent<Shared.Components.Movable>();
-                e1Mov.velocity += n;
-            }
-
-            // Movables - Movables
-            if (e1.ContainsComponent<Shared.Components.Movable>() && e2.ContainsComponent<Shared.Components.Movable>())
-            {
-                Shared.Components.Movable e1Mov = e1.GetComponent<Shared.Components.Movable>();
-                Shared.Components.Movable e2Mov = e2.GetComponent<Shared.Components.Movable>();
-                e2Mov.velocity -= n * .5f;
-                e1Mov.velocity += n * .5f;
-            }
+            // if (e1.ContainsComponent<Shared.Components.Movable>() && !e2.ContainsComponent<Shared.Components.Movable>())
+            // {
+            //     Shared.Components.Movable e1Mov = e1.GetComponent<Shared.Components.Movable>();
+            //     e1Mov.velocity += n;
+            // }
+            //
+            // // Movables - Movables
+            // if (e1.ContainsComponent<Shared.Components.Movable>() && e2.ContainsComponent<Shared.Components.Movable>())
+            // {
+            //     Shared.Components.Movable e1Mov = e1.GetComponent<Shared.Components.Movable>();
+            //     Shared.Components.Movable e2Mov = e2.GetComponent<Shared.Components.Movable>();
+            //     e2Mov.velocity -= n * .5f;
+            //     e1Mov.velocity += n * .5f;
+            // }
 
             //Consumables
             if (e1.ContainsComponent<Shared.Components.Consumable>() || e2.ContainsComponent<Shared.Components.Consumable>())
             {
-                Console.WriteLine("Consumable hit!");
                 if (e1.ContainsComponent<Shared.Components.Consumable>())
                 {
                     Shared.Components.Consumable consumable = e1.GetComponent<Shared.Components.Consumable>();
                     Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(e1.id));
+                    removeThese.Add(e1);
                 }
                 else
                 {
                     Shared.Components.Consumable consumable = e2.GetComponent<Shared.Components.Consumable>();
                     Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(e2.id));
+                    removeThese.Add(e2);
 
                 }
             }

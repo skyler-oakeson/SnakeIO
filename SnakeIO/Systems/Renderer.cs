@@ -62,7 +62,7 @@ namespace Systems
                     {
                         RenderAnimatable(entity);
                     }
-                    RenderHitbox(entity);
+                    // RenderHitbox(entity);
                 }
                 else
                 {
@@ -82,11 +82,11 @@ namespace Systems
                             RenderEntity(entity);
                         }
                     }
-                    else if (entity.ContainsComponent<Shared.Components.Readable>())
+                    // RenderHitbox(entity);
+                    if (entity.ContainsComponent<Shared.Components.Readable>())
                     {
                         RenderText(entity);
                     }
-                    // RenderHitbox(entity);
                 }
             }
         }

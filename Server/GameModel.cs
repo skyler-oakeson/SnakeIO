@@ -21,6 +21,8 @@ namespace Server
 
         public delegate void AddDelegate(Shared.Entities.Entity entity);
         private AddDelegate addEntity;
+        public delegate void RemoveDelegate(Shared.Entities.Entity entity);
+        private RemoveDelegate removeEntity;
 
         private List<Shared.Entities.Entity> toRemove = new List<Shared.Entities.Entity>();
         private List<Shared.Entities.Entity> toAdd = new List<Shared.Entities.Entity>();
@@ -28,12 +30,13 @@ namespace Server
         public GameModel()
         {
             addEntity = AddEntity;
+            removeEntity = RemoveEntity;
         }
 
         public bool Initialize()
         {
             this.movement = new Shared.Systems.Movement();
-            this.collision = new Systems.Collision();
+            this.collision = new Systems.Collision(removeEntity);
             this.spawner = new Systems.Spawner(addEntity);
             this.systemNetwork = new Systems.Network();
             this.linker = new Shared.Systems.Linker();
@@ -124,15 +127,19 @@ namespace Server
             reportAllEntities(clientId);
 
             Rectangle playerRect = new Rectangle(0, 0, 50, 50); //TODO: update width and height
-            Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/NoHeadSS", Color.White, "Audio/bass-switch", playerRect, $"{clientId}");
+            Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/head", Color.Blue, "Audio/bass-switch", playerRect, $"{clientId}");
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
 
-            // for (int i = 0; i < 20; i++)
-            // {
-            //     Shared.Entities.Entity body = Shared.Entities.Body.Create("Images/BodySS", Color.White, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
-            //     MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body));
-            // }
+            for (int i = 0; i < 20; i++)
+            {
+                Shared.Entities.Entity body = Shared.Entities.Body.Create("Images/body", Color.White, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
+                MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body));
+                AddEntity(body);
+            }
 
+            Shared.Entities.Entity tail = Shared.Entities.Body.Create("Images/tail", Color.Red, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Tail);
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(tail));
+            AddEntity(tail);
 
             clientToEntityId[clientId] = player.id;
 
