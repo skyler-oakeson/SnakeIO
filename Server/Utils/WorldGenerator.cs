@@ -92,6 +92,36 @@ namespace Utils
                     }
                 }
             }
+            //Add corner pieces
+            AddCorners();
+
+        }
+        private void AddCorners()
+        {
+            // TOP LEFT
+            int x = -TILE_SIZE / 2;
+            int y = -TILE_SIZE / 2;
+            Shared.Entities.Entity topLeft = Shared.Entities.Wall.Create("Images/square", Color.White, new Rectangle(x, y, WALL_HEIGHT, WALL_HEIGHT));
+            worldEntities.Add(topLeft);
+            Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(topLeft));
+            // TOP RIGHT
+            x = WORLD_END - TILE_SIZE / 2;
+            y = -TILE_SIZE / 2;
+            Shared.Entities.Entity topRight = Shared.Entities.Wall.Create("Images/square", Color.White, new Rectangle(x, y, WALL_HEIGHT, WALL_HEIGHT));
+            worldEntities.Add(topRight);
+            Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(topRight));
+            // BOTTOM LEFT
+            x = -TILE_SIZE / 2;
+            y = WORLD_END - TILE_SIZE / 2;
+            Shared.Entities.Entity bottomLeft = Shared.Entities.Wall.Create("Images/square", Color.White, new Rectangle(x, y, WALL_HEIGHT, WALL_HEIGHT));
+            worldEntities.Add(bottomLeft);
+            Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(bottomLeft));
+            // BOTTOM RIGHT
+            x = WORLD_END - TILE_SIZE / 2;
+            y = WORLD_END - TILE_SIZE / 2;
+            Shared.Entities.Entity bottomRight = Shared.Entities.Wall.Create("Images/square", Color.White, new Rectangle(x, y, WALL_HEIGHT, WALL_HEIGHT));
+            worldEntities.Add(bottomRight);
+            Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(bottomRight));
         }
     }
 }
