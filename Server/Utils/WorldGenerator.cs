@@ -31,14 +31,28 @@ namespace Utils
             {
                 for (int j = 0; j < TILE_COUNT; j++)
                 {
-                    if (i == 0 || i == TILE_COUNT - 1)
+                    if (i == 0)
                     {
                         int wallCount = TILE_SIZE / WALL_WIDTH;
                         // For each tile, we need to render this many walls
                         for (int w = 0; w < wallCount; w++)
                         {
+                            int x = ((j * (TILE_SIZE)) + (w * WALL_WIDTH)) - (TILE_SIZE / 2) + (WALL_WIDTH / 2);
+                            int y = (i * WALL_HEIGHT) - (TILE_SIZE / 2) - (WALL_HEIGHT / 2);
+                            Console.WriteLine($"{x}, {y}");
+                            Shared.Entities.Entity wall = Shared.Entities.Wall.Create("Images/player", Color.Green, new Rectangle(x, y, WALL_WIDTH, WALL_HEIGHT));
+                            worldEntities.Add(wall);
+                            Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(wall));
+                        }
+
+                    }
+                    if (i == TILE_COUNT - 1)
+                    {
+                        int wallCount = TILE_SIZE / WALL_WIDTH;
+                        for (int w = 0; w < wallCount; w++)
+                        {
                             int x = (j * ((w + 1) * WALL_WIDTH)) - (TILE_SIZE / 2);
-                            int y = (i * ((w + 1) * WALL_HEIGHT)) - (TILE_SIZE / 2);
+                            int y = ((i * WALL_HEIGHT) - (TILE_SIZE) - WALL_HEIGHT) + WORLD_END;
                             Shared.Entities.Entity wall = Shared.Entities.Wall.Create("Images/player", Color.Green, new Rectangle(x, y, WALL_WIDTH, WALL_HEIGHT));
                             worldEntities.Add(wall);
                             Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(wall));
