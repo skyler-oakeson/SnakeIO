@@ -40,9 +40,9 @@ namespace Shared.Messages
                 this.consumable = entity.GetComponent<Consumable>();
             }
 
-            if (entity.ContainsComponent<Shared.Components.Growth>())
+            if (entity.ContainsComponent<Shared.Components.Growable>())
             {
-                this.growth = entity.GetComponent<Shared.Components.Growth>();
+                this.growth = entity.GetComponent<Shared.Components.Growable>();
             }
 
             if (entity.ContainsComponent<Shared.Components.Animatable>())
@@ -137,10 +137,10 @@ namespace Shared.Messages
         public Components.Consumable? consumable { get; private set; } = null;
         public Parsers.ConsumableParser.ConsumableMessage consumableMessage { get; private set; }
 
-        // Growth
-        public bool hasGrowth { get; private set; }
-        public Components.Growth? growth { get; private set; } = null;
-        public Parsers.GrowthParser.GrowthMessage growthMessage { get; private set; }
+        // Growable
+        public bool hasGrowable { get; private set; }
+        public Components.Growable? growth { get; private set; } = null;
+        public Parsers.GrowableParser.GrowableMessage growthMessage { get; private set; }
 
         // Animatable
         public bool hasAnimatable { get; private set; }
@@ -240,7 +240,7 @@ namespace Shared.Messages
                 consumable.Serialize(ref data);
             }
 
-            // Growth
+            // Growable
             data.AddRange(BitConverter.GetBytes(growth != null));
             if (growth != null)
             {
@@ -378,11 +378,11 @@ namespace Shared.Messages
                 this.consumableMessage = parser.GetMessage();
             }
 
-            this.hasGrowth = BitConverter.ToBoolean(data, offset);
+            this.hasGrowable = BitConverter.ToBoolean(data, offset);
             offset += sizeof(bool);
-            if (hasGrowth)
+            if (hasGrowable)
             {
-                Parsers.GrowthParser parser = new Parsers.GrowthParser();
+                Parsers.GrowableParser parser = new Parsers.Growable();
                 parser.Parse(ref data, ref offset);
                 this.growthMessage = parser.GetMessage();
             }

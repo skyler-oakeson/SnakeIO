@@ -193,9 +193,9 @@ namespace SnakeIO
                 entity.Add(new Shared.Components.Consumable(message.consumableMessage.growth));
             }
 
-            if (message.hasGrowth)
+            if (message.hasGrowable)
             {
-                entity.Add(new Shared.Components.Growth());
+                entity.Add(new Shared.Components.Growable());
             }
 
             if (message.hasCamera)

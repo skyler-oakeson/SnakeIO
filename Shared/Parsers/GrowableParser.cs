@@ -1,10 +1,10 @@
 using System.Text;
 namespace Shared.Parsers
 {
-    public class GrowthParser : Parser
+    public class GrowableParser : Parser
     {
-        private GrowthMessage message { get; set; }
-        public GrowthMessage Message
+        private GrowableMessage message { get; set; }
+        public GrowableMessage Message
         {
             get { return message; }
             set { message = value; }
@@ -12,20 +12,20 @@ namespace Shared.Parsers
 
         public override void Parse(ref byte[] data, ref int offset)
         {
-            float messageGrowth = BitConverter.ToSingle(data, offset);
+            float messageGrowable = BitConverter.ToSingle(data, offset);
             offset += sizeof(Single);
-            this.message = new GrowthMessage()
+            this.message = new GrowableMessage()
             {
-                growth = messageGrowth,
+                growth = messageGrowable,
             };
         }
 
-        public GrowthMessage GetMessage()
+        public GrowableMessage GetMessage()
         {
             return Message;
         }
 
-        public struct GrowthMessage
+        public struct GrowableMessage
         {
             public float growth { get; set; }
         }

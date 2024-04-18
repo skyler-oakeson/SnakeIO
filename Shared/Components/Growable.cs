@@ -3,11 +3,11 @@ using System.Text;
 
 namespace Shared.Components
 {
-    public class Growth : Component
+    public class Growable : Component
     {
         public float growth;
 
-        public Growth()
+        public Growable()
         {
             this.growth = 0;
         }
