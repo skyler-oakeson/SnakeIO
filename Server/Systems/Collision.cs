@@ -74,6 +74,7 @@ namespace Systems
             Vector2 n = (e1Pos.pos - e2Pos.pos);
             n.Normalize();
 
+            //These two lines cause the snake to stop, so I am commenting them out unless we need them
             // e1Pos.pos = e1Pos.prevPos;
             // e2Pos.pos = e2Pos.prevPos;
 
@@ -88,15 +89,17 @@ namespace Systems
             //     Shared.Components.Movable e1Mov = e1.GetComponent<Shared.Components.Movable>();
             //     e1Mov.velocity += n;
             // }
-            //
-            // // Movables - Movables
-            // if (e1.ContainsComponent<Shared.Components.Movable>() && e2.ContainsComponent<Shared.Components.Movable>())
-            // {
-            //     Shared.Components.Movable e1Mov = e1.GetComponent<Shared.Components.Movable>();
-            //     Shared.Components.Movable e2Mov = e2.GetComponent<Shared.Components.Movable>();
-            //     e2Mov.velocity -= n * .5f;
-            //     e1Mov.velocity += n * .5f;
-            // }
+
+            // TODO: I don't think we are going to want to update the velo by n
+            // Determine if this is needed or not
+            // Movables - Movables
+            if (e1.ContainsComponent<Shared.Components.Movable>() && e2.ContainsComponent<Shared.Components.Movable>())
+            {
+                Shared.Components.Movable e1Mov = e1.GetComponent<Shared.Components.Movable>();
+                Shared.Components.Movable e2Mov = e2.GetComponent<Shared.Components.Movable>();
+                // e2Mov.velocity -= n * .5f;
+                // e1Mov.velocity += n * .5f;
+            }
 
             //Consumables
             if (e1.ContainsComponent<Shared.Components.Consumable>() || e2.ContainsComponent<Shared.Components.Consumable>())
@@ -106,13 +109,22 @@ namespace Systems
                     Shared.Components.Consumable consumable = e1.GetComponent<Shared.Components.Consumable>();
                     Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(e1.id));
                     removeThese.Add(e1);
+                    if (e2.ContainsComponent<Shared.Components.Growth>())
+                    {
+                        Shared.Components.Growth growthComponent = e2.GetComponent<Shared.Components.Growth>();
+                        growthComponent.growth += consumable.growth;
+                    }
                 }
                 else
                 {
                     Shared.Components.Consumable consumable = e2.GetComponent<Shared.Components.Consumable>();
                     Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(e2.id));
                     removeThese.Add(e2);
-
+                    if (e1.ContainsComponent<Shared.Components.Growth>())
+                    {
+                        Shared.Components.Growth growthComponent = e1.GetComponent<Shared.Components.Growth>();
+                        growthComponent.growth += consumable.growth;
+                    }
                 }
             }
         }

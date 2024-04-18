@@ -21,6 +21,7 @@ namespace Shared.Entities
             player.Add(new Components.Appearance(texture, typeof(Texture2D), color, Color.Black, rectangle));
             player.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
             player.Add(new Shared.Components.Movable(new Vector2(0, 0)));
+            player.Add(new Shared.Components.Growth());
             //TODO: Change this to match the vision
             player.Add(new Shared.Components.Animatable(new int[25] { 40, 40, 40, 40, 40,
                                                                       40, 40, 40, 40, 40,

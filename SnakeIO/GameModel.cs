@@ -188,6 +188,16 @@ namespace SnakeIO
                 entity.Add(new Shared.Components.Spawnable(message.spawnableMessage.spawnRate, message.spawnableMessage.spawnCount, message.spawnableMessage.type));
             }
 
+            if (message.hasConsumable)
+            {
+                entity.Add(new Shared.Components.Consumable(message.consumableMessage.growth));
+            }
+
+            if (message.hasGrowth)
+            {
+                entity.Add(new Shared.Components.Growth());
+            }
+
             if (message.hasCamera)
             {
                 Shared.Components.Positionable position = entity.GetComponent<Shared.Components.Positionable>();

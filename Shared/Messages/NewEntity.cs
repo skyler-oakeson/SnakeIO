@@ -40,6 +40,11 @@ namespace Shared.Messages
                 this.consumable = entity.GetComponent<Consumable>();
             }
 
+            if (entity.ContainsComponent<Shared.Components.Growth>())
+            {
+                this.growth = entity.GetComponent<Shared.Components.Growth>();
+            }
+
             if (entity.ContainsComponent<Shared.Components.Animatable>())
             {
                 this.animatable = entity.GetComponent<Animatable>();
@@ -131,6 +136,11 @@ namespace Shared.Messages
         public bool hasConsumable { get; private set; }
         public Components.Consumable? consumable { get; private set; } = null;
         public Parsers.ConsumableParser.ConsumableMessage consumableMessage { get; private set; }
+
+        // Growth
+        public bool hasGrowth { get; private set; }
+        public Components.Growth? growth { get; private set; } = null;
+        public Parsers.GrowthParser.GrowthMessage growthMessage { get; private set; }
 
         // Animatable
         public bool hasAnimatable { get; private set; }
@@ -228,6 +238,13 @@ namespace Shared.Messages
             if (consumable != null)
             {
                 consumable.Serialize(ref data);
+            }
+
+            // Growth
+            data.AddRange(BitConverter.GetBytes(growth != null));
+            if (growth != null)
+            {
+                growth.Serialize(ref data);
             }
 
             // // Linkable
@@ -359,6 +376,15 @@ namespace Shared.Messages
                 Parsers.ConsumableParser parser = new Parsers.ConsumableParser();
                 parser.Parse(ref data, ref offset);
                 this.consumableMessage = parser.GetMessage();
+            }
+
+            this.hasGrowth = BitConverter.ToBoolean(data, offset);
+            offset += sizeof(bool);
+            if (hasGrowth)
+            {
+                Parsers.GrowthParser parser = new Parsers.GrowthParser();
+                parser.Parse(ref data, ref offset);
+                this.growthMessage = parser.GetMessage();
             }
 
             // Linkable
