@@ -124,17 +124,17 @@ namespace Server
             reportAllEntities(clientId);
 
             Rectangle playerRect = new Rectangle(0, 0, 50, 50); //TODO: update width and height
-            Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/head", Color.Blue, "Audio/bass-switch", playerRect, $"{clientId}");
+            Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/head", Color.WhiteSmoke, "Audio/bass-switch", playerRect, $"{clientId}");
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
 
             for (int i = 0; i < 20; i++)
             {
-                Shared.Entities.Entity body = Shared.Entities.Body.Create("Images/body", Color.White, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
+                Shared.Entities.Entity body = Shared.Entities.Body.Create("Images/body", Color.Azure, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
                 MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body));
                 AddEntity(body);
             }
 
-            Shared.Entities.Entity tail = Shared.Entities.Body.Create("Images/tail", Color.Red, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Tail);
+            Shared.Entities.Entity tail = Shared.Entities.Body.Create("Images/tail", Color.OrangeRed, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Tail);
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(tail));
             AddEntity(tail);
 

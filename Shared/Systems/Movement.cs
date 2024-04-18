@@ -38,8 +38,8 @@ namespace Shared.Systems
             }
 
             // Cap velocity
-            if (Math.Abs(movable.velocity.X) > 1) { movable.velocity = new Vector2(movable.velocity.X > 0 ? 1 : -1, movable.velocity.Y); }
-            if (Math.Abs(movable.velocity.Y) > 1) { movable.velocity = new Vector2(movable.velocity.X, movable.velocity.Y > 0 ? 1 : -1); }
+            if (Math.Abs(movable.velocity.X) > .5f) { movable.velocity = new Vector2(movable.velocity.X > 0 ? .5f : -.5f, movable.velocity.Y); }
+            if (Math.Abs(movable.velocity.Y) > .5f) { movable.velocity = new Vector2(movable.velocity.X, movable.velocity.Y > 0 ? .5f : -.5f); }
 
             Vector2 newpos = movable.velocity * elapsedTime.Milliseconds + positionable.pos;
             positionable.UpdatePoistion(newpos);
