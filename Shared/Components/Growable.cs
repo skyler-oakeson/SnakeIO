@@ -5,7 +5,7 @@ namespace Shared.Components
 {
     public class Growable : Component
     {
-        public float growth;
+        public float growth { get; set; }
 
         public Growable()
         {

@@ -382,7 +382,7 @@ namespace Shared.Messages
             offset += sizeof(bool);
             if (hasGrowable)
             {
-                Parsers.GrowableParser parser = new Parsers.Growable();
+                Parsers.GrowableParser parser = new Parsers.GrowableParser();
                 parser.Parse(ref data, ref offset);
                 this.growthMessage = parser.GetMessage();
             }

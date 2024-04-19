@@ -16,6 +16,7 @@ namespace Server
         private Shared.Systems.Movement movement;
         private Systems.Collision collision;
         private Systems.Spawner spawner;
+        private Systems.Growth growth;
         private Shared.Systems.Linker linker;
         private Shared.Controls.ControlManager controlManager = new Shared.Controls.ControlManager(new Shared.DataManager());
 
@@ -40,6 +41,7 @@ namespace Server
             this.spawner = new Systems.Spawner(addEntity);
             this.systemNetwork = new Systems.Network();
             this.linker = new Shared.Systems.Linker();
+            this.growth = new Systems.Growth(addEntity);
 
             systemNetwork.registerJoinHandler(handleJoin);
             systemNetwork.registerDisconnectHandler(handleDisconnect);
@@ -58,6 +60,7 @@ namespace Server
             movement.Update(elapsedTime);
             collision.Update(elapsedTime);
             spawner.Update(elapsedTime);
+            growth.Update(elapsedTime);
         }
 
         public void Render(GameTime gameTime)
@@ -70,6 +73,7 @@ namespace Server
             collision.Add(entity);
             spawner.Add(entity);
             linker.Add(entity);
+            growth.Add(entity);
             systemNetwork.Add(entity);
             entities[entity.id] = entity;
         }
@@ -80,6 +84,7 @@ namespace Server
             collision.Remove(entity.id);
             spawner.Remove(entity.id);
             linker.Remove(entity.id);
+            growth.Remove(entity.id);
             systemNetwork.Remove(entity.id);
             entities.Remove(entity.id);
         }
@@ -90,6 +95,7 @@ namespace Server
             collision.Remove(id);
             spawner.Remove(id);
             linker.Remove(id);
+            growth.Remove(id);
             systemNetwork.Remove(id);
             entities.Remove(id);
         }
