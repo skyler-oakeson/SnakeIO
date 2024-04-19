@@ -48,11 +48,8 @@ namespace Systems
 
             Shared.Components.Collidable e1Col = e1.GetComponent<Shared.Components.Collidable>();
             Shared.Components.Collidable e2Col = e2.GetComponent<Shared.Components.Collidable>();
-            Shared.Components.Positionable e1Pos = e1.GetComponent<Shared.Components.Positionable>();
-            Shared.Components.Positionable e2Pos = e2.GetComponent<Shared.Components.Positionable>();
-            double hitDist = Math.Pow(e1Col.hitBox.Z + e2Col.hitBox.Z, 2);
-            double dist = Math.Pow(Math.Abs(e1Pos.pos.X - e2Pos.pos.X), 2) + Math.Pow(Math.Abs(e1Pos.pos.Y - e2Pos.pos.Y), 2);
-            Console.WriteLine(e1Col.hitBox.Z);
+            double hitDist = Math.Pow(e1Col.Data.CircleData.radius + e2Col.Data.CircleData.radius, 2);
+            double dist = Math.Pow(Math.Abs(e1Col.Data.CircleData.x - e2Col.Data.CircleData.x), 2) + Math.Pow(Math.Abs(e1Col.Data.CircleData.y - e2Col.Data.CircleData.y), 2);
 
             if (dist < hitDist)
             {

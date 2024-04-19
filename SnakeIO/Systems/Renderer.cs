@@ -167,7 +167,7 @@ namespace Systems
             for (int i = 0; i < 360; i++)
             {
                 indexCircleStrip[i] = i;
-                vertCircleStrip[i].Position = new Vector3(Convert.ToSingle(positionable.pos.X + (collidable.hitBox.Z * Math.Cos((float)i / 180 * Math.PI))), Convert.ToSingle(positionable.pos.Y + (collidable.hitBox.Z * Math.Sin((float)i / 180 * Math.PI))), 0);
+                vertCircleStrip[i].Position = new Vector3(Convert.ToSingle(positionable.pos.X + (collidable.Data.CircleData.radius * Math.Cos((float)i / 180 * Math.PI))), Convert.ToSingle(positionable.pos.Y + (collidable.Data.CircleData.radius * Math.Sin((float)i / 180 * Math.PI))), 0);
                 vertCircleStrip[i].Color = Color.Red;
             }
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)

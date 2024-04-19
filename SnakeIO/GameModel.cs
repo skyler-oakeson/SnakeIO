@@ -181,9 +181,11 @@ namespace SnakeIO
             //There is no guaruntee that if it has position and has appearance that it will be collidable
             if (message.hasCollidable)
             {
-                Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
-                int radius = renderable.rectangle.Width >= renderable.rectangle.Height ? renderable.rectangle.Width / 2 : renderable.rectangle.Height / 2;
-                entity.Add(new Shared.Components.Collidable(new Vector3(message.positionableMessage.pos.X, message.positionableMessage.pos.Y, radius)));
+                // We dont currently use anything on the collidable, so this is not a problem
+
+                // Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
+                // int radius = renderable.rectangle.Width >= renderable.rectangle.Height ? renderable.rectangle.Width / 2 : renderable.rectangle.Height / 2;
+                // entity.Add(new Shared.Components.Collidable(new Vector3(message.positionableMessage.pos.X, message.positionableMessage.pos.Y, radius)));
             }
 
             if (message.hasMovement)
