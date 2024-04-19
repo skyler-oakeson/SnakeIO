@@ -136,12 +136,14 @@ namespace Systems
             if (camera != null)
             {
                 Matrix newMatrix = Matrix.Lerp(Matrix.Identity, camera.Transform, camera.LerpAmount);
-                sb.Begin(transformMatrix: newMatrix);
+            }
+            /*    sb.Begin(transformMatrix: newMatrix);
             }
             else
             {
                 sb.Begin();
-            }
+            }*/
+            sb.Begin();
             sb.Draw(
                     animatable.spriteSheet,
                     new Rectangle(
