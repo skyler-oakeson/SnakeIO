@@ -14,6 +14,11 @@ namespace Shared.Messages
         {
             this.id = entity.id;
 
+            if (entity.ContainsComponent<Shared.Components.SnakeID>())
+            {
+                this.snakeID = entity.GetComponent<Shared.Components.SnakeID>();
+            }
+
             if (entity.ContainsComponent<Shared.Components.Appearance>())
             {
                 this.appearance = entity.GetComponent<Appearance>();
@@ -91,6 +96,11 @@ namespace Shared.Messages
         }
 
         public uint id { get; private set; }
+
+        // Snake ID
+        public bool hasSnakeID { get; private set; }
+        public Components.SnakeID? snakeID { get; private set; } = null;
+        public Parsers.SnakeIDParser.SnakeIDMessage snakeIDMessage;
 
         // Appearance
         public bool hasAppearance { get; private set; }
@@ -170,6 +180,13 @@ namespace Shared.Messages
 
             data.AddRange(base.serialize());
             data.AddRange(BitConverter.GetBytes(id));
+
+            // Snake ID
+            data.AddRange(BitConverter.GetBytes(snakeID != null));
+            if (snakeID != null)
+            {
+                snakeID.Serialize(ref data);
+            }
 
             // Appearance
             data.AddRange(BitConverter.GetBytes(appearance != null));
@@ -277,6 +294,16 @@ namespace Shared.Messages
 
             this.id = BitConverter.ToUInt32(data, offset);
             offset += sizeof(uint);
+
+            // Snake ID
+            this.hasSnakeID = BitConverter.ToBoolean(data, offset);
+            offset += sizeof(bool);
+            if (hasSnakeID)
+            {
+                Parsers.SnakeIDParser parser = new Parsers.SnakeIDParser();
+                parser.Parse(ref data, ref offset);
+                this.snakeIDMessage = parser.GetMessage();
+            }
 
             // Appearance
             this.hasAppearance = BitConverter.ToBoolean(data, offset);

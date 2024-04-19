@@ -10,10 +10,11 @@ namespace Shared.Entities
 {
     public class Player
     {
-        public static Entity Create(string texture, Color color, string sound, Rectangle rectangle, string chain = null)
+        public static Entity Create(int id, string texture, Color color, string sound, Rectangle rectangle, string chain = null)
         {
             Entity player = new Entity();
 
+            player.Add(new Shared.Components.SnakeID(id));
             if (chain != null)
             {
                 player.Add(new Shared.Components.Linkable(chain, Shared.Components.LinkPosition.Head));

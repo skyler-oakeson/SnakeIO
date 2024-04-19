@@ -133,7 +133,7 @@ namespace Server
             reportAllEntities(clientId);
 
             Rectangle playerRect = new Rectangle(0, 0, 50, 50); //TODO: update width and height
-            Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/head", Color.Blue, "Audio/bass-switch", playerRect, $"{clientId}");
+            Shared.Entities.Entity player = Shared.Entities.Player.Create(clientId, "Images/head", Color.Blue, "Audio/bass-switch", playerRect, $"{clientId}");
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
 
             // for (int i = 0; i < 20; i++)

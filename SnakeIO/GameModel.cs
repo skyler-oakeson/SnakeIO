@@ -134,6 +134,11 @@ namespace SnakeIO
         {
             Entity entity = new Entity(message.id);
 
+            if (message.hasSnakeID)
+            {
+                entity.Add(new Shared.Components.SnakeID(message.snakeIDMessage.id));
+            }
+
             if (message.hasAppearance)
             {
                 Rectangle rectangle = new Rectangle(
