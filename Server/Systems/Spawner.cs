@@ -63,7 +63,10 @@ namespace Systems
                 // There is probably a better way to do this by designing an interface that has the Create() method, then forcing the type to be of that interface.
                 // https://learn.microsoft.com/en-us/dotnet/api/system.reflection.methodinfo.invoke?view=netframework-1.1
                 // Ensure Create Method exists, and then invoke it here.
-                Shared.Entities.Entity newEntity = (Shared.Entities.Entity)createMethod.Invoke(null, new object[] { appearance.texturePath, new Rectangle((int)random.nextGaussian(100, 50), (int)random.nextGaussian(100, 50), 16, 16) });
+                int size = (int) random.nextRange(12, 30);
+                int x = (int) random.nextRange(0, 7500);
+                int y = (int) random.nextRange(0, 7500);
+                Shared.Entities.Entity newEntity = (Shared.Entities.Entity)createMethod.Invoke(null, new object[] { appearance.texturePath, new Rectangle(x, y, size, size) });
                 entitiesToSpawn.Add(newEntity);
             }
         }
