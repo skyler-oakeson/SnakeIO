@@ -75,7 +75,10 @@ namespace SnakeIO
 
         public void Render(TimeSpan elapsedTime)
         {
+            DateTime startTime = DateTime.Now;
             renderer.Update(elapsedTime);
+            TimeSpan currentTime = DateTime.Now - startTime;
+            Console.WriteLine($"Render update time: {currentTime}");
         }
 
         private void AddEntity(Entity entity)

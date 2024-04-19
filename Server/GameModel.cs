@@ -55,12 +55,30 @@ namespace Server
 
         public void Update(TimeSpan elapsedTime)
         {
+            DateTime startTime = DateTime.Now;
             systemNetwork.update(elapsedTime, MessageQueueServer.instance.getMessages());
+            TimeSpan currentTime = DateTime.Now - startTime;
+            Console.WriteLine($"Network update time: {currentTime}");
+            startTime = DateTime.Now;
             linker.Update(elapsedTime);
+            currentTime = DateTime.Now - startTime;
+            Console.WriteLine($"Linker update time: {currentTime}");
+            startTime = DateTime.Now;
             movement.Update(elapsedTime);
+            currentTime = DateTime.Now - startTime;
+            Console.WriteLine($"Movement update time: {currentTime}");
+            startTime = DateTime.Now;
             collision.Update(elapsedTime);
+            currentTime = DateTime.Now - startTime;
+            Console.WriteLine($"Collision update time: {currentTime}");
+            startTime = DateTime.Now;
             spawner.Update(elapsedTime);
+            currentTime = DateTime.Now - startTime;
+            Console.WriteLine($"Spawner update time: {currentTime}");
+            startTime = DateTime.Now;
             growth.Update(elapsedTime);
+            currentTime = DateTime.Now - startTime;
+            Console.WriteLine($"Growth update time: {currentTime}");
         }
 
         public void Render(GameTime gameTime)

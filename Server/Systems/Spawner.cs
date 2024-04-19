@@ -28,6 +28,10 @@ namespace Systems
             foreach (var entity in entities.Values)
             {
                 Shared.Components.Spawnable spawnable = entity.GetComponent<Shared.Components.Spawnable>();
+                if (updated.Contains(spawnable.type))
+                {
+                    break;
+                }
                 if (!spawnTimes.ContainsKey(spawnable.type))
                 {
                     spawnTimes[spawnable.type] = spawnable.spawnRate; //spawn initial count
@@ -64,8 +68,8 @@ namespace Systems
                 // https://learn.microsoft.com/en-us/dotnet/api/system.reflection.methodinfo.invoke?view=netframework-1.1
                 // Ensure Create Method exists, and then invoke it here.
                 int size = (int) random.nextRange(12, 30);
-                int x = (int) random.nextRange(0, 7500);
-                int y = (int) random.nextRange(0, 7500);
+                int x = (int) random.nextRange(0, 6750);
+                int y = (int) random.nextRange(0, 6750);
                 Shared.Entities.Entity newEntity = (Shared.Entities.Entity)createMethod.Invoke(null, new object[] { appearance.texturePath, new Rectangle(x, y, size, size) });
                 entitiesToSpawn.Add(newEntity);
             }

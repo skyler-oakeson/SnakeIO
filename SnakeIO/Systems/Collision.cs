@@ -24,7 +24,6 @@ namespace Systems
             entities.Values.CopyTo(entityArr, 0);
             for (int i = 0; i < entityArr.Length; i++)
             {
-                Console.WriteLine("here");
                 Shared.Entities.Entity e1 = entityArr[i];
                 for (int j = i; j < entityArr.Length; j++)
                 {
