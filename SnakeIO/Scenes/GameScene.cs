@@ -12,7 +12,7 @@ namespace Scenes
         public GameScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
-            this.gameModel = new SnakeIO.GameModel(screenHeight, screenWidth);
+            StartGame();
         }
 
         override public void LoadContent(ContentManager contentManager)
@@ -37,6 +37,11 @@ namespace Scenes
         override public void Update(TimeSpan elapsedTime)
         {
             gameModel.Update(elapsedTime);
+        }
+
+        public void StartGame()
+        {
+            this.gameModel = new SnakeIO.GameModel(screenHeight, screenWidth);
         }
     }
 }

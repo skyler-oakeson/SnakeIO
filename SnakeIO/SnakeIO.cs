@@ -17,6 +17,7 @@ namespace SnakeIO
         private SceneContext nextScene;
         private SceneContext currSceneContext;
         private Scene currScene;
+        private string playerName = null;
 
         public SnakeIO()
         {
@@ -32,16 +33,18 @@ namespace SnakeIO
             // graphics.PreferredBackBufferWidth = 1920;
             // graphics.PreferredBackBufferHeight = 1080;
             // graphics.ApplyChanges();
-            scenes.Add(SceneContext.Game, new GameScene(graphics.GraphicsDevice, graphics, controlManager));
             scenes.Add(SceneContext.MainMenu, new MainMenuScene(graphics.GraphicsDevice, graphics, controlManager));
+            scenes.Add(SceneContext.Name, new NameScene(graphics.GraphicsDevice, graphics, controlManager));
             scenes.Add(SceneContext.Options, new OptionScene(graphics.GraphicsDevice, graphics, controlManager));
+            scenes.Add(SceneContext.Game, new GameScene(graphics.GraphicsDevice, graphics, controlManager));
+
 
             foreach (Scene scene in scenes.Values)
             {
                 scene.Initialize(graphics.GraphicsDevice, graphics, controlManager);
             }
 
-            currSceneContext = SceneContext.Game;
+            currSceneContext = SceneContext.MainMenu;
             currScene = scenes[currSceneContext];
             nextScene = currSceneContext;
             base.Initialize();

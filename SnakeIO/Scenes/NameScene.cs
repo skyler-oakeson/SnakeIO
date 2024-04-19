@@ -11,7 +11,7 @@ namespace Scenes
     {
         private Renderer renderer;
         private KeyboardInput keyboardInput;
-        private Selector<SceneContext> selector;
+        private Selector<string> selector;
         private Audio audio;
         private Shared.Systems.Linker linker;
 
@@ -21,42 +21,26 @@ namespace Scenes
 
             this.controlManager = controlManager;
             this.keyboardInput = new Systems.KeyboardInput(controlManager);
-            this.selector = new Systems.Selector<SceneContext>();
+            this.selector = new Systems.Selector<string>();
             this.renderer = new Renderer(spriteBatch);
             this.audio = new Audio();
-            this.linker = new Shared.Systems.Linker();
         }
 
         override public void LoadContent(ContentManager contentManager)
         {
             SpriteFont font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
+            Texture2D background = contentManager.Load<Texture2D>("Images/text-input-bkg");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
-            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
-                        font, SceneContext.Game, "main", 
-                        true, sound, Shared.Components.LinkPosition.Head, 
-                        controlManager, new Rectangle(50, 50, 0, 0)));
-            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
-                        font, SceneContext.Options, "main", false,
-                        sound, Shared.Components.LinkPosition.Body,
-                        controlManager, new Rectangle(50, 100, 0, 0)));
-            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
-                        font, SceneContext.Exit, "main",
-                        false, sound, Shared.Components.LinkPosition.Tail,
-                        controlManager, new Rectangle(50, 150, 0, 0)));
+            AddEntity(Shared.Entities.TextInput.Create(
+                        font, background, "", 
+                        true, new Rectangle(screenWidth/2, screenHeight/2, 0, 0)));
         }
 
         override public SceneContext ProcessInput(GameTime gameTime)
         {
             selector.Update(gameTime.ElapsedGameTime);
 
-            if (selector.selectedVal != default(SceneContext))
-            {
-                SceneContext selected = selector.selectedVal;
-                selector.selectedVal = default(SceneContext);
-                return selected;
-            }
-
-            return SceneContext.MainMenu;
+            return SceneContext.Name;
         }
 
         override public void Render(TimeSpan elapsedTime)
@@ -66,11 +50,10 @@ namespace Scenes
 
         override public void Update(TimeSpan elapsedTime)
         {
-            renderer.Update(elapsedTime);
             selector.Update(elapsedTime);
-            keyboardInput.Update(elapsedTime);
+            renderer.Update(elapsedTime);
             audio.Update(elapsedTime);
-            linker.Update(elapsedTime);
+            keyboardInput.Update(elapsedTime);
         }
 
         private void AddEntity(Shared.Entities.Entity entity)
@@ -79,7 +62,6 @@ namespace Scenes
             selector.Add(entity);
             keyboardInput.Add(entity);
             audio.Add(entity);
-            linker.Add(entity);
         }
 
         private void RemoveEntity(Shared.Entities.Entity entity)
@@ -88,7 +70,6 @@ namespace Scenes
             selector.Remove(entity.id);
             keyboardInput.Remove(entity.id);
             audio.Remove(entity.id);
-            linker.Remove(entity.id);
         }
 
     }

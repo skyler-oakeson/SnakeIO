@@ -95,28 +95,26 @@ namespace Systems
         {
             Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
             Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
+            if (camera != null)
             {
-                if (camera != null)
-                {
-                    Matrix newMatrix = Matrix.Lerp(Matrix.Identity, camera.Transform, camera.LerpAmount);
-                    sb.Begin(transformMatrix: newMatrix);
-                }
-                else
-                {
-                    sb.Begin();
-                }
-                sb.Draw(
-                        renderable.texture,
-                        new Rectangle(
-                            (int)(positionable.pos.X - renderable.rectangle.Width / 2),
-                            (int)(positionable.pos.Y - renderable.rectangle.Height / 2),
-                            renderable.rectangle.Width,
-                            renderable.rectangle.Height
-                            ),
-                        renderable.color
-                       );
-                sb.End();
+                Matrix newMatrix = Matrix.Lerp(Matrix.Identity, camera.Transform, camera.LerpAmount);
+                sb.Begin(transformMatrix: newMatrix);
             }
+            else
+            {
+                sb.Begin();
+            }
+            sb.Draw(
+                    renderable.texture,
+                    new Rectangle(
+                        (int)(positionable.pos.X - renderable.rectangle.Width / 2),
+                        (int)(positionable.pos.Y - renderable.rectangle.Height / 2),
+                        renderable.rectangle.Width,
+                        renderable.rectangle.Height
+                        ),
+                    renderable.color
+                   );
+            sb.End();
         }
 
         private void RenderText(Shared.Entities.Entity entity)

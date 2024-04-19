@@ -2,7 +2,8 @@
 
 namespace Shared.Components
 {
-    public delegate bool SelectableDelegate();
+    public delegate bool InteractableDelegate(Shared.Entities.Entity entity);
+    public delegate bool SelectableDelegate(Shared.Entities.Entity entity);
 
     public class Selectable<T> : Component
     {
@@ -11,15 +12,17 @@ namespace Shared.Components
         public bool selected { get; set; }
         public T value { get; set; }
         public SelectableDelegate? selectableDelegate { get; set; }
+        public InteractableDelegate? interactableDelegate { get; set; }
 
         
-        public Selectable(bool selected, T value, SelectableDelegate? selectableDelegate = null)
+        public Selectable(bool selected, T value, SelectableDelegate? selectableDelegate = null, InteractableDelegate? interactableDelegate = null)
         {
             this.selected = selected;
             this.interacted = false;
             this.prevState = false;
             this.value = value;
             this.selectableDelegate = selectableDelegate;
+            this.interactableDelegate = interactableDelegate;
         }
 
         public override void Serialize(ref List<byte> data)
