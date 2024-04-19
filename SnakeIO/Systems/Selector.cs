@@ -41,12 +41,13 @@ namespace Systems
                 // Runs once entity is interacted with 
                 if (sel.interacted)
                 {
-                    sel.interacted = false;
-                    selectedVal = sel.value;
                     if (sel.interactableDelegate != null)
                     {
                         sel.interacted = !sel.interactableDelegate(entity);
                     }
+                    sel.interacted = false;
+                    selectedVal = sel.value;
+                    Console.WriteLine(selectedVal);
                 }
             }
         }
@@ -70,7 +71,6 @@ namespace Systems
             {
                 entity.GetComponent<Shared.Components.KeyboardControllable>().enable = sel.selected;
             }
-
 
             sel.prevState = !sel.prevState;
         }
