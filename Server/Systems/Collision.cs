@@ -41,7 +41,7 @@ namespace Systems
                         {
                             res = CircleCollision(e1, e2);
                         }
-                        if ((!e1IsCircle && e2IsCircle) || (e1IsCircle && !e2IsCircle))
+                        else if ((!e1IsCircle && e2IsCircle) || (e1IsCircle && !e2IsCircle))
                         {
                             res = RectangleCircleCollision(e1, e2);
                         }
