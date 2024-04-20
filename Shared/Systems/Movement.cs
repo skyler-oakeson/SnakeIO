@@ -60,7 +60,14 @@ namespace Shared.Systems
             if (entity.ContainsComponent<Shared.Components.Collidable>())
             {
                 Shared.Components.Collidable col = entity.GetComponent<Shared.Components.Collidable>();
-                col.hitBox = new Vector3(newpos.X, newpos.Y, col.hitBox.Z);
+                if (col.Data.Shape == Shared.Components.CollidableShape.Circle)
+                {
+                    col.Data.CircleData = new CircleData {x = newpos.X, y = newpos.Y, radius = col.Data.CircleData.radius};
+                }
+                if (col.Data.Shape == Shared.Components.CollidableShape.Rectangle)
+                {
+                    col.Data.RectangleData = new RectangleData {x = newpos.X, y = newpos.Y, width = col.Data.RectangleData.width, height = col.Data.RectangleData.height };
+                }
             }
         }
     }

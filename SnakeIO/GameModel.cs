@@ -75,7 +75,10 @@ namespace SnakeIO
 
         public void Render(TimeSpan elapsedTime)
         {
+            // DateTime startTime = DateTime.Now;
             renderer.Update(elapsedTime);
+            // TimeSpan currentTime = DateTime.Now - startTime;
+            // Console.WriteLine($"Render update time: {currentTime}");
         }
 
         private void AddEntity(Entity entity)
@@ -134,6 +137,11 @@ namespace SnakeIO
         {
             Entity entity = new Entity(message.id);
 
+            if (message.hasSnakeID)
+            {
+                entity.Add(new Shared.Components.SnakeID(message.snakeIDMessage.id));
+            }
+
             if (message.hasAppearance)
             {
                 Rectangle rectangle = new Rectangle(
@@ -173,9 +181,12 @@ namespace SnakeIO
             //There is no guaruntee that if it has position and has appearance that it will be collidable
             if (message.hasCollidable)
             {
-                Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
-                int radius = renderable.texture.Width >= renderable.texture.Height ? renderable.texture.Width / 2 : renderable.texture.Height / 2;
-                entity.Add(new Shared.Components.Collidable(new Vector3(message.positionableMessage.pos.X, message.positionableMessage.pos.Y, radius)));
+                Console.WriteLine($"{message.collidableMessage.Shape}, {message.collidableMessage.RectangleData.x}, {message.collidableMessage.RectangleData.y}, {message.collidableMessage.RectangleData.width}, {message.collidableMessage.RectangleData.height}");
+
+                entity.Add(new Shared.Components.Collidable(message.collidableMessage.Shape, message.collidableMessage.RectangleData, message.collidableMessage.CircleData));
+                // Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
+                // int radius = renderable.rectangle.Width >= renderable.rectangle.Height ? renderable.rectangle.Width / 2 : renderable.rectangle.Height / 2;
+                // entity.Add(new Shared.Components.Collidable(new Vector3(message.positionableMessage.pos.X, message.positionableMessage.pos.Y, radius)));
             }
 
             if (message.hasMovement)
@@ -186,6 +197,16 @@ namespace SnakeIO
             if (message.hasSpawnable)
             {
                 entity.Add(new Shared.Components.Spawnable(message.spawnableMessage.spawnRate, message.spawnableMessage.spawnCount, message.spawnableMessage.type));
+            }
+
+            if (message.hasConsumable)
+            {
+                entity.Add(new Shared.Components.Consumable(message.consumableMessage.growth));
+            }
+
+            if (message.hasGrowable)
+            {
+                entity.Add(new Shared.Components.Growable());
             }
 
             if (message.hasCamera)

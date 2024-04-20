@@ -10,10 +10,11 @@ namespace Shared.Entities
 {
     public class Player
     {
-        public static Entity Create(string texture, Color color, string sound, Rectangle rectangle, string chain = null)
+        public static Entity Create(int id, string texture, Color color, string sound, Rectangle rectangle, string chain = null)
         {
             Entity player = new Entity();
 
+            player.Add(new Shared.Components.SnakeID(id));
             if (chain != null)
             {
                 player.Add(new Shared.Components.Linkable(chain, Shared.Components.LinkPosition.Head));
@@ -21,16 +22,20 @@ namespace Shared.Entities
             player.Add(new Components.Appearance(texture, typeof(Texture2D), color, Color.Black, rectangle));
             player.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
             player.Add(new Shared.Components.Movable(new Vector2(0, 0)));
-            //TODO: Change this to match the vision
-            player.Add(new Shared.Components.Animatable(new int[25] { 40, 40, 40, 40, 40, 
-                                                                      40, 40, 40, 40, 40, 
-                                                                      40, 40, 40, 40, 40, 
-                                                                      40, 40, 40, 40, 40, 
+            player.Add(new Shared.Components.Growable());
+            // player.Add(new Components.Audible(sound));
+            player.Add(new Shared.Components.Animatable(new int[25] { 40, 40, 40, 40, 40,
+                                                                      40, 40, 40, 40, 40,
+                                                                      40, 40, 40, 40, 40,
+                                                                      40, 40, 40, 40, 40,
                                                                       40, 40, 40, 40, 40 }));
             player.Add(new Shared.Components.KeyboardControllable(true, typeof(Shared.Entities.Player), PlayerKeyboardControls));
             player.Add(new Components.Camera(new Rectangle(rectangle.X, rectangle.Y, 1500, 1500)));
-            // player.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
-            // player.Add(new Components.Audible(sound));
+
+            int radius = rectangle.Width >= rectangle.Height ? rectangle.Width / 2 : rectangle.Height / 2;
+            Shared.Components.CircleData circleData = new Shared.Components.CircleData { x = rectangle.X, y = rectangle.Y, radius = radius };
+            Shared.Components.RectangleData rectangleData = new Shared.Components.RectangleData { };
+            player.Add(new Components.Collidable(Shared.Components.CollidableShape.Circle, rectangleData, circleData));
 
             return player;
         }

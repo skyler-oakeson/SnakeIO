@@ -48,8 +48,8 @@ namespace Systems
 
             Shared.Components.Collidable e1Col = e1.GetComponent<Shared.Components.Collidable>();
             Shared.Components.Collidable e2Col = e2.GetComponent<Shared.Components.Collidable>();
-            double hitDist = Math.Pow(e1Col.hitBox.Z + e2Col.hitBox.Z, 2);
-            double dist = Math.Pow(Math.Abs(e1Col.hitBox.X - e2Col.hitBox.X), 2) + Math.Pow(Math.Abs(e1Col.hitBox.Y - e2Col.hitBox.Y), 2);
+            double hitDist = Math.Pow(e1Col.Data.CircleData.radius + e2Col.Data.CircleData.radius, 2);
+            double dist = Math.Pow(Math.Abs(e1Col.Data.CircleData.x - e2Col.Data.CircleData.x), 2) + Math.Pow(Math.Abs(e1Col.Data.CircleData.y - e2Col.Data.CircleData.y), 2);
 
             if (dist < hitDist)
             {
@@ -68,6 +68,7 @@ namespace Systems
 
             e1Pos.pos = e1Pos.prevPos;
             e2Pos.pos = e2Pos.prevPos;
+            Console.WriteLine("HandleCollision");
 
             if (e1.ContainsComponent<Shared.Components.Audible>())
             {
@@ -88,6 +89,22 @@ namespace Systems
                 Shared.Components.Movable e2Mov = e2.GetComponent<Shared.Components.Movable>();
                 e2Mov.velocity -= n*.5f;
                 e1Mov.velocity += n*.5f;
+            }
+
+            if (e1.ContainsComponent<Shared.Components.Consumable>() || e2.ContainsComponent<Shared.Components.Consumable>())
+            {
+                Console.WriteLine("Consumable hit!");
+                if (e1.ContainsComponent<Shared.Components.Consumable>())
+                {
+                    Shared.Components.Consumable consumable = e1.GetComponent<Shared.Components.Consumable>();
+                    SnakeIO.MessageQueueClient.instance.sendMessage(new Shared.Messages.RemoveEntity(e1.id));
+                }
+                else
+                {
+                    Shared.Components.Consumable consumable = e2.GetComponent<Shared.Components.Consumable>();
+                    SnakeIO.MessageQueueClient.instance.sendMessage(new Shared.Messages.RemoveEntity(e2.id));
+
+                }
             }
         }
     }

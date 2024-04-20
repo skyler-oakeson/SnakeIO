@@ -16,11 +16,14 @@ namespace Server
         private Shared.Systems.Movement movement;
         private Systems.Collision collision;
         private Systems.Spawner spawner;
+        private Systems.Growth growth;
         private Shared.Systems.Linker linker;
         private Shared.Controls.ControlManager controlManager = new Shared.Controls.ControlManager(new Shared.DataManager());
 
         public delegate void AddDelegate(Shared.Entities.Entity entity);
         private AddDelegate addEntity;
+        public delegate void RemoveDelegate(Shared.Entities.Entity entity);
+        private RemoveDelegate removeEntity;
 
         private List<Shared.Entities.Entity> toRemove = new List<Shared.Entities.Entity>();
         private List<Shared.Entities.Entity> toAdd = new List<Shared.Entities.Entity>();
@@ -28,20 +31,22 @@ namespace Server
         public GameModel()
         {
             addEntity = AddEntity;
+            removeEntity = RemoveEntity;
         }
 
         public bool Initialize()
         {
             this.movement = new Shared.Systems.Movement();
-            this.collision = new Systems.Collision();
+            this.collision = new Systems.Collision(removeEntity);
             this.spawner = new Systems.Spawner(addEntity);
             this.systemNetwork = new Systems.Network();
             this.linker = new Shared.Systems.Linker();
+            this.growth = new Systems.Growth(addEntity);
 
             systemNetwork.registerJoinHandler(handleJoin);
             systemNetwork.registerDisconnectHandler(handleDisconnect);
             MessageQueueServer.instance.registerConnectHandler(handleConnect);
-            Rectangle rectangle = new Rectangle(100, 100, 10, 10);
+            Rectangle rectangle = new Rectangle(50000, 50000, 10, 10);
             AddEntity(Shared.Entities.Food.Create("Images/food", rectangle));
             new Utils.WorldGenerator(addEntity);
 
@@ -50,11 +55,30 @@ namespace Server
 
         public void Update(TimeSpan elapsedTime)
         {
+            DateTime startTime = DateTime.Now;
             systemNetwork.update(elapsedTime, MessageQueueServer.instance.getMessages());
+            TimeSpan currentTime = DateTime.Now - startTime;
+            Console.WriteLine($"Network update time: {currentTime}");
+            startTime = DateTime.Now;
             linker.Update(elapsedTime);
+            currentTime = DateTime.Now - startTime;
+            Console.WriteLine($"Linker update time: {currentTime}");
+            startTime = DateTime.Now;
             movement.Update(elapsedTime);
+            currentTime = DateTime.Now - startTime;
+            Console.WriteLine($"Movement update time: {currentTime}");
+            startTime = DateTime.Now;
             collision.Update(elapsedTime);
+            currentTime = DateTime.Now - startTime;
+            Console.WriteLine($"Collision update time: {currentTime}");
+            startTime = DateTime.Now;
             spawner.Update(elapsedTime);
+            currentTime = DateTime.Now - startTime;
+            Console.WriteLine($"Spawner update time: {currentTime}");
+            startTime = DateTime.Now;
+            growth.Update(elapsedTime);
+            currentTime = DateTime.Now - startTime;
+            Console.WriteLine($"Growth update time: {currentTime}");
         }
 
         public void Render(GameTime gameTime)
@@ -67,6 +91,7 @@ namespace Server
             collision.Add(entity);
             spawner.Add(entity);
             linker.Add(entity);
+            growth.Add(entity);
             systemNetwork.Add(entity);
             entities[entity.id] = entity;
         }
@@ -77,6 +102,7 @@ namespace Server
             collision.Remove(entity.id);
             spawner.Remove(entity.id);
             linker.Remove(entity.id);
+            growth.Remove(entity.id);
             systemNetwork.Remove(entity.id);
             entities.Remove(entity.id);
         }
@@ -87,6 +113,7 @@ namespace Server
             collision.Remove(id);
             spawner.Remove(id);
             linker.Remove(id);
+            growth.Remove(id);
             systemNetwork.Remove(id);
             entities.Remove(id);
         }
@@ -125,15 +152,15 @@ namespace Server
             reportAllEntities(clientId);
 
             Rectangle playerRect = new Rectangle(0, 0, 50, 50); //TODO: update width and height
-            Shared.Entities.Entity player = Shared.Entities.Player.Create("Images/head", Color.WhiteSmoke, "Audio/bass-switch", playerRect, $"{clientId}");
+            Shared.Entities.Entity player = Shared.Entities.Player.Create(clientId, "Images/head", Color.Blue, "Audio/bass-switch", playerRect, $"{clientId}");
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
 
-            for (int i = 0; i < 20; i++)
-            {
-                Shared.Entities.Entity body = Shared.Entities.Body.Create("Images/body", Color.Azure, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
-                MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body));
-                AddEntity(body);
-            }
+            // for (int i = 0; i < 20; i++)
+            // {
+            //     Shared.Entities.Entity body = Shared.Entities.Body.Create("Images/body", Color.White, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
+            //     MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body));
+            //     AddEntity(body);
+            // }
 
             Shared.Entities.Entity tail = Shared.Entities.Body.Create("Images/tail", Color.OrangeRed, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Tail);
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(tail));

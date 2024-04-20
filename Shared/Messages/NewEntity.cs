@@ -14,6 +14,11 @@ namespace Shared.Messages
         {
             this.id = entity.id;
 
+            if (entity.ContainsComponent<Shared.Components.SnakeID>())
+            {
+                this.snakeID = entity.GetComponent<Shared.Components.SnakeID>();
+            }
+
             if (entity.ContainsComponent<Shared.Components.Appearance>())
             {
                 this.appearance = entity.GetComponent<Appearance>();
@@ -38,6 +43,11 @@ namespace Shared.Messages
             if (entity.ContainsComponent<Shared.Components.Consumable>())
             {
                 this.consumable = entity.GetComponent<Consumable>();
+            }
+
+            if (entity.ContainsComponent<Shared.Components.Growable>())
+            {
+                this.growth = entity.GetComponent<Shared.Components.Growable>();
             }
 
             if (entity.ContainsComponent<Shared.Components.Animatable>())
@@ -87,6 +97,11 @@ namespace Shared.Messages
 
         public uint id { get; private set; }
 
+        // Snake ID
+        public bool hasSnakeID { get; private set; }
+        public Components.SnakeID? snakeID { get; private set; } = null;
+        public Parsers.SnakeIDParser.SnakeIDMessage snakeIDMessage;
+
         // Appearance
         public bool hasAppearance { get; private set; }
         public Components.Appearance? appearance { get; private set; } = null;
@@ -132,6 +147,11 @@ namespace Shared.Messages
         public Components.Consumable? consumable { get; private set; } = null;
         public Parsers.ConsumableParser.ConsumableMessage consumableMessage { get; private set; }
 
+        // Growable
+        public bool hasGrowable { get; private set; }
+        public Components.Growable? growth { get; private set; } = null;
+        public Parsers.GrowableParser.GrowableMessage growthMessage { get; private set; }
+
         // Animatable
         public bool hasAnimatable { get; private set; }
         public Components.Animatable? animatable { get; private set; } = null;
@@ -160,6 +180,13 @@ namespace Shared.Messages
 
             data.AddRange(base.serialize());
             data.AddRange(BitConverter.GetBytes(id));
+
+            // Snake ID
+            data.AddRange(BitConverter.GetBytes(snakeID != null));
+            if (snakeID != null)
+            {
+                snakeID.Serialize(ref data);
+            }
 
             // Appearance
             data.AddRange(BitConverter.GetBytes(appearance != null));
@@ -230,6 +257,13 @@ namespace Shared.Messages
                 consumable.Serialize(ref data);
             }
 
+            // Growable
+            data.AddRange(BitConverter.GetBytes(growth != null));
+            if (growth != null)
+            {
+                growth.Serialize(ref data);
+            }
+
             // // Linkable
             data.AddRange(BitConverter.GetBytes(linkable != null));
             if (linkable != null)
@@ -260,6 +294,16 @@ namespace Shared.Messages
 
             this.id = BitConverter.ToUInt32(data, offset);
             offset += sizeof(uint);
+
+            // Snake ID
+            this.hasSnakeID = BitConverter.ToBoolean(data, offset);
+            offset += sizeof(bool);
+            if (hasSnakeID)
+            {
+                Parsers.SnakeIDParser parser = new Parsers.SnakeIDParser();
+                parser.Parse(ref data, ref offset);
+                this.snakeIDMessage = parser.GetMessage();
+            }
 
             // Appearance
             this.hasAppearance = BitConverter.ToBoolean(data, offset);
@@ -359,6 +403,15 @@ namespace Shared.Messages
                 Parsers.ConsumableParser parser = new Parsers.ConsumableParser();
                 parser.Parse(ref data, ref offset);
                 this.consumableMessage = parser.GetMessage();
+            }
+
+            this.hasGrowable = BitConverter.ToBoolean(data, offset);
+            offset += sizeof(bool);
+            if (hasGrowable)
+            {
+                Parsers.GrowableParser parser = new Parsers.GrowableParser();
+                parser.Parse(ref data, ref offset);
+                this.growthMessage = parser.GetMessage();
             }
 
             // Linkable
