@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using System.Threading;
 
 namespace Systems
 {
@@ -45,7 +46,12 @@ namespace Systems
                         {
                             res = RectangleCircleCollision(e1, e2);
                         }
-                        if (res) HandleCollision(e1, e2);
+                        if (res)
+                        {
+                            Thread collisionThread = new Thread(() => HandleCollision(e1, e2));
+                            collisionThread.Start();
+                            // HandleCollision(e1, e2);
+                        }
                     }
                 }
             }
