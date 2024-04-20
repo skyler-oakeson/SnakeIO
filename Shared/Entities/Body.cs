@@ -34,13 +34,16 @@ namespace Shared.Entities
             Components.Linkable rootLink = root.GetComponent<Components.Linkable>();
             Components.Positionable rootPos = root.GetComponent<Components.Positionable>();
             Components.Movable rootMov = root.GetComponent<Components.Movable>();
-            Components.Positionable prevPos = rootLink.prevEntity.GetComponent<Components.Positionable>();
-            Components.Movable prevMov = rootLink.prevEntity.GetComponent<Components.Movable>();
+            if (rootLink.prevEntity != null)
+            {
+                Components.Positionable prevPos = rootLink.prevEntity.GetComponent<Components.Positionable>();
+                Components.Movable prevMov = rootLink.prevEntity.GetComponent<Components.Movable>();
 
-            Vector2 offset = prevMov.velocity;
-            // offset = offset * radius;
-            // rootPos.pos = prevPos.prevPos - offset;
-            rootPos.UpdatePoistion(prevPos.prevPos);
+                Vector2 offset = prevMov.velocity;
+                // offset = offset * radius;
+                // rootPos.pos = prevPos.prevPos - offset;
+                rootPos.UpdatePoistion(prevPos.prevPos);
+            }
         });
     }
 }

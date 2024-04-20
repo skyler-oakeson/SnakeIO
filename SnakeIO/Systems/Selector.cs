@@ -9,6 +9,7 @@ namespace Systems
     public class Selector<T> : Shared.Systems.System
     {
         public T selectedVal = default(T);
+        public bool hasSelected = false;
 
         public Selector()
             : base(
@@ -41,13 +42,13 @@ namespace Systems
                 // Runs once entity is interacted with 
                 if (sel.interacted)
                 {
+                    sel.interacted = false;
+                    hasSelected = true;
                     if (sel.interactableDelegate != null)
                     {
                         sel.interacted = !sel.interactableDelegate(entity);
                     }
-                    sel.interacted = false;
                     selectedVal = sel.value;
-                    Console.WriteLine(selectedVal);
                 }
             }
         }
@@ -73,6 +74,12 @@ namespace Systems
             }
 
             sel.prevState = !sel.prevState;
+        }
+
+        public T ConsumeSelection()
+        {
+            hasSelected = false;
+            return selectedVal;
         }
     }
 }

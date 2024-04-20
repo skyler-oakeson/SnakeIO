@@ -9,6 +9,7 @@ namespace SnakeIO
 {
     public class SnakeIO : Game
     {
+        public bool sceneSwapped = false;
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private Shared.DataManager dataManager;
@@ -17,7 +18,6 @@ namespace SnakeIO
         private SceneContext nextScene;
         private SceneContext currSceneContext;
         private Scene currScene;
-        private string playerName = null;
 
         public SnakeIO()
         {
@@ -61,19 +61,7 @@ namespace SnakeIO
 
         protected override void Update(GameTime gameTime)
         {
-            if (nextScene == SceneContext.Exit)
-            {
-                MessageQueueClient.instance.sendMessage(new Shared.Messages.Disconnect());
-                MessageQueueClient.instance.shutdown();
-                Exit();
-            }
-            else if (currSceneContext != nextScene)
-            {
-                currScene = scenes[nextScene];
-                currSceneContext = nextScene;
-            }
-
-            nextScene = currScene.ProcessInput(gameTime);
+            HandleSceneChange(gameTime);
             currScene.Update(gameTime.ElapsedGameTime);
             base.Update(gameTime);
         }
@@ -82,6 +70,24 @@ namespace SnakeIO
         {
             currScene.Render(gameTime.ElapsedGameTime);
             base.Draw(gameTime);
+        }
+
+        private void HandleSceneChange(GameTime gameTime)
+        {
+            nextScene = currScene.ProcessInput(gameTime);
+            if (nextScene == SceneContext.Exit)
+            {
+                MessageQueueClient.instance.sendMessage(new Shared.Messages.Disconnect());
+                MessageQueueClient.instance.shutdown();
+                Exit();
+            }
+            else if (currSceneContext != nextScene)
+            {
+                sceneSwapped = true;
+                currScene = scenes[nextScene];
+                currSceneContext = nextScene;
+                currScene.SwapScene();
+            }
         }
     }
 }

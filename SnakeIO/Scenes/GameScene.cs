@@ -50,11 +50,12 @@ namespace Scenes
             }
 
             selector.Update(gameTime.ElapsedGameTime);
-            if (selector.selectedVal != "" && selector.selectedVal != default(string) && state != GameSceneState.Game)
+
+            if (selector.hasSelected && selector.selectedVal != "")
             {
                 RemoveEntity(this.textBox);
                 state = GameSceneState.Game;
-                StartGame(selector.selectedVal);
+                StartGame(selector.ConsumeSelection());
             }
 
             return SceneContext.Game;

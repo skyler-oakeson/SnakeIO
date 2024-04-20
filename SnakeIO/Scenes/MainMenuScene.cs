@@ -91,6 +91,5 @@ namespace Scenes
             audio.Remove(entity.id);
             linker.Remove(entity.id);
         }
-
     }
 }

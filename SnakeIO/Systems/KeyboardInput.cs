@@ -99,5 +99,10 @@ namespace Systems
         {
             return (Keyboard.GetState().IsKeyDown(key) && !statePrevious.IsKeyDown(key));
         }
+
+        public void PrevState(KeyboardState state)
+        {
+            this.statePrevious = state;
+        }
     }
 }
