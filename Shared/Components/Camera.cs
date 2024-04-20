@@ -34,32 +34,72 @@ namespace Shared.Components
         public bool ShouldRender(Shared.Entities.Entity entity)
         {
             // https://stackoverflow.com/questions/401847/circle-rectangle-collision-detection-intersection
-            if (this.LerpAmount >= 1f) {
-                Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
-                Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
-                int radius = renderable.texture.Width >= renderable.texture.Height ? renderable.texture.Width / 2 : renderable.texture.Height / 2;
-                double circleDistanceX = Math.Abs(positionable.pos.X - rectangle.X);
-                double circleDistanceY = Math.Abs(positionable.pos.Y - rectangle.Y);
-                if (circleDistanceX > ((rectangle.Width + 50) / 2 + radius))
+            if (this.LerpAmount >= 1f)
+            {
+                if (entity.ContainsComponent<Shared.Components.Collidable>())
                 {
-                    return false;
+                    if (entity.GetComponent<Shared.Components.Collidable>().Data.Shape == Shared.Components.CollidableShape.Rectangle)
+                    {
+                        return RectangleIntersection(entity);
+                    }
+                    else
+                    {
+                        return CircleRectangleIntersection(entity);
+                    }
                 }
-                if (circleDistanceY > ((rectangle.Height + 50) / 2 + radius))
+                else
                 {
-                    return false;
+                    return CircleRectangleIntersection(entity);
                 }
-                if (circleDistanceX <= ((rectangle.Width + 50) / 2))
-                {
-                    return true;
-                }
-                if (circleDistanceY <= ((rectangle.Height + 50) / 2))
-                {
-                    return true;
-                }
-                double cornerDistanceSQ = (circleDistanceX - (rectangle.Width + 50) / 2) * (circleDistanceX - (rectangle.Width + 50) / 2) + (circleDistanceY - (rectangle.Height + 50) / 2) * (circleDistanceY - (rectangle.Height + 50) / 2);
-                return (cornerDistanceSQ <= (radius * radius));
             }
             return true;
+        }
+
+        private bool RectangleIntersection(Shared.Entities.Entity entity)
+        {
+            Shared.Components.Collidable collidable = entity.GetComponent<Shared.Components.Collidable>();
+
+            double entityRectTop = collidable.Data.RectangleData.y - collidable.Data.RectangleData.width / 2;
+            double entityRectLeft = collidable.Data.RectangleData.x - collidable.Data.RectangleData.height / 2;
+            double entityRectRight = collidable.Data.RectangleData.x + collidable.Data.RectangleData.height / 2;;
+            double entityRectBottom = collidable.Data.RectangleData.y + collidable.Data.RectangleData.width / 2;;
+            double cameraTop = rectangle.Y - rectangle.Height / 2;
+            double cameraLeft = rectangle.X - rectangle.Width / 2;;
+            double cameraRight = rectangle.X + rectangle.Width / 2;;
+            double cameraBottom = rectangle.Y + rectangle.Height / 2;;
+
+            bool xIntersect = entityRectLeft < cameraRight && entityRectRight > cameraLeft;
+            bool yIntersect = entityRectTop < cameraBottom && entityRectBottom > cameraTop;
+
+            return xIntersect && yIntersect;
+        }
+
+        private bool CircleRectangleIntersection(Shared.Entities.Entity entity)
+        {
+            Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
+            Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
+            int radius = renderable.texture.Width >= renderable.texture.Height ? renderable.texture.Width / 2 : renderable.texture.Height / 2;
+            double circleDistanceX = Math.Abs(positionable.pos.X - rectangle.X);
+            double circleDistanceY = Math.Abs(positionable.pos.Y - rectangle.Y);
+            if (circleDistanceX > ((rectangle.Width + 50) / 2 + radius))
+            {
+                return false;
+            }
+            if (circleDistanceY > ((rectangle.Height + 50) / 2 + radius))
+            {
+                return false;
+            }
+            if (circleDistanceX <= ((rectangle.Width + 50) / 2))
+            {
+                return true;
+            }
+            if (circleDistanceY <= ((rectangle.Height + 50) / 2))
+            {
+                return true;
+            }
+            double cornerDistanceSQ = (circleDistanceX - (rectangle.Width + 50) / 2) * (circleDistanceX - (rectangle.Width + 50) / 2) + (circleDistanceY - (rectangle.Height + 50) / 2) * (circleDistanceY - (rectangle.Height + 50) / 2);
+            return (cornerDistanceSQ <= (radius * radius));
+
         }
 
         //TODO: Probably remove this, we make all the data in the createEntity anyways

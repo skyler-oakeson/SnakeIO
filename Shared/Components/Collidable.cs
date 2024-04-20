@@ -19,13 +19,20 @@ namespace Shared.Components
             };
         }
 
-        // This will be handled in CreateEntity. These are just used as flags
         public override void Serialize(ref List<byte> data)
         {
+            data.AddRange(BitConverter.GetBytes((UInt16) Data.Shape));
+            data.AddRange(BitConverter.GetBytes(Data.RectangleData.x));
+            data.AddRange(BitConverter.GetBytes(Data.RectangleData.y));
+            data.AddRange(BitConverter.GetBytes(Data.RectangleData.width));
+            data.AddRange(BitConverter.GetBytes(Data.RectangleData.height));
+            data.AddRange(BitConverter.GetBytes(Data.CircleData.x));
+            data.AddRange(BitConverter.GetBytes(Data.CircleData.y));
+            data.AddRange(BitConverter.GetBytes(Data.CircleData.radius));
         }
     }
 
-    public enum CollidableShape
+    public enum CollidableShape : UInt16
     {
         Rectangle,
         Circle

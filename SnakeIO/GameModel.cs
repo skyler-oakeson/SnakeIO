@@ -75,10 +75,10 @@ namespace SnakeIO
 
         public void Render(TimeSpan elapsedTime)
         {
-            DateTime startTime = DateTime.Now;
+            // DateTime startTime = DateTime.Now;
             renderer.Update(elapsedTime);
-            TimeSpan currentTime = DateTime.Now - startTime;
-            Console.WriteLine($"Render update time: {currentTime}");
+            // TimeSpan currentTime = DateTime.Now - startTime;
+            // Console.WriteLine($"Render update time: {currentTime}");
         }
 
         private void AddEntity(Entity entity)
@@ -181,8 +181,9 @@ namespace SnakeIO
             //There is no guaruntee that if it has position and has appearance that it will be collidable
             if (message.hasCollidable)
             {
-                // We dont currently use anything on the collidable, so this is not a problem
+                Console.WriteLine($"{message.collidableMessage.Shape}, {message.collidableMessage.RectangleData.x}, {message.collidableMessage.RectangleData.y}, {message.collidableMessage.RectangleData.width}, {message.collidableMessage.RectangleData.height}");
 
+                entity.Add(new Shared.Components.Collidable(message.collidableMessage.Shape, message.collidableMessage.RectangleData, message.collidableMessage.CircleData));
                 // Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
                 // int radius = renderable.rectangle.Width >= renderable.rectangle.Height ? renderable.rectangle.Width / 2 : renderable.rectangle.Height / 2;
                 // entity.Add(new Shared.Components.Collidable(new Vector3(message.positionableMessage.pos.X, message.positionableMessage.pos.Y, radius)));
