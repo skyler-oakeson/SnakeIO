@@ -16,6 +16,7 @@ namespace Scenes
         private Systems.Audio audio;
         private Shared.Entities.Entity textBox;
         private ContentManager contentManager;
+        private GameSceneState state = GameSceneState.Input;
 
         public GameScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
         {
@@ -35,7 +36,9 @@ namespace Scenes
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
             this.textBox = Shared.Entities.TextInput.Create(
                         font, background, "", 
-                        true, new Rectangle(screenWidth/2, screenHeight/2, 0, 0));
+                        true, new Rectangle((int)((screenWidth/2)-font.MeasureString("123").X),
+                                            (int)((screenHeight/2)-font.MeasureString("1").Y),
+                                            0, 0));
             AddEntity(textBox);
         }
 
@@ -47,9 +50,10 @@ namespace Scenes
             }
 
             selector.Update(gameTime.ElapsedGameTime);
-            if (selector.selectedVal != "" && selector.selectedVal != default(string) && gameModel != null)
+            if (selector.selectedVal != "" && selector.selectedVal != default(string) && state != GameSceneState.Game)
             {
                 RemoveEntity(this.textBox);
+                state = GameSceneState.Game;
                 StartGame(selector.selectedVal);
             }
 
@@ -58,11 +62,11 @@ namespace Scenes
 
         override public void Render(TimeSpan elapsedTime)
         {
-            if (gameModel != null)
+            if (state == GameSceneState.Game)
             {
                 gameModel.Render(elapsedTime);
             }
-            else
+            else if (state == GameSceneState.Input)
             {
                 renderer.Update(elapsedTime);
             }
@@ -70,11 +74,11 @@ namespace Scenes
 
         override public void Update(TimeSpan elapsedTime)
         {
-            if (gameModel != null)
+            if (state == GameSceneState.Game)
             {
                 gameModel.Update(elapsedTime);
             }
-            else
+            else if (state == GameSceneState.Input)
             {
                 selector.Update(elapsedTime);
                 audio.Update(elapsedTime);
@@ -102,6 +106,12 @@ namespace Scenes
             selector.Remove(entity.id);
             keyboardInput.Remove(entity.id);
             audio.Remove(entity.id);
+        }
+
+        private enum GameSceneState
+        {
+            Input,
+            Game
         }
     }
 }

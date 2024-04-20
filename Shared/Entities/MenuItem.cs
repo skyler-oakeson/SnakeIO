@@ -57,7 +57,8 @@ namespace Shared.Entities
             return menuItem;
         }
 
-        public static Dictionary<Shared.Controls.ControlContext, Shared.Controls.ControlDelegate> MenuControls = new Dictionary<Shared.Controls.ControlContext, Shared.Controls.ControlDelegate>
+        public static Dictionary<Shared.Controls.ControlContext, Shared.Controls.ControlDelegate> MenuControls =
+            new Dictionary<Shared.Controls.ControlContext, Shared.Controls.ControlDelegate>
         {
             {
                 Shared.Controls.ControlContext.MenuUp,
@@ -69,6 +70,7 @@ namespace Shared.Entities
                     if (link.prevEntity != null)
                     {
                         link.prevEntity.GetComponent<Components.Selectable<T>>().selected = true;
+                        Console.WriteLine("UP");
                         selectable.selected = false;
                         sound.play = true;
                     }
@@ -84,6 +86,7 @@ namespace Shared.Entities
                     if (link.prevEntity != null)
                     {
                         link.nextEntity.GetComponent<Components.Selectable<T>>().selected = true;
+                        Console.WriteLine("DOWN");
                         selectable.selected = false;
                         sound.play = true;
                     }
@@ -94,6 +97,7 @@ namespace Shared.Entities
                 new Shared.Controls.ControlDelegate((Entities.Entity entity, TimeSpan elapsedTime) =>
                 {
                     Shared.Components.Selectable<T> selectable = entity.GetComponent<Shared.Components.Selectable<T>>();
+                    Console.WriteLine("ENTER");
                     selectable.interacted = true;
                 })
             }

@@ -98,6 +98,7 @@ namespace Server
 
         private void handleConnect(int clientId)
         {
+            Console.WriteLine("Connect");
             clients.Add(clientId);
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.ConnectAck());
         }
