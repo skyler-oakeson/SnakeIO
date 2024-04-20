@@ -43,10 +43,6 @@ namespace Scenes
                         font, SceneContext.Exit, "main",
                         false, sound, Shared.Components.LinkPosition.Body,
                         controlManager, new Rectangle(50, 150, 0, 0)));
-            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
-                        font, SceneContext.Name, "main",
-                        false, sound, Shared.Components.LinkPosition.Tail,
-                        controlManager, new Rectangle(50, 200, 0, 0)));
         }
 
         override public SceneContext ProcessInput(GameTime gameTime)
