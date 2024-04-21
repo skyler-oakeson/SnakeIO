@@ -246,7 +246,5 @@ namespace SnakeIO
 
             return entity;
         }
-
-
     }
 }

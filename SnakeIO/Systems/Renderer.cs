@@ -120,9 +120,8 @@ namespace Systems
         private void RenderText(Shared.Entities.Entity entity)
         {
             Shared.Components.Readable readable = entity.GetComponent<Shared.Components.Readable>();
-            Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
             sb.Begin();
-            DrawOutlineText(sb, readable.font, readable.text, readable.stroke, readable.color, 4, positionable.pos, 1.0f);
+            DrawOutlineText(sb, readable.font, readable.text, readable.stroke, readable.color, 4, new Vector2(readable.rectangle.X, readable.rectangle.Y), 1.0f);
             sb.End();
         }
 

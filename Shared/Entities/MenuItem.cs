@@ -18,8 +18,8 @@ namespace Shared.Entities
                 Rectangle rectangle)
         {
             Entity menuItem = new Entity();
-            menuItem.Add(new Shared.Components.Appearance("Fonts/Micro5", typeof(SpriteFont), Color.Green, Color.Black, rectangle));
-            menuItem.Add(new Shared.Components.Readable(font, "Fonts/Micro5", value.ToString(), Color.Green, Color.Black, rectangle));
+            menuItem.Add(new Shared.Components.Appearance("Fonts/Micro5", typeof(SpriteFont), Color.Orange, Color.Black, rectangle));
+            menuItem.Add(new Shared.Components.Readable(font, "Fonts/Micro5", value.ToString(), Color.Orange, Color.Black, rectangle));
             menuItem.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
             menuItem.Add(new Shared.Components.Audible(sound));
             menuItem.Add(new Shared.Components.Selectable<T>(selected, value));

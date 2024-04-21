@@ -13,14 +13,16 @@ namespace Shared.Entities
                 SoundEffect sound,
                 string value,
                 bool selected,
-                Rectangle rectangle)
+                int x,
+                int y)
         {
             Entity textInput = new Entity();
-            textInput.Add(new Shared.Components.Appearance("Fonts/Micro5", typeof(SpriteFont), Color.White, Color.White, rectangle));
-            textInput.Add(new Shared.Components.Renderable(background, "Fonts/Micro5", Color.White, Color.White, rectangle));
-            textInput.Add(new Shared.Components.Readable(font, "Fonts/Micro5", value.ToString(), Color.Orange, Color.Black, rectangle));
+            textInput.Add(new Shared.Components.Appearance("Fonts/Micro5", typeof(SpriteFont), Color.White, Color.White, 
+                        new Rectangle(x, y, 0, 0)));
+            textInput.Add(new Shared.Components.Readable(font, "Fonts/Micro5", value.ToString(), Color.Orange, Color.Black, 
+                        new Rectangle(x, y-(int)(font.MeasureString("1").X), 0, 0)));
             textInput.Add(new Shared.Components.Audible(sound));
-            textInput.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
+            textInput.Add(new Shared.Components.Positionable(new Vector2(x, y), 0f));
             textInput.Add(new Shared.Components.Selectable<string>(selected, value, selectableDelegate: TextBoxEdit, interactableDelegate: TextBoxConfirm));
             textInput.Add(new Shared.Components.KeyboardControllable(selected, typeof(Shared.Entities.TextInput), TextInputControls));
 
@@ -48,17 +50,28 @@ namespace Shared.Entities
             Keys? consumed = keyboard.ConsumeKeyPress();
             if (consumed != null)
             {
-                if (((int)consumed >= 0x41 && (int)consumed <= 0x5A) && readable.text.Length <= 6)
+                if (((int)consumed >= 0x41 && (int)consumed <= 0x5A) && readable.text.Length <= 12)
                 {
                     readable.text += consumed;
                     audible.play = true;
+                    Vector2 textSize = readable.font.MeasureString(consumed.ToString());
+                    readable.rectangle = new Rectangle(
+                            readable.rectangle.X - ((int)textSize.X/2),
+                            readable.rectangle.Y,
+                            0, 0);
                 }
                 else if (consumed == Keys.Back)
                 {
                     if (readable.text.Length > 0)
                     {
+                        char delLetter = readable.text[readable.text.Length-1];
                         readable.text = readable.text.Remove(readable.text.Length-1);
                         audible.play = true;
+                        Vector2 textSize = readable.font.MeasureString(delLetter.ToString());
+                        readable.rectangle = new Rectangle(
+                                readable.rectangle.X + ((int)textSize.X/2),
+                                readable.rectangle.Y,
+                                0, 0);
                     }
                 }
             }
