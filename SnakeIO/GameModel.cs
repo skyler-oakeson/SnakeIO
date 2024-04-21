@@ -50,6 +50,7 @@ namespace SnakeIO
             this.movement = new Shared.Systems.Movement();
             network.registerNewEntityHandler(handleNewEntity);
             network.registerRemoveEntityHandler(handleRemoveEntity);
+            network.registerGameOverHandler(HandleGameOver);
             this.keyboardInput = new Systems.KeyboardInput(controlManager);
             this.mouseInput = new Systems.MouseInput(controlManager);
             this.audio = new Systems.Audio();
@@ -133,6 +134,12 @@ namespace SnakeIO
             RemoveEntity(message.id);
         }
 
+        private void HandleGameOver(Shared.Messages.GameOver message)
+        {
+            //TODO: handle game over
+            Console.WriteLine("Game over fool");
+        }
+
         private Entity createEntity(Shared.Messages.NewEntity message)
         {
             Entity entity = new Entity(message.id);
@@ -177,8 +184,6 @@ namespace SnakeIO
                 entity.Add(new Shared.Components.Positionable(new Vector2(message.positionableMessage.pos.X, message.positionableMessage.pos.Y), message.positionableMessage.orientation));
             }
 
-            //TODO: find other ways to handle collidable. Maybe we specify what the radius is so that we don't have to calculate it.
-            //There is no guaruntee that if it has position and has appearance that it will be collidable
             if (message.hasCollidable)
             {
                 entity.Add(new Shared.Components.Collidable(message.collidableMessage.Shape, message.collidableMessage.RectangleData, message.collidableMessage.CircleData));
@@ -242,7 +247,5 @@ namespace SnakeIO
 
             return entity;
         }
-
-
     }
 }

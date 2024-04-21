@@ -187,8 +187,10 @@ namespace Systems
                 // Hits wall
                 Console.WriteLine("Watch out man this is a wall!!!!");
                 Shared.Entities.Entity playerEntity = e1.ContainsComponent<Shared.Components.Linkable>() ? e1 : e2;
+                int snakeId = playerEntity.GetComponent<Shared.Components.SnakeID>().id;
                 Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(playerEntity.id));
                 removeThese.Add(playerEntity);
+                Server.MessageQueueServer.instance.sendMessage(snakeId, new Shared.Messages.GameOver());
             }
         }
     }
