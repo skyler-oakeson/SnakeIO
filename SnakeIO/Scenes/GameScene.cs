@@ -14,6 +14,7 @@ namespace Scenes
         private Systems.KeyboardInput keyboardInput;
         private Systems.Selector<string> selector;
         private Systems.Audio audio;
+        private Shared.Entities.Entity textInput;
         private Shared.Entities.Entity textBox;
         private ContentManager contentManager;
         private GameSceneState state = GameSceneState.Input;
@@ -34,12 +35,15 @@ namespace Scenes
             SpriteFont font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             Texture2D background = contentManager.Load<Texture2D>("Images/text-input-bkg");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
-            this.textBox = Shared.Entities.TextInput.Create(
-                        font, background, "", 
+            string title = "ENTER YOUR NAME";
+            this.textBox = Shared.Entities.TextBox.Create(font, title, new Rectangle((int)((screenWidth/2)-font.MeasureString(title).X), 50, 0, 0));
+            AddEntity(textBox);
+            this.textInput = Shared.Entities.TextInput.Create(
+                        font, background, sound, "", 
                         true, new Rectangle((int)((screenWidth/2)-font.MeasureString("123").X),
                                             (int)((screenHeight/2)-font.MeasureString("1").Y),
                                             0, 0));
-            AddEntity(textBox);
+            AddEntity(textInput);
         }
 
         override public SceneContext ProcessInput(GameTime gameTime)

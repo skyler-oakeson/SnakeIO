@@ -59,7 +59,6 @@ namespace SnakeIO
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
             SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
-
         }
 
         public void Update(TimeSpan elapsedTime)
@@ -181,7 +180,7 @@ namespace SnakeIO
             //There is no guaruntee that if it has position and has appearance that it will be collidable
             if (message.hasCollidable)
             {
-                Console.WriteLine($"{message.collidableMessage.Shape}, {message.collidableMessage.RectangleData.x}, {message.collidableMessage.RectangleData.y}, {message.collidableMessage.RectangleData.width}, {message.collidableMessage.RectangleData.height}");
+                // Console.WriteLine($"{message.collidableMessage.Shape}, {message.collidableMessage.RectangleData.x}, {message.collidableMessage.RectangleData.y}, {message.collidableMessage.RectangleData.width}, {message.collidableMessage.RectangleData.height}");
 
                 entity.Add(new Shared.Components.Collidable(message.collidableMessage.Shape, message.collidableMessage.RectangleData, message.collidableMessage.CircleData));
                 // Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
