@@ -7,11 +7,11 @@ namespace Utils
 
         private List<Shared.Entities.Entity> worldEntities = new List<Shared.Entities.Entity>();
         private const int TILE_SIZE = 750;
-        private const int WALL_WIDTH = 7500;
+        private const int WALL_WIDTH = 5250;
         private const int WALL_HEIGHT = 15;
         private const int WORLD_SIZE = 1;
         private const int WORLD_ORIGIN = 0;
-        private const int WORLD_END = 7500;
+        private const int WORLD_END = 5250;
         private const int TILE_COUNT = WORLD_END / TILE_SIZE;
         private Server.GameModel.AddDelegate addEntity;
 

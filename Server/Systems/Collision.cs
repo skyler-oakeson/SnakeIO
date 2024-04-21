@@ -42,15 +42,15 @@ namespace Systems
                         {
                             res = CircleCollision(e1, e2);
                         }
-                        else if ((!e1IsCircle && e2IsCircle) || (e1IsCircle && !e2IsCircle))
+                        else if (!e1IsCircle || !e2IsCircle)
                         {
                             res = RectangleCircleCollision(e1, e2);
                         }
                         if (res)
                         {
-                            Thread collisionThread = new Thread(() => HandleCollision(e1, e2));
-                            collisionThread.Start();
-                            // HandleCollision(e1, e2);
+                           // Thread collisionThread = new Thread(() => HandleCollision(e1, e2));
+                           // collisionThread.Start();
+                           HandleCollision(e1, e2);
                         }
                     }
                 }
@@ -88,25 +88,25 @@ namespace Systems
             Shared.Components.CircleData circleHitBox = e1Col.Data.Shape == Shared.Components.CollidableShape.Circle ? e1Col.Data.CircleData : e2Col.Data.CircleData;
             Shared.Components.RectangleData rectangleHitBox = e1Col.Data.Shape == Shared.Components.CollidableShape.Rectangle ? e1Col.Data.RectangleData : e2Col.Data.RectangleData;
 
-            double circleDistanceX = Math.Abs(circleHitBox.x - rectangleHitBox.x);
-            double circleDistanceY = Math.Abs(circleHitBox.y - rectangleHitBox.y);
-            if (circleDistanceX > ((rectangleHitBox.width + 50) / 2 + circleHitBox.radius))
+            double circleDistanceX = Math.Abs(circleHitBox.x - rectangleHitBox.y);
+            double circleDistanceY = Math.Abs(circleHitBox.y - rectangleHitBox.x);
+            if (circleDistanceX > ((rectangleHitBox.width) / 2 + circleHitBox.radius))
             {
                 return false;
             }
-            if (circleDistanceY > ((rectangleHitBox.height + 50) / 2 + circleHitBox.radius))
+            if (circleDistanceY > ((rectangleHitBox.height) / 2 + circleHitBox.radius))
             {
                 return false;
             }
-            if (circleDistanceX <= ((rectangleHitBox.width + 50) / 2))
+            if (circleDistanceX <= ((rectangleHitBox.width) / 2))
             {
                 return true;
             }
-            if (circleDistanceY <= ((rectangleHitBox.height + 50) / 2))
+            if (circleDistanceY <= ((rectangleHitBox.height) / 2))
             {
                 return true;
             }
-            double cornerDistanceSQ = (circleDistanceX - (rectangleHitBox.width + 50) / 2) * (circleDistanceX - (rectangleHitBox.width + 50) / 2) + (circleDistanceY - (rectangleHitBox.height + 50) / 2) * (circleDistanceY - (rectangleHitBox.height + 50) / 2);
+            double cornerDistanceSQ = (circleDistanceX - (rectangleHitBox.width) / 2) * (circleDistanceX - (rectangleHitBox.width) / 2) + (circleDistanceY - (rectangleHitBox.height) / 2) * (circleDistanceY - (rectangleHitBox.height) / 2);
             return (cornerDistanceSQ <= (circleHitBox.radius * circleHitBox.radius));
         }
 
@@ -133,8 +133,6 @@ namespace Systems
             //     e1Mov.velocity += n;
             // }
 
-            // TODO: I don't think we are going to want to update the velo by n
-            // Determine if this is needed or not
             // Movables - Movables
             if (e1.ContainsComponent<Shared.Components.Movable>() && e2.ContainsComponent<Shared.Components.Movable>())
             {
@@ -144,9 +142,23 @@ namespace Systems
                 // e1Mov.velocity += n * .5f;
             }
 
-            //Consumables
-            if (e1.ContainsComponent<Shared.Components.Consumable>() || e2.ContainsComponent<Shared.Components.Consumable>())
+            if (e1.ContainsComponent<Shared.Components.Linkable>() && e2.ContainsComponent<Shared.Components.Linkable>())
             {
+                // Hits another snake
+                Shared.Components.Linkable e1Linkable = e1.GetComponent<Shared.Components.Linkable>();
+                Shared.Components.Linkable e2Linkable = e2.GetComponent<Shared.Components.Linkable>();
+
+                // Ensure it isn't itself
+                // TODO: Decide if we should get the snake id instead, they are essentially the same thing
+                if (e1Linkable.chain != e2Linkable.chain)
+                {
+                    // Handle hitting another snake
+
+                }
+            }
+            else if (e1.ContainsComponent<Shared.Components.Consumable>() || e2.ContainsComponent<Shared.Components.Consumable>())
+            {
+                // Hits Consumable
                 if (e1.ContainsComponent<Shared.Components.Consumable>())
                 {
                     Shared.Components.Consumable consumable = e1.GetComponent<Shared.Components.Consumable>();
@@ -169,6 +181,14 @@ namespace Systems
                         growthComponent.growth += consumable.growth;
                     }
                 }
+            }
+            else
+            {
+                // Hits wall
+                Console.WriteLine("Watch out man this is a wall!!!!");
+                Shared.Entities.Entity playerEntity = e1.ContainsComponent<Shared.Components.Linkable>() ? e1 : e2;
+                Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(playerEntity.id));
+                removeThese.Add(playerEntity);
             }
         }
     }

@@ -25,35 +25,38 @@ namespace Systems
 
         public override void Update(TimeSpan elapsedTime)
         {
-            foreach (var entity in entities.Values)
-            {
-                Shared.Components.Spawnable spawnable = entity.GetComponent<Shared.Components.Spawnable>();
-                if (updated.Contains(spawnable.type))
+            // Cap the amount of food
+            if (entities.Count < 500) {
+                foreach (var entity in entities.Values)
                 {
-                    break;
+                    Shared.Components.Spawnable spawnable = entity.GetComponent<Shared.Components.Spawnable>();
+                    if (updated.Contains(spawnable.type))
+                    {
+                        break;
+                    }
+                    if (!spawnTimes.ContainsKey(spawnable.type))
+                    {
+                        spawnTimes[spawnable.type] = spawnable.spawnRate; //spawn initial count
+                    }
+                    else if (!updated.Contains(spawnable.type))
+                    {
+                        updated.Add(spawnable.type);
+                        spawnTimes[spawnable.type] -= elapsedTime;
+                    }
+                    if (spawnTimes[spawnable.type] <= TimeSpan.Zero)
+                    {
+                        spawnTimes[spawnable.type] = spawnable.spawnRate;
+                        SpawnEntity(entity);
+                    }
                 }
-                if (!spawnTimes.ContainsKey(spawnable.type))
+                foreach (var entity in entitiesToSpawn)
                 {
-                    spawnTimes[spawnable.type] = spawnable.spawnRate; //spawn initial count
+                    addEntity(entity);
+                    Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(entity));
                 }
-                else if (!updated.Contains(spawnable.type))
-                {
-                    updated.Add(spawnable.type);
-                    spawnTimes[spawnable.type] -= elapsedTime;
-                }
-                if (spawnTimes[spawnable.type] <= TimeSpan.Zero)
-                {
-                    spawnTimes[spawnable.type] = spawnable.spawnRate;
-                    SpawnEntity(entity);
-                }
+                entitiesToSpawn.Clear();
+                updated.Clear();
             }
-            foreach (var entity in entitiesToSpawn)
-            {
-                addEntity(entity);
-                Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(entity));
-            }
-            entitiesToSpawn.Clear();
-            updated.Clear();
         }
 
         private void SpawnEntity(Shared.Entities.Entity entity)
@@ -68,8 +71,8 @@ namespace Systems
                 // https://learn.microsoft.com/en-us/dotnet/api/system.reflection.methodinfo.invoke?view=netframework-1.1
                 // Ensure Create Method exists, and then invoke it here.
                 int size = (int) random.nextRange(12, 30);
-                int x = (int) random.nextRange(0, 6750);
-                int y = (int) random.nextRange(0, 6750);
+                int x = (int) random.nextRange(0, 4500);
+                int y = (int) random.nextRange(0, 4500);
                 Shared.Entities.Entity newEntity = (Shared.Entities.Entity)createMethod.Invoke(null, new object[] { appearance.texturePath, new Rectangle(x, y, size, size) });
                 entitiesToSpawn.Add(newEntity);
             }
