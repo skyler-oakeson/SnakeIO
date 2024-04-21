@@ -128,6 +128,18 @@ namespace Shared.Systems
         }
 
         //TODO: Linker Remove link function
+        public List<int> ChainDeletion(Shared.Entities.Entity entity)
+        {
+            Debug.Assert(entity.ContainsComponent<Shared.Components.Linkable>(), "Entity has no links");
+            List<int> toRemove = new List<int>();
+            string chain = entity.GetComponent<Shared.Components.Linkable>().chain;
+            foreach (int id in chainHooks[chain])
+            {
+                toRemove.Add(id);
+            }
+            chainHooks.Remove(chain);
+            return toRemove;
+        }
 
         override public void Update(TimeSpan elapsedTime)
         {
