@@ -48,9 +48,9 @@ namespace Systems
                         }
                         if (res)
                         {
-                           // Thread collisionThread = new Thread(() => HandleCollision(e1, e2));
-                           // collisionThread.Start();
-                           HandleCollision(e1, e2);
+                            // Thread collisionThread = new Thread(() => HandleCollision(e1, e2));
+                            // collisionThread.Start();
+                            HandleCollision(e1, e2);
                         }
                     }
                 }
@@ -145,15 +145,19 @@ namespace Systems
             if (e1.ContainsComponent<Shared.Components.Linkable>() && e2.ContainsComponent<Shared.Components.Linkable>())
             {
                 // Hits another snake
+                // Heads both collide, kill everyone
                 Shared.Components.Linkable e1Linkable = e1.GetComponent<Shared.Components.Linkable>();
                 Shared.Components.Linkable e2Linkable = e2.GetComponent<Shared.Components.Linkable>();
-
-                // Ensure it isn't itself
-                // TODO: Decide if we should get the snake id instead, they are essentially the same thing
-                if (e1Linkable.chain != e2Linkable.chain)
+                if (e1.ContainsComponent<Shared.Components.SnakeID>() && e2.ContainsComponent<Shared.Components.SnakeID>())
                 {
-                    // Handle hitting another snake
-
+                    RemoveSnake(e1);
+                    Server.MessageQueueServer.instance.sendMessage(e1.GetComponent<Shared.Components.SnakeID>().id, new Shared.Messages.GameOver());
+                    RemoveSnake(e2);
+                    Server.MessageQueueServer.instance.sendMessage(e2.GetComponent<Shared.Components.SnakeID>().id, new Shared.Messages.GameOver());
+                }
+                else if (e1Linkable.chain != e2Linkable.chain)
+                {
+                    // Ensure it isn't itself
                 }
             }
             else if (e1.ContainsComponent<Shared.Components.Consumable>() || e2.ContainsComponent<Shared.Components.Consumable>())
@@ -185,22 +189,30 @@ namespace Systems
             else
             {
                 // Hits wall
-                Console.WriteLine("Watch out man this is a wall!!!!");
                 Shared.Entities.Entity currEntity = e1.ContainsComponent<Shared.Components.Linkable>() ? e1 : e2;
                 int snakeId = currEntity.GetComponent<Shared.Components.SnakeID>().id;
                 Server.MessageQueueServer.instance.sendMessage(snakeId, new Shared.Messages.GameOver());
-                List<Shared.Entities.Entity> toRemove = new List<Shared.Entities.Entity>();
-                while (!toRemove.Contains(currEntity))
-                {
-                    toRemove.Add(currEntity);
-                    currEntity = currEntity.GetComponent<Shared.Components.Linkable>().prevEntity;
-                }
+                RemoveSnake(currEntity);
+            }
+        }
 
-                foreach (Shared.Entities.Entity entity in toRemove)
-                {
-                    Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(entity.id));
-                    removeThese.Add(entity);
-                }
+        private void RemoveSnake(Shared.Entities.Entity snake)
+        {
+            List<Shared.Entities.Entity> toRemove = new List<Shared.Entities.Entity>();
+            Shared.Entities.Entity currEntity = snake;
+            while (!toRemove.Contains(currEntity))
+            {
+                toRemove.Add(currEntity);
+                currEntity = currEntity.GetComponent<Shared.Components.Linkable>().prevEntity;
+                Shared.Components.Positionable currEntityPos = currEntity.GetComponent<Shared.Components.Positionable>();
+                Shared.Entities.Entity food = Shared.Entities.Food.Create("Images/food", new Rectangle((int)currEntityPos.pos.X, (int)currEntityPos.pos.Y, 32, 32));
+                Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(food));
+            }
+
+            foreach (Shared.Entities.Entity entity in toRemove)
+            {
+                Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(entity.id));
+                removeThese.Add(entity);
             }
         }
     }
