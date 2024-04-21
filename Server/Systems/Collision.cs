@@ -186,11 +186,21 @@ namespace Systems
             {
                 // Hits wall
                 Console.WriteLine("Watch out man this is a wall!!!!");
-                Shared.Entities.Entity playerEntity = e1.ContainsComponent<Shared.Components.Linkable>() ? e1 : e2;
-                int snakeId = playerEntity.GetComponent<Shared.Components.SnakeID>().id;
-                Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(playerEntity.id));
-                removeThese.Add(playerEntity);
+                Shared.Entities.Entity currEntity = e1.ContainsComponent<Shared.Components.Linkable>() ? e1 : e2;
+                int snakeId = currEntity.GetComponent<Shared.Components.SnakeID>().id;
                 Server.MessageQueueServer.instance.sendMessage(snakeId, new Shared.Messages.GameOver());
+                List<Shared.Entities.Entity> toRemove = new List<Shared.Entities.Entity>();
+                while (!toRemove.Contains(currEntity))
+                {
+                    toRemove.Add(currEntity);
+                    currEntity = currEntity.GetComponent<Shared.Components.Linkable>().prevEntity;
+                }
+
+                foreach (Shared.Entities.Entity entity in toRemove)
+                {
+                    Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(entity.id));
+                    removeThese.Add(entity);
+                }
             }
         }
     }
