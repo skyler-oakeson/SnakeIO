@@ -158,6 +158,9 @@ namespace Systems
                 else if (e1Linkable.chain != e2Linkable.chain)
                 {
                     // Ensure it isn't itself
+                    // Find the head of the snake by checking which one has SnakeID
+                    Shared.Entities.Entity snake = e1.ContainsComponent<Shared.Components.SnakeID>() ? e1 : e2;
+                    RemoveSnake(snake);
                 }
             }
             else if (e1.ContainsComponent<Shared.Components.Consumable>() || e2.ContainsComponent<Shared.Components.Consumable>())
