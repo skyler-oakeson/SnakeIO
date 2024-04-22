@@ -9,7 +9,7 @@ namespace Shared.Entities
     public class Food
     {
         private static MyRandom random = new MyRandom();
-        public static Entity Create(string texture, Rectangle rectangle)
+        public static Entity Create(string texture, string sound, Rectangle rectangle)
         {
             Entity food = new Entity();
 
@@ -22,6 +22,7 @@ namespace Shared.Entities
             food.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
             food.Add(new Components.Consumable(1.0f));
             food.Add(new Components.Spawnable(TimeSpan.FromMilliseconds(5000), 25, typeof(Food)));
+            food.Add(new Components.Sound(sound));
 
             int radius = rectangle.Width >= rectangle.Height ? rectangle.Width / 2 : rectangle.Height / 2;
             Shared.Components.CircleData circleData = new Shared.Components.CircleData { x = rectangle.X, y = rectangle.Y, radius = radius };

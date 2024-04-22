@@ -49,7 +49,7 @@ namespace Server
             systemNetwork.registerDisconnectHandler(handleDisconnect);
             MessageQueueServer.instance.registerConnectHandler(handleConnect);
             Rectangle rectangle = new Rectangle(50000, 50000, 10, 10);
-            AddEntity(Shared.Entities.Food.Create("Images/food", rectangle));
+            AddEntity(Shared.Entities.Food.Create("Images/food", "Audio/click", rectangle));
             new Utils.WorldGenerator(addEntity);
 
             return true;
