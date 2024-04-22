@@ -123,6 +123,7 @@ namespace SnakeIO
         private void HandleGameOver(Shared.Messages.GameOver message)
         {
             //TODO: handle game over
+            contentManager.Load<SoundEffect>("Audio/negative").Play();
             Console.WriteLine("Game over fool");
         }
 

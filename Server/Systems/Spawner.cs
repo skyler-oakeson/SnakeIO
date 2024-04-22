@@ -73,7 +73,7 @@ namespace Systems
                 int size = (int) random.nextRange(12, 30);
                 int x = (int) random.nextRange(0, 4500);
                 int y = (int) random.nextRange(0, 4500);
-                Shared.Entities.Entity newEntity = (Shared.Entities.Entity)createMethod.Invoke(null, new object[] { appearance.texturePath, "Audio/click", new Rectangle(x, y, size, size) });
+                Shared.Entities.Entity newEntity = (Shared.Entities.Entity)createMethod.Invoke(null, new object[] { appearance.texturePath, new Rectangle(x, y, size, size) });
                 entitiesToSpawn.Add(newEntity);
             }
         }

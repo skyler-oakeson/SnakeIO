@@ -49,7 +49,7 @@ namespace Server
             systemNetwork.registerDisconnectHandler(handleDisconnect);
             MessageQueueServer.instance.registerConnectHandler(handleConnect);
             Rectangle rectangle = new Rectangle(50000, 50000, 10, 10);
-            AddEntity(Shared.Entities.Food.Create("Images/food", "Audio/click", rectangle));
+            AddEntity(Shared.Entities.Food.Create("Images/food", rectangle));
             new Utils.WorldGenerator(addEntity);
 
             return true;
@@ -153,7 +153,7 @@ namespace Server
             reportAllEntities(clientId);
 
             Rectangle playerRect = new Rectangle(0, 0, 50, 50); //TODO: update width and height
-            Shared.Entities.Entity player = Shared.Entities.Player.Create(clientId, "Images/head", Color.Blue, "Audio/bass-switch", playerRect, $"{clientId}");
+            Shared.Entities.Entity player = Shared.Entities.Player.Create(clientId, "Images/head", Color.Blue, playerRect, $"{clientId}");
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
             players.Add(player);
 
@@ -164,7 +164,7 @@ namespace Server
             //     AddEntity(body);
             // }
 
-            Shared.Entities.Entity tail = Shared.Entities.Body.Create("Images/tail", Color.Red, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Tail);
+            Shared.Entities.Entity tail = Shared.Entities.Body.Create("Images/tail", Color.Red, playerRect, $"{clientId}", Shared.Components.LinkPosition.Tail);
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(tail));
             AddEntity(tail);
 

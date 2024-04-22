@@ -10,7 +10,7 @@ namespace Shared.Entities
 {
     public class Body
     {
-        public static Entity Create(string texture, Color color, string sound, Rectangle rectangle, string chain, Shared.Components.LinkPosition linkPos)
+        public static Entity Create(string texture, Color color, Rectangle rectangle, string chain, Shared.Components.LinkPosition linkPos)
         {
             Entity body = new Entity();
 
@@ -18,10 +18,10 @@ namespace Shared.Entities
             body.Add(new Components.Appearance(texture, typeof(Texture2D), color, Color.Black, rectangle));
             body.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
             body.Add(new Shared.Components.Movable(new Vector2(0, 0)));
-            body.Add(new Shared.Components.Animatable(new int[25] { 40, 40, 40, 40, 40, 
-                                                                      40, 40, 40, 40, 40, 
-                                                                      40, 40, 40, 40, 40, 
-                                                                      40, 40, 40, 40, 40, 
+            body.Add(new Shared.Components.Animatable(new int[25] { 40, 40, 40, 40, 40,
+                                                                      40, 40, 40, 40, 40,
+                                                                      40, 40, 40, 40, 40,
+                                                                      40, 40, 40, 40, 40,
                                                                       40, 40, 40, 40, 40 }));
             // body.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
             // body.Add(new Components.Audible(sound));

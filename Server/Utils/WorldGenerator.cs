@@ -35,7 +35,7 @@ namespace Utils
                     {
                         int x = WORLD_END / 2 - TILE_SIZE / 2;
                         int y = -TILE_SIZE / 2 - (WALL_HEIGHT / 2);
-                        Shared.Entities.Entity wall = Shared.Entities.Wall.Create("Images/square", "Audio/negative", Color.White, new Rectangle(x, y, WALL_HEIGHT, WALL_WIDTH));
+                        Shared.Entities.Entity wall = Shared.Entities.Wall.Create("Images/square", Color.White, new Rectangle(x, y, WALL_HEIGHT, WALL_WIDTH));
                         worldEntities.Add(wall);
                         Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(wall));
                     }
@@ -43,7 +43,7 @@ namespace Utils
                     {
                         int x = WORLD_END / 2 - TILE_SIZE / 2;
                         int y = WORLD_END - TILE_SIZE / 2 + (WALL_HEIGHT / 2);
-                        Shared.Entities.Entity wall = Shared.Entities.Wall.Create("Images/square", "Audio/negative", Color.White, new Rectangle(x, y, WALL_HEIGHT, WALL_WIDTH));
+                        Shared.Entities.Entity wall = Shared.Entities.Wall.Create("Images/square", Color.White, new Rectangle(x, y, WALL_HEIGHT, WALL_WIDTH));
                         worldEntities.Add(wall);
                         Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(wall));
                     }
@@ -51,7 +51,7 @@ namespace Utils
                     {
                         int x = -TILE_SIZE / 2 - (WALL_HEIGHT / 2);
                         int y = WORLD_END / 2 - TILE_SIZE / 2;
-                        Shared.Entities.Entity wall = Shared.Entities.Wall.Create("Images/square", "Audio/negative", Color.White, new Rectangle(x, y, WALL_WIDTH, WALL_HEIGHT));
+                        Shared.Entities.Entity wall = Shared.Entities.Wall.Create("Images/square", Color.White, new Rectangle(x, y, WALL_WIDTH, WALL_HEIGHT));
                         worldEntities.Add(wall);
                         Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(wall));
                     }
@@ -59,7 +59,7 @@ namespace Utils
                     {
                         int x = WORLD_END + -TILE_SIZE / 2 + (WALL_HEIGHT / 2);
                         int y = WORLD_END / 2 - TILE_SIZE / 2;
-                        Shared.Entities.Entity wall = Shared.Entities.Wall.Create("Images/square", "Audio/negative", Color.White, new Rectangle(x, y, WALL_WIDTH, WALL_HEIGHT));
+                        Shared.Entities.Entity wall = Shared.Entities.Wall.Create("Images/square", Color.White, new Rectangle(x, y, WALL_WIDTH, WALL_HEIGHT));
                         worldEntities.Add(wall);
                         Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(wall));
                     }
@@ -80,25 +80,25 @@ namespace Utils
             // TOP LEFT
             int x = -TILE_SIZE / 2;
             int y = -TILE_SIZE / 2;
-            Shared.Entities.Entity topLeft = Shared.Entities.Wall.Create("Images/square", "Audio/negative", Color.White, new Rectangle(x, y, WALL_HEIGHT, WALL_HEIGHT));
+            Shared.Entities.Entity topLeft = Shared.Entities.Wall.Create("Images/square", Color.White, new Rectangle(x, y, WALL_HEIGHT, WALL_HEIGHT));
             worldEntities.Add(topLeft);
             Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(topLeft));
             // TOP RIGHT
             x = WORLD_END - TILE_SIZE / 2;
             y = -TILE_SIZE / 2;
-            Shared.Entities.Entity topRight = Shared.Entities.Wall.Create("Images/square", "Audio/negative", Color.White, new Rectangle(x, y, WALL_HEIGHT, WALL_HEIGHT));
+            Shared.Entities.Entity topRight = Shared.Entities.Wall.Create("Images/square", Color.White, new Rectangle(x, y, WALL_HEIGHT, WALL_HEIGHT));
             worldEntities.Add(topRight);
             Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(topRight));
             // BOTTOM LEFT
             x = -TILE_SIZE / 2;
             y = WORLD_END - TILE_SIZE / 2;
-            Shared.Entities.Entity bottomLeft = Shared.Entities.Wall.Create("Images/square", "Audio/negative", Color.White, new Rectangle(x, y, WALL_HEIGHT, WALL_HEIGHT));
+            Shared.Entities.Entity bottomLeft = Shared.Entities.Wall.Create("Images/square", Color.White, new Rectangle(x, y, WALL_HEIGHT, WALL_HEIGHT));
             worldEntities.Add(bottomLeft);
             Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(bottomLeft));
             // BOTTOM RIGHT
             x = WORLD_END - TILE_SIZE / 2;
             y = WORLD_END - TILE_SIZE / 2;
-            Shared.Entities.Entity bottomRight = Shared.Entities.Wall.Create("Images/square", "Audio/negative", Color.White, new Rectangle(x, y, WALL_HEIGHT, WALL_HEIGHT));
+            Shared.Entities.Entity bottomRight = Shared.Entities.Wall.Create("Images/square", Color.White, new Rectangle(x, y, WALL_HEIGHT, WALL_HEIGHT));
             worldEntities.Add(bottomRight);
             Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(bottomRight));
         }

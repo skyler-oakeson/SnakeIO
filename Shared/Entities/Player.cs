@@ -10,7 +10,7 @@ namespace Shared.Entities
 {
     public class Player
     {
-        public static Entity Create(int id, string texture, Color color, string sound, Rectangle rectangle, string chain = null)
+        public static Entity Create(int id, string texture, Color color, Rectangle rectangle, string chain = null)
         {
             Entity player = new Entity();
 
@@ -23,7 +23,6 @@ namespace Shared.Entities
             player.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
             player.Add(new Shared.Components.Movable(new Vector2(0, 0)));
             player.Add(new Shared.Components.Growable());
-            // player.Add(new Components.Audible(sound));
             player.Add(new Shared.Components.Animatable(new int[25] { 40, 40, 40, 40, 40,
                                                                       40, 40, 40, 40, 40,
                                                                       40, 40, 40, 40, 40,

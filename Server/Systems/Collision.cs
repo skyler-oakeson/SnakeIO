@@ -193,7 +193,7 @@ namespace Systems
                 toRemove.Add(currEntity);
                 currEntity = currEntity.GetComponent<Shared.Components.Linkable>().prevEntity;
                 Shared.Components.Positionable currEntityPos = currEntity.GetComponent<Shared.Components.Positionable>();
-                Shared.Entities.Entity food = Shared.Entities.Food.Create("Images/food", "Audio/click", new Rectangle((int)currEntityPos.pos.X, (int)currEntityPos.pos.Y, 32, 32));
+                Shared.Entities.Entity food = Shared.Entities.Food.Create("Images/food", new Rectangle((int)currEntityPos.pos.X, (int)currEntityPos.pos.Y, 32, 32));
                 Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(food));
             }
 
