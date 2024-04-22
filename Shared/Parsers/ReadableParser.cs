@@ -22,8 +22,6 @@ namespace Shared.Parsers
             offset += sizeof(Int32);
             string messageText = Encoding.UTF8.GetString(data, offset, textSize);
             offset += textSize;
-            int typeSize = BitConverter.ToInt32(data, offset);
-            offset += sizeof(Int32);
             //rectangle
             int rectangleX = BitConverter.ToInt32(data, offset);
             offset += sizeof(Int32);

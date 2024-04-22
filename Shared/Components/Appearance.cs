@@ -9,7 +9,6 @@ namespace Shared.Components
         {
         }
 
-
         public override void Serialize(ref List<byte> data)
         {
         }
