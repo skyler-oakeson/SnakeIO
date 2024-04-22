@@ -59,7 +59,7 @@ namespace Systems
         private void SpawnEntity(Shared.Entities.Entity entity)
         {
             Shared.Components.Spawnable spawnable = entity.GetComponent<Shared.Components.Spawnable>();
-            Shared.Components.Renderable appearance = entity.GetComponent<Shared.Components.Renderable>();
+            Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
             Type spawnableType = spawnable.type;
             MethodInfo createMethod = spawnableType.GetMethod("Create");
             for (int i = 0; i < spawnable.spawnCount; i++)
@@ -70,7 +70,7 @@ namespace Systems
                 int size = (int) random.nextRange(12, 30);
                 int x = (int) random.nextRange(0, 6750);
                 int y = (int) random.nextRange(0, 6750);
-                Shared.Entities.Entity newEntity = (Shared.Entities.Entity)createMethod.Invoke(null, new object[] { appearance.texturePath, new Rectangle(x, y, size, size) });
+                Shared.Entities.Entity newEntity = (Shared.Entities.Entity)createMethod.Invoke(null, new object[] { renderable.texturePath, new Rectangle(x, y, size, size) });
                 entitiesToSpawn.Add(newEntity);
             }
         }

@@ -35,6 +35,7 @@ namespace Systems
             sb.GraphicsDevice.Clear(Color.Black);
             foreach (var entity in entities.Values)
             {
+                Console.WriteLine(entity.id);
                 if (entity.ContainsComponent<Shared.Components.Camera>())
                 {
                     camera = entity.GetComponent<Shared.Components.Camera>();
