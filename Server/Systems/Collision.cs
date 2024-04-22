@@ -117,6 +117,9 @@ namespace Systems
             Vector2 n = (e1Pos.pos - e2Pos.pos);
             n.Normalize();
 
+            int snakeId = e1.ContainsComponent<Shared.Components.SnakeID>() ? e1.GetComponent<Shared.Components.SnakeID>().id : e2.GetComponent<Shared.Components.SnakeID>().id;
+            Server.MessageQueueServer.instance.sendMessage(snakeId, new Shared.Messages.Collision(e1, e2));
+
             // Movables - Movables
             if (e1.ContainsComponent<Shared.Components.Movable>() && e2.ContainsComponent<Shared.Components.Movable>())
             {
@@ -150,8 +153,6 @@ namespace Systems
                 // Hits Consumable
                 if (e1.ContainsComponent<Shared.Components.Consumable>())
                 {
-                    int snakeId = e1.ContainsComponent<Shared.Components.SnakeID>() ? e1.GetComponent<Shared.Components.SnakeID>().id : e2.GetComponent<Shared.Components.SnakeID>().id;
-                    Server.MessageQueueServer.instance.sendMessage(snakeId, new Shared.Messages.Collision(e1, e2));
 
                     Shared.Components.Consumable consumable = e1.GetComponent<Shared.Components.Consumable>();
                     Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(e1.id));
@@ -164,9 +165,6 @@ namespace Systems
                 }
                 else
                 {
-                    int snakeId = e1.ContainsComponent<Shared.Components.SnakeID>() ? e1.GetComponent<Shared.Components.SnakeID>().id : e2.GetComponent<Shared.Components.SnakeID>().id;
-                    Server.MessageQueueServer.instance.sendMessage(snakeId, new Shared.Messages.Collision(e1, e2));
-
                     Shared.Components.Consumable consumable = e2.GetComponent<Shared.Components.Consumable>();
                     Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(e2.id));
                     removeThese.Add(e2);
@@ -180,9 +178,6 @@ namespace Systems
             else
             {
                 // Hits wall
-                int snakeId = e1.ContainsComponent<Shared.Components.SnakeID>() ? e1.GetComponent<Shared.Components.SnakeID>().id : e2.GetComponent<Shared.Components.SnakeID>().id;
-                Server.MessageQueueServer.instance.sendMessage(snakeId, new Shared.Messages.Collision(e1, e2));
-
                 Shared.Entities.Entity currEntity = e1.ContainsComponent<Shared.Components.Linkable>() ? e1 : e2;
                 Server.MessageQueueServer.instance.sendMessage(snakeId, new Shared.Messages.GameOver());
                 RemoveSnake(currEntity);
