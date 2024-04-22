@@ -139,6 +139,8 @@ namespace SnakeIO
             if (message.hasSnakeID)
             {
                 entity.Add(new Shared.Components.SnakeID(message.snakeIDMessage.id));
+                SpriteFont font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
+                entity.Add(new Shared.Components.NameTag(font, message.snakeIDMessage.id.ToString()));
             }
 
             if (message.hasAppearance)

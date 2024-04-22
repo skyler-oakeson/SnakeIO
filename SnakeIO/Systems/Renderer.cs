@@ -12,8 +12,8 @@ namespace Systems
         public BasicEffect effect;
         private Shared.Components.Camera? camera = null;
 
-        public Renderer(SpriteBatch sb)
-            : base(typeof(Shared.Components.Appearance))
+        public Renderer(SpriteBatch sb) 
+            : base( typeof(Shared.Components.Appearance))
         {
             this.sb = sb;
 
@@ -56,6 +56,10 @@ namespace Systems
                         if (camera.ShouldRender(entity))
                         {
                             RenderAnimatable(entity);
+                            if (entity.ContainsComponent<Shared.Components.NameTag>())
+                            {
+                                RenderTag(entity);
+                            }
                         }
                     }
                     else
@@ -87,6 +91,7 @@ namespace Systems
                     {
                         RenderText(entity);
                     }
+
                 }
             }
         }
@@ -122,6 +127,23 @@ namespace Systems
             Shared.Components.Readable readable = entity.GetComponent<Shared.Components.Readable>();
             sb.Begin();
             DrawOutlineText(sb, readable.font, readable.text, readable.stroke, readable.color, 4, new Vector2(readable.rectangle.X, readable.rectangle.Y), 1.0f);
+            sb.End();
+        }
+
+        private void RenderTag(Shared.Entities.Entity entity)
+        {
+            Shared.Components.NameTag nameTag = entity.GetComponent<Shared.Components.NameTag>();
+            Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
+            if (camera != null)
+            {
+                Matrix newMatrix = Matrix.Lerp(Matrix.Identity, camera.Transform, camera.LerpAmount);
+                sb.Begin(transformMatrix: newMatrix);
+            }
+            else
+            {
+                sb.Begin();
+            }
+            DrawOutlineText(sb, nameTag.font, nameTag.name, Color.Black, Color.White, 4, new Vector2(positionable.pos.X, positionable.pos.Y-50), .5f);
             sb.End();
         }
 
