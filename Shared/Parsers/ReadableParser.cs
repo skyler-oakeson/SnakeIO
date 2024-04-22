@@ -3,10 +3,10 @@ using Microsoft.Xna.Framework;
 using System.Text;
 namespace Shared.Parsers
 {
-    public class RenderableParser : Parser
+    public class ReadableParser : Parser
     {
-        private RenderableMessage message { get; set; }
-        public RenderableMessage Message
+        private ReadableMessage message { get; set; }
+        public ReadableMessage Message
         {
             get { return message; }
             set { message = value; }
@@ -14,10 +14,16 @@ namespace Shared.Parsers
 
         public override void Parse(ref byte[] data, ref int offset)
         {
-            int textureSize = BitConverter.ToInt32(data, offset);
+            int fontSize = BitConverter.ToInt32(data, offset);
             offset += sizeof(Int32);
-            string messageTexturePath = Encoding.UTF8.GetString(data, offset, textureSize);
-            offset += textureSize;
+            string messageFontPath = Encoding.UTF8.GetString(data, offset, fontSize);
+            offset += fontSize;
+            int textSize = BitConverter.ToInt32(data, offset);
+            offset += sizeof(Int32);
+            string messageText = Encoding.UTF8.GetString(data, offset, textSize);
+            offset += textSize;
+            int typeSize = BitConverter.ToInt32(data, offset);
+            offset += sizeof(Int32);
             //rectangle
             int rectangleX = BitConverter.ToInt32(data, offset);
             offset += sizeof(Int32);
@@ -45,23 +51,26 @@ namespace Shared.Parsers
             offset += sizeof(int);
             int strokeA = data[offset];
             offset += sizeof(int);
-            this.message = new RenderableMessage
+            this.message = new ReadableMessage
             {
-                texturePath = messageTexturePath,
+                fontPath = messageFontPath,
+                text = messageText,
                 color = new Color(colorR, colorG, colorB, colorA),
                 stroke = new Color(strokeR, strokeG, strokeB, strokeA),
                 rectangle = messageRectangle,
             };
         }
 
-        public RenderableMessage GetMessage()
+        public ReadableMessage GetMessage()
         {
             return Message;
         }
 
-        public struct RenderableMessage
+        public struct ReadableMessage
         {
-            public string texturePath { get; set; }
+            public string fontPath { get; set; }
+            public string text { get; set; }
+            public Type type { get; set; }
             public Rectangle rectangle { get; set; }
             public Color color { get; set; }
             public Color stroke { get; set; }

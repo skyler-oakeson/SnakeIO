@@ -10,7 +10,7 @@ namespace Shared.Entities
 {
     public class Player
     {
-        public static Entity Create(int id, string texture, Color color, string sound, Rectangle rectangle, string chain = null)
+        public static Entity Create(int id, string texturePath, string fontPath, Color color, string sound, Rectangle rectangle, string chain = null)
         {
             Entity player = new Entity();
 
@@ -19,16 +19,14 @@ namespace Shared.Entities
             {
                 player.Add(new Shared.Components.Linkable(chain, Shared.Components.LinkPosition.Head));
             }
-            player.Add(new Components.Appearance(texture, typeof(Texture2D), color, Color.Black, rectangle));
+            player.Add(new Shared.Components.Appearance());
             player.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
             player.Add(new Shared.Components.Movable(new Vector2(0, 0)));
             player.Add(new Shared.Components.Growable());
             // player.Add(new Components.Audible(sound));
-            player.Add(new Shared.Components.Animatable(new int[25] { 40, 40, 40, 40, 40,
-                                                                      40, 40, 40, 40, 40,
-                                                                      40, 40, 40, 40, 40,
-                                                                      40, 40, 40, 40, 40,
-                                                                      40, 40, 40, 40, 40 }));
+            player.Add(new Shared.Components.Renderable(Color.White, Color.White, rectangle, texturePath: texturePath));
+            player.Add(new Shared.Components.Readable(id.ToString(), Color.White, Color.White, rectangle, fontPath: fontPath));
+            player.Add(new Shared.Components.Animatable(new int[25] { 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40 }));
             player.Add(new Shared.Components.KeyboardControllable(true, typeof(Shared.Entities.Player), PlayerKeyboardControls));
             player.Add(new Components.Camera(new Rectangle(rectangle.X, rectangle.Y, 1500, 1500)));
 

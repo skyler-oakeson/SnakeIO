@@ -59,7 +59,7 @@ namespace Systems
         private void SpawnEntity(Shared.Entities.Entity entity)
         {
             Shared.Components.Spawnable spawnable = entity.GetComponent<Shared.Components.Spawnable>();
-            Shared.Components.Appearance appearance = entity.GetComponent<Shared.Components.Appearance>();
+            Shared.Components.Renderable appearance = entity.GetComponent<Shared.Components.Renderable>();
             Type spawnableType = spawnable.type;
             MethodInfo createMethod = spawnableType.GetMethod("Create");
             for (int i = 0; i < spawnable.spawnCount; i++)

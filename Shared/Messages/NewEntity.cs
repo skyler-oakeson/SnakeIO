@@ -19,9 +19,14 @@ namespace Shared.Messages
                 this.snakeID = entity.GetComponent<Shared.Components.SnakeID>();
             }
 
-            if (entity.ContainsComponent<Shared.Components.Appearance>())
+            if (entity.ContainsComponent<Shared.Components.Readable>())
             {
-                this.appearance = entity.GetComponent<Appearance>();
+                this.readable = entity.GetComponent<Readable>();
+            }
+
+            if (entity.ContainsComponent<Shared.Components.Renderable>())
+            {
+                this.renderable = entity.GetComponent<Renderable>();
             }
 
             if (entity.ContainsComponent<Shared.Components.Camera>())
@@ -102,10 +107,15 @@ namespace Shared.Messages
         public Components.SnakeID? snakeID { get; private set; } = null;
         public Parsers.SnakeIDParser.SnakeIDMessage snakeIDMessage;
 
-        // Appearance
-        public bool hasAppearance { get; private set; }
-        public Components.Appearance? appearance { get; private set; } = null;
-        public Parsers.AppearanceParser.AppearanceMessage appearanceMessage { get; private set; }
+        // Readable 
+        public bool hasReadable { get; private set; }
+        public Components.Readable? readable { get; private set; } = null;
+        public Parsers.ReadableParser.ReadableMessage readableMessage { get; private set; }
+
+        // Renderable 
+        public bool hasRenderable { get; private set; }
+        public Components.Renderable? renderable { get; private set; } = null;
+        public Parsers.RenderableParser.RenderableMessage renderableMessage { get; private set; }
 
         // Camera
         public bool hasCamera { get; private set; }
@@ -188,13 +198,22 @@ namespace Shared.Messages
                 snakeID.Serialize(ref data);
             }
 
-            // Appearance
-            data.AddRange(BitConverter.GetBytes(appearance != null));
-            if (appearance != null)
+            // Readable 
+            data.AddRange(BitConverter.GetBytes(readable != null));
+            if (readable != null)
             {
-                appearance.Serialize(ref data);
+                readable.Serialize(ref data);
             }
 
+            // Renderable 
+            data.AddRange(BitConverter.GetBytes(renderable != null));
+            if (renderable != null)
+            {
+                renderable.Serialize(ref data);
+            }
+
+            // Animatable 
+            data.AddRange(BitConverter.GetBytes(renderable != null));
             data.AddRange(BitConverter.GetBytes(animatable != null));
             if (animatable != null)
             {
@@ -305,14 +324,24 @@ namespace Shared.Messages
                 this.snakeIDMessage = parser.GetMessage();
             }
 
-            // Appearance
-            this.hasAppearance = BitConverter.ToBoolean(data, offset);
+            // Readable
+            this.hasReadable = BitConverter.ToBoolean(data, offset);
             offset += sizeof(bool);
-            if (hasAppearance)
+            if (hasReadable)
             {
-                Parsers.AppearanceParser parser = new Parsers.AppearanceParser();
+                Parsers.ReadableParser parser = new Parsers.ReadableParser();
                 parser.Parse(ref data, ref offset);
-                this.appearanceMessage = parser.GetMessage();
+                this.readableMessage = parser.GetMessage();
+            }
+
+            // Renderable 
+            this.hasRenderable = BitConverter.ToBoolean(data, offset);
+            offset += sizeof(bool);
+            if (hasRenderable)
+            {
+                Parsers.RenderableParser parser = new Parsers.RenderableParser();
+                parser.Parse(ref data, ref offset);
+                this.renderableMessage = parser.GetMessage();
             }
 
             this.hasAnimatable = BitConverter.ToBoolean(data, offset);

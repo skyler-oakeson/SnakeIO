@@ -11,19 +11,17 @@ namespace Shared.Entities
                 SpriteFont font,
                 Texture2D background,
                 SoundEffect sound,
-                string value,
+                string text,
                 bool selected,
                 int x,
                 int y)
         {
             Entity textInput = new Entity();
-            textInput.Add(new Shared.Components.Appearance("Fonts/Micro5", typeof(SpriteFont), Color.White, Color.White, 
-                        new Rectangle(x, y, 0, 0)));
-            textInput.Add(new Shared.Components.Readable(font, "Fonts/Micro5", value.ToString(), Color.Orange, Color.Black, 
-                        new Rectangle(x, y-(int)(font.MeasureString("1").X), 0, 0)));
+            textInput.Add(new Shared.Components.Appearance());
+            textInput.Add(new Shared.Components.Readable(text, Color.Orange, Color.Black, new Rectangle(x, y-(int)(font.MeasureString("1").X), 0, 0), font: font));
             textInput.Add(new Shared.Components.Audible(sound));
             textInput.Add(new Shared.Components.Positionable(new Vector2(x, y), 0f));
-            textInput.Add(new Shared.Components.Selectable<string>(selected, value, selectableDelegate: TextBoxEdit, interactableDelegate: TextBoxConfirm));
+            textInput.Add(new Shared.Components.Selectable<string>(selected, text, selectableDelegate: TextBoxEdit, interactableDelegate: TextBoxConfirm));
             textInput.Add(new Shared.Components.KeyboardControllable(selected, typeof(Shared.Entities.TextInput), TextInputControls));
 
             return textInput;

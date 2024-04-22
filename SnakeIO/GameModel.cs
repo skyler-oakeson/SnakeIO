@@ -55,10 +55,6 @@ namespace SnakeIO
             this.audio = new Systems.Audio();
             this.linker = new Shared.Systems.Linker();
             this.contentManager = contentManager;
-
-            Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
-            Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
-            SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
         }
 
         public void Update(TimeSpan elapsedTime)
@@ -141,34 +137,34 @@ namespace SnakeIO
                 entity.Add(new Shared.Components.SnakeID(message.snakeIDMessage.id));
             }
 
-            if (message.hasAppearance)
+            if (message.hasReadable)
             {
                 Rectangle rectangle = new Rectangle(
-                        message.appearanceMessage.rectangle.X,
-                        message.appearanceMessage.rectangle.Y,
-                        message.appearanceMessage.rectangle.Width,
-                        message.appearanceMessage.rectangle.Height);
-                entity.Add(new Shared.Components.Appearance(
-                            message.appearanceMessage.texturePath,
-                            message.appearanceMessage.type,
-                            message.appearanceMessage.color,
-                            message.appearanceMessage.stroke,
-                            rectangle
-                            ));
-                Shared.Components.Appearance appearance = entity.GetComponent<Shared.Components.Appearance>();
-                Texture2D texture = contentManager.Load<Texture2D>(appearance.texturePath);
-                if (appearance.type == typeof(Texture2D))
-                {
-                    if (message.hasAnimatable)
-                    {
-                        entity.Add(new Shared.Components.Animatable(message.animatableMessage.spriteTime, texture));
-                    }
-                    entity.Add(new Shared.Components.Renderable(texture, appearance.texturePath, appearance.color, appearance.stroke, rectangle));
-                }
-                else
-                {
-                    entity.Add(new Shared.Components.Renderable(texture, appearance.texturePath, appearance.color, appearance.stroke, rectangle));
-                }
+                        message.readableMessage.rectangle.X,
+                        message.readableMessage.rectangle.Y,
+                        message.readableMessage.rectangle.Width,
+                        message.readableMessage.rectangle.Height);
+
+                SpriteFont font = contentManager.Load<SpriteFont>(message.readableMessage.fontPath);
+                entity.Add(new Shared.Components.Readable(message.readableMessage.text, message.readableMessage.color, message.readableMessage.stroke, rectangle, font: font));
+            }
+
+            if (message.hasRenderable)
+            {
+                Rectangle rectangle = new Rectangle(
+                        message.renderableMessage.rectangle.X,
+                        message.renderableMessage.rectangle.Y,
+                        message.renderableMessage.rectangle.Width,
+                        message.renderableMessage.rectangle.Height);
+
+                Texture2D texture = contentManager.Load<Texture2D>(message.renderableMessage.texturePath);
+                entity.Add(new Shared.Components.Renderable(message.readableMessage.color, message.readableMessage.stroke, rectangle, texture: texture));
+            }
+
+            if (message.hasAnimatable)
+            {
+                Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
+                entity.Add(new Shared.Components.Animatable(message.animatableMessage.spriteTime, renderable.texture));
             }
 
             if (message.hasPosition)

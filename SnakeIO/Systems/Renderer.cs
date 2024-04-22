@@ -12,8 +12,8 @@ namespace Systems
         public BasicEffect effect;
         private Shared.Components.Camera? camera = null;
 
-        public Renderer(SpriteBatch sb)
-            : base(typeof(Shared.Components.Appearance))
+        public Renderer(SpriteBatch sb) 
+            : base( typeof(Shared.Components.Appearance))
         {
             this.sb = sb;
 
