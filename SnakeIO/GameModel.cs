@@ -128,13 +128,30 @@ namespace SnakeIO
 
         private void HandleCollision(Shared.Messages.Collision message)
         {
-            if (message.e1HasSound)
-            {
-                contentManager.Load<SoundEffect>(message.e1SoundMessage.soundPath).Play();
+            // check if any have snake id, if snake id is equal to clientPlayer id then play the sounds/particles
+            if (message.e1HasSnakeID) {
+                if (message.e1SnakeIDMessage.id == this.clientPlayer.GetComponent<Shared.Components.SnakeID>().id) {
+                    if (message.e1HasSound)
+                    {
+                        contentManager.Load<SoundEffect>(message.e1SoundMessage.soundPath).Play();
+                    }
+                    else if (message.e2HasSound)
+                    {
+                        contentManager.Load<SoundEffect>(message.e2SoundMessage.soundPath).Play();
+                    }
+                }
             }
-            else if (message.e2HasSound)
-            {
-                contentManager.Load<SoundEffect>(message.e2SoundMessage.soundPath).Play();
+            else if (message.e2HasSnakeID) {
+                if (message.e2SnakeIDMessage.id == this.clientPlayer.GetComponent<Shared.Components.SnakeID>().id) {
+                    if (message.e1HasSound)
+                    {
+                        contentManager.Load<SoundEffect>(message.e1SoundMessage.soundPath).Play();
+                    }
+                    else if (message.e2HasSound)
+                    {
+                        contentManager.Load<SoundEffect>(message.e2SoundMessage.soundPath).Play();
+                    }
+                }
             }
         }
 
