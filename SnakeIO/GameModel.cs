@@ -119,8 +119,11 @@ namespace SnakeIO
 
         private void handleNewEntity(Shared.Messages.NewEntity message)
         {
-            Entity entity = createEntity(message);
-            AddEntity(entity);
+            if (!entities.ContainsKey(message.id))
+            {
+                Entity entity = createEntity(message);
+                AddEntity(entity);
+            }
         }
 
         /// <summary>
