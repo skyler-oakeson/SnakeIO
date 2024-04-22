@@ -24,7 +24,6 @@ namespace SnakeIO
         private Shared.Systems.Linker linker;
         private Shared.Systems.Movement movement;
         private Systems.Audio audio;
-        private Systems.Collision collision;
 
         private ContentManager contentManager;
         private Shared.Controls.ControlManager controlManager;
@@ -53,14 +52,12 @@ namespace SnakeIO
             this.mouseInput = new Systems.MouseInput(controlManager);
             this.audio = new Systems.Audio();
             this.linker = new Shared.Systems.Linker();
-            this.collision = new Systems.Collision();
             this.contentManager = contentManager;
         }
 
         public void Update(TimeSpan elapsedTime)
         {
             network.update(elapsedTime, MessageQueueClient.instance.getMessages());
-            collision.Update(elapsedTime);
             keyboardInput.Update(elapsedTime);
             mouseInput.Update(elapsedTime);
             linker.Update(elapsedTime);
@@ -84,7 +81,6 @@ namespace SnakeIO
             mouseInput.Add(entity);
             audio.Add(entity);
             linker.Add(entity);
-            collision.Add(entity);
 
             entities[entity.id] = entity;
         }
@@ -99,7 +95,6 @@ namespace SnakeIO
             mouseInput.Remove(entity.id);
             audio.Remove(entity.id);
             linker.Remove(entity.id);
-            collision.Remove(entity.id);
 
             entities.Remove(entity.id);
         }
@@ -110,7 +105,6 @@ namespace SnakeIO
             keyboardInput.Remove(id);
             network.Remove(id);
             interpolation.Remove(id);
-            collision.Remove(id);
 
             entities.Remove(id);
         }
@@ -134,9 +128,6 @@ namespace SnakeIO
 
         private void HandleCollision(Shared.Messages.Collision message)
         {
-            Console.WriteLine("Collision occurred man!!!");
-            Console.WriteLine(message.e1HasSound);
-
             if (message.e1HasSound)
             {
                 contentManager.Load<SoundEffect>(message.e1SoundMessage.soundPath).Play();

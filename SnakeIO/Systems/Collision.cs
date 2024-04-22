@@ -103,7 +103,6 @@ namespace Systems
 
         private void HandleCollision(Shared.Entities.Entity e1, Shared.Entities.Entity e2)
         {
-            Console.WriteLine("handle collision");
             if (e1.ContainsComponent<Shared.Components.Audible>())
             {
                 e1.GetComponent<Shared.Components.Audible>().play = true;

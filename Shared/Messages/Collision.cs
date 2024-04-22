@@ -15,7 +15,7 @@ namespace Shared.Messages
 
             if (e2.ContainsComponent<Shared.Components.Sound>())
             {
-                e2Sound = e1.GetComponent<Shared.Components.Sound>();
+                e2Sound = e2.GetComponent<Shared.Components.Sound>();
             }
         }
 
@@ -48,6 +48,7 @@ namespace Shared.Messages
             {
                 e2Sound.Serialize(ref data);
             }
+
             return data.ToArray();
         }
 
