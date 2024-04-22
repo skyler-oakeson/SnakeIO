@@ -117,29 +117,14 @@ namespace Systems
             Vector2 n = (e1Pos.pos - e2Pos.pos);
             n.Normalize();
 
-            //These two lines cause the snake to stop, so I am commenting them out unless we need them
-            // e1Pos.pos = e1Pos.prevPos;
-            // e2Pos.pos = e2Pos.prevPos;
-
-            // if (e1.ContainsComponent<Shared.Components.Audible>())
-            // {
-            //    e1.GetComponent<Shared.Components.Audible>().Play = true;
-            // }
-
-            // Movables - Non-Movables
-            // if (e1.ContainsComponent<Shared.Components.Movable>() && !e2.ContainsComponent<Shared.Components.Movable>())
-            // {
-            //     Shared.Components.Movable e1Mov = e1.GetComponent<Shared.Components.Movable>();
-            //     e1Mov.velocity += n;
-            // }
+            int snakeId = e1.ContainsComponent<Shared.Components.SnakeID>() ? e1.GetComponent<Shared.Components.SnakeID>().id : e2.GetComponent<Shared.Components.SnakeID>().id;
+            Server.MessageQueueServer.instance.sendMessage(snakeId, new Shared.Messages.GameOver());
 
             // Movables - Movables
             if (e1.ContainsComponent<Shared.Components.Movable>() && e2.ContainsComponent<Shared.Components.Movable>())
             {
                 Shared.Components.Movable e1Mov = e1.GetComponent<Shared.Components.Movable>();
                 Shared.Components.Movable e2Mov = e2.GetComponent<Shared.Components.Movable>();
-                // e2Mov.velocity -= n * .5f;
-                // e1Mov.velocity += n * .5f;
             }
 
             if (e1.ContainsComponent<Shared.Components.Linkable>() && e2.ContainsComponent<Shared.Components.Linkable>())
@@ -193,8 +178,7 @@ namespace Systems
             {
                 // Hits wall
                 Shared.Entities.Entity currEntity = e1.ContainsComponent<Shared.Components.Linkable>() ? e1 : e2;
-                int snakeId = currEntity.GetComponent<Shared.Components.SnakeID>().id;
-                Server.MessageQueueServer.instance.sendMessage(snakeId, new Shared.Messages.GameOver());
+                Server.MessageQueueServer.instance.sendMessage(snakeId, new Shared.Messages.Collision(e1, e2));
                 RemoveSnake(currEntity);
             }
         }

@@ -4,7 +4,7 @@ using Shared.Entities;
 
 namespace Systems
 {
-    public class Interpolation : Shared.Systems.System 
+    public class Interpolation : Shared.Systems.System
     {
         public Interpolation() :
             base(

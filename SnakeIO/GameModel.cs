@@ -30,9 +30,6 @@ namespace SnakeIO
         private Shared.Controls.ControlManager controlManager;
         private Shared.Entities.Entity clientPlayer;
 
-        public delegate void AddDelegate(Entity entity);
-        private AddDelegate addEntity;
-
         private List<Entity> toRemove = new List<Entity>();
         private List<Entity> toAdd = new List<Entity>();
 
@@ -40,7 +37,6 @@ namespace SnakeIO
         {
             this.HEIGHT = height;
             this.WIDTH = width;
-            addEntity = AddEntity;
         }
 
         public void Initialize(Shared.Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager)
@@ -52,17 +48,13 @@ namespace SnakeIO
             network.registerNewEntityHandler(handleNewEntity);
             network.registerRemoveEntityHandler(handleRemoveEntity);
             network.registerGameOverHandler(HandleGameOver);
+            network.registerCollisionHandler(HandleCollision);
             this.keyboardInput = new Systems.KeyboardInput(controlManager);
             this.mouseInput = new Systems.MouseInput(controlManager);
             this.audio = new Systems.Audio();
             this.linker = new Shared.Systems.Linker();
             this.collision = new Systems.Collision();
             this.contentManager = contentManager;
-
-            Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
-            Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
-            SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
-
         }
 
         public void Update(TimeSpan elapsedTime)
@@ -79,10 +71,7 @@ namespace SnakeIO
 
         public void Render(TimeSpan elapsedTime)
         {
-            // DateTime startTime = DateTime.Now;
             renderer.Update(elapsedTime);
-            // TimeSpan currentTime = DateTime.Now - startTime;
-            // Console.WriteLine($"Render update time: {currentTime}");
         }
 
         private void AddEntity(Entity entity)
@@ -132,10 +121,6 @@ namespace SnakeIO
             AddEntity(entity);
         }
 
-        /// <summary>
-        /// Handler for the RemoveEntity message.  It removes the entity from
-        /// the client game model (that's us!).
-        /// </summary>
         private void handleRemoveEntity(Shared.Messages.RemoveEntity message)
         {
             RemoveEntity(message.id);
@@ -145,6 +130,21 @@ namespace SnakeIO
         {
             //TODO: handle game over
             Console.WriteLine("Game over fool");
+        }
+
+        private void HandleCollision(Shared.Messages.Collision message)
+        {
+            Console.WriteLine("Collision occurred man!!!");
+            Console.WriteLine(message.e1HasSound);
+
+            if (message.e1HasSound)
+            {
+                contentManager.Load<SoundEffect>(message.e1SoundMessage.soundPath).Play();
+            }
+            else if (message.e2HasSound)
+            {
+                contentManager.Load<SoundEffect>(message.e2SoundMessage.soundPath).Play();
+            }
         }
 
         private Entity createEntity(Shared.Messages.NewEntity message)

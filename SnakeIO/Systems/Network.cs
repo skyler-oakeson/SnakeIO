@@ -14,11 +14,13 @@ namespace Systems
         public delegate void RemoveEntityHandler(RemoveEntity message);
         public delegate void NewEntityHandler(NewEntity message);
         public delegate void GameOverHandler(GameOver message);
+        public delegate void CollisionHandler(Shared.Messages.Collision message);
 
         private Dictionary<Shared.Messages.Type, Handler> commandMap = new Dictionary<Shared.Messages.Type, Handler>();
         private RemoveEntityHandler removeEntityHandler;
         private NewEntityHandler newEntityHandler;
         private GameOverHandler gameOverHandler;
+        private CollisionHandler collisionHandler;
         private uint lastMessageId = 0;
         private HashSet<uint> updatedEntities = new HashSet<uint>();
 
@@ -53,6 +55,11 @@ namespace Systems
             registerHandler(Shared.Messages.Type.GameOver, (TimeSpan elapsedTime, Message message) =>
             {
                 gameOverHandler((GameOver)message);
+            });
+
+            registerHandler(Shared.Messages.Type.Collision, (TimeSpan elapsedTime, Message message) =>
+            {
+                collisionHandler((Shared.Messages.Collision)message);
             });
         }
 
@@ -123,6 +130,11 @@ namespace Systems
         public void registerGameOverHandler(GameOverHandler handler)
         {
             gameOverHandler = handler;
+        }
+
+        public void registerCollisionHandler(CollisionHandler handler)
+        {
+            collisionHandler = handler;
         }
 
         /// <summary>
