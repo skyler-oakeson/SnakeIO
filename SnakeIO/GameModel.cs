@@ -30,9 +30,6 @@ namespace SnakeIO
         private Shared.Controls.ControlManager controlManager;
         private Shared.Entities.Entity clientPlayer;
 
-        public delegate void AddDelegate(Entity entity);
-        private AddDelegate addEntity;
-
         private List<Entity> toRemove = new List<Entity>();
         private List<Entity> toAdd = new List<Entity>();
 
@@ -41,7 +38,6 @@ namespace SnakeIO
             this.HEIGHT = height;
             this.WIDTH = width;
             this.playerName = playerName;
-            addEntity = AddEntity;
         }
 
         public void Initialize(Shared.Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager)
@@ -52,6 +48,8 @@ namespace SnakeIO
             this.movement = new Shared.Systems.Movement();
             network.registerNewEntityHandler(handleNewEntity);
             network.registerRemoveEntityHandler(handleRemoveEntity);
+            network.registerGameOverHandler(HandleGameOver);
+            network.registerCollisionHandler(HandleCollision);
             this.keyboardInput = new Systems.KeyboardInput(controlManager);
             this.mouseInput = new Systems.MouseInput(controlManager);
             this.audio = new Systems.Audio();
@@ -76,10 +74,7 @@ namespace SnakeIO
 
         public void Render(TimeSpan elapsedTime)
         {
-            // DateTime startTime = DateTime.Now;
             renderer.Update(elapsedTime);
-            // TimeSpan currentTime = DateTime.Now - startTime;
-            // Console.WriteLine($"Render update time: {currentTime}");
         }
 
         private void AddEntity(Entity entity)
@@ -116,6 +111,7 @@ namespace SnakeIO
             keyboardInput.Remove(id);
             network.Remove(id);
             interpolation.Remove(id);
+
             entities.Remove(id);
         }
 
@@ -128,13 +124,45 @@ namespace SnakeIO
             }
         }
 
-        /// <summary>
-        /// Handler for the RemoveEntity message.  It removes the entity from
-        /// the client game model (that's us!).
-        /// </summary>
         private void handleRemoveEntity(Shared.Messages.RemoveEntity message)
         {
             RemoveEntity(message.id);
+        }
+
+        private void HandleGameOver(Shared.Messages.GameOver message)
+        {
+            //TODO: handle game over
+            contentManager.Load<SoundEffect>("Audio/negative").Play();
+            Console.WriteLine("Game over fool");
+        }
+
+        private void HandleCollision(Shared.Messages.Collision message)
+        {
+            // check if any have snake id, if snake id is equal to clientPlayer id then play the sounds/particles
+            if (message.e1HasSnakeID) {
+                if (message.e1SnakeIDMessage.id == this.clientPlayer.GetComponent<Shared.Components.SnakeID>().id) {
+                    if (message.e1HasSound)
+                    {
+                        contentManager.Load<SoundEffect>(message.e1SoundMessage.soundPath).Play();
+                    }
+                    else if (message.e2HasSound)
+                    {
+                        contentManager.Load<SoundEffect>(message.e2SoundMessage.soundPath).Play();
+                    }
+                }
+            }
+            else if (message.e2HasSnakeID) {
+                if (message.e2SnakeIDMessage.id == this.clientPlayer.GetComponent<Shared.Components.SnakeID>().id) {
+                    if (message.e1HasSound)
+                    {
+                        contentManager.Load<SoundEffect>(message.e1SoundMessage.soundPath).Play();
+                    }
+                    else if (message.e2HasSound)
+                    {
+                        contentManager.Load<SoundEffect>(message.e2SoundMessage.soundPath).Play();
+                    }
+                }
+            }
         }
 
         private Entity createEntity(Shared.Messages.NewEntity message)
@@ -183,16 +211,9 @@ namespace SnakeIO
                 entity.Add(new Shared.Components.Positionable(new Vector2(message.positionableMessage.pos.X, message.positionableMessage.pos.Y), message.positionableMessage.orientation));
             }
 
-            //TODO: find other ways to handle collidable. Maybe we specify what the radius is so that we don't have to calculate it.
-            //There is no guaruntee that if it has position and has appearance that it will be collidable
             if (message.hasCollidable)
             {
-                // Console.WriteLine($"{message.collidableMessage.Shape}, {message.collidableMessage.RectangleData.x}, {message.collidableMessage.RectangleData.y}, {message.collidableMessage.RectangleData.width}, {message.collidableMessage.RectangleData.height}");
-
                 entity.Add(new Shared.Components.Collidable(message.collidableMessage.Shape, message.collidableMessage.RectangleData, message.collidableMessage.CircleData));
-                // Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
-                // int radius = renderable.rectangle.Width >= renderable.rectangle.Height ? renderable.rectangle.Width / 2 : renderable.rectangle.Height / 2;
-                // entity.Add(new Shared.Components.Collidable(new Vector3(message.positionableMessage.pos.X, message.positionableMessage.pos.Y, radius)));
             }
 
             if (message.hasMovement)
@@ -213,6 +234,12 @@ namespace SnakeIO
             if (message.hasGrowable)
             {
                 entity.Add(new Shared.Components.Growable());
+            }
+
+            if (message.hasSound)
+            {
+                SoundEffect sound = contentManager.Load<SoundEffect>(message.soundMessage.soundPath);
+                entity.Add(new Shared.Components.Audible(sound));
             }
 
             if (message.hasCamera)

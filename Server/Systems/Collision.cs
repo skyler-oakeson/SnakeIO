@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using System.Threading;
 
 namespace Systems
 {
@@ -41,11 +42,16 @@ namespace Systems
                         {
                             res = CircleCollision(e1, e2);
                         }
-                        else if ((!e1IsCircle && e2IsCircle) || (e1IsCircle && !e2IsCircle))
+                        else if (!e1IsCircle || !e2IsCircle)
                         {
                             res = RectangleCircleCollision(e1, e2);
                         }
-                        if (res) HandleCollision(e1, e2);
+                        if (res)
+                        {
+                            // Thread collisionThread = new Thread(() => HandleCollision(e1, e2));
+                            // collisionThread.Start();
+                            HandleCollision(e1, e2);
+                        }
                     }
                 }
             }
@@ -82,25 +88,25 @@ namespace Systems
             Shared.Components.CircleData circleHitBox = e1Col.Data.Shape == Shared.Components.CollidableShape.Circle ? e1Col.Data.CircleData : e2Col.Data.CircleData;
             Shared.Components.RectangleData rectangleHitBox = e1Col.Data.Shape == Shared.Components.CollidableShape.Rectangle ? e1Col.Data.RectangleData : e2Col.Data.RectangleData;
 
-            double circleDistanceX = Math.Abs(circleHitBox.x - rectangleHitBox.x);
-            double circleDistanceY = Math.Abs(circleHitBox.y - rectangleHitBox.y);
-            if (circleDistanceX > ((rectangleHitBox.width + 50) / 2 + circleHitBox.radius))
+            double circleDistanceX = Math.Abs(circleHitBox.x - rectangleHitBox.y);
+            double circleDistanceY = Math.Abs(circleHitBox.y - rectangleHitBox.x);
+            if (circleDistanceX > ((rectangleHitBox.width) / 2 + circleHitBox.radius))
             {
                 return false;
             }
-            if (circleDistanceY > ((rectangleHitBox.height + 50) / 2 + circleHitBox.radius))
+            if (circleDistanceY > ((rectangleHitBox.height) / 2 + circleHitBox.radius))
             {
                 return false;
             }
-            if (circleDistanceX <= ((rectangleHitBox.width + 50) / 2))
+            if (circleDistanceX <= ((rectangleHitBox.width) / 2))
             {
                 return true;
             }
-            if (circleDistanceY <= ((rectangleHitBox.height + 50) / 2))
+            if (circleDistanceY <= ((rectangleHitBox.height) / 2))
             {
                 return true;
             }
-            double cornerDistanceSQ = (circleDistanceX - (rectangleHitBox.width + 50) / 2) * (circleDistanceX - (rectangleHitBox.width + 50) / 2) + (circleDistanceY - (rectangleHitBox.height + 50) / 2) * (circleDistanceY - (rectangleHitBox.height + 50) / 2);
+            double cornerDistanceSQ = (circleDistanceX - (rectangleHitBox.width) / 2) * (circleDistanceX - (rectangleHitBox.width) / 2) + (circleDistanceY - (rectangleHitBox.height) / 2) * (circleDistanceY - (rectangleHitBox.height) / 2);
             return (cornerDistanceSQ <= (circleHitBox.radius * circleHitBox.radius));
         }
 
@@ -111,38 +117,43 @@ namespace Systems
             Vector2 n = (e1Pos.pos - e2Pos.pos);
             n.Normalize();
 
-            //These two lines cause the snake to stop, so I am commenting them out unless we need them
-            // e1Pos.pos = e1Pos.prevPos;
-            // e2Pos.pos = e2Pos.prevPos;
+            int snakeId = e1.ContainsComponent<Shared.Components.SnakeID>() ? e1.GetComponent<Shared.Components.SnakeID>().id : e2.GetComponent<Shared.Components.SnakeID>().id;
+            Server.MessageQueueServer.instance.sendMessage(snakeId, new Shared.Messages.Collision(e1, e2));
 
-            //if (e1.ContainsComponent<Shared.Components.Audible>())
-            //{
-            //    e1.GetComponent<Shared.Components.Audible>().Play = true;
-            //}
-
-            // Movables - Non-Movables
-            // if (e1.ContainsComponent<Shared.Components.Movable>() && !e2.ContainsComponent<Shared.Components.Movable>())
-            // {
-            //     Shared.Components.Movable e1Mov = e1.GetComponent<Shared.Components.Movable>();
-            //     e1Mov.velocity += n;
-            // }
-
-            // TODO: I don't think we are going to want to update the velo by n
-            // Determine if this is needed or not
             // Movables - Movables
             if (e1.ContainsComponent<Shared.Components.Movable>() && e2.ContainsComponent<Shared.Components.Movable>())
             {
                 Shared.Components.Movable e1Mov = e1.GetComponent<Shared.Components.Movable>();
                 Shared.Components.Movable e2Mov = e2.GetComponent<Shared.Components.Movable>();
-                // e2Mov.velocity -= n * .5f;
-                // e1Mov.velocity += n * .5f;
             }
 
-            //Consumables
-            if (e1.ContainsComponent<Shared.Components.Consumable>() || e2.ContainsComponent<Shared.Components.Consumable>())
+            if (e1.ContainsComponent<Shared.Components.Linkable>() && e2.ContainsComponent<Shared.Components.Linkable>())
             {
+                // Hits another snake
+                // Heads both collide, kill everyone
+                Shared.Components.Linkable e1Linkable = e1.GetComponent<Shared.Components.Linkable>();
+                Shared.Components.Linkable e2Linkable = e2.GetComponent<Shared.Components.Linkable>();
+                if (e1.ContainsComponent<Shared.Components.SnakeID>() && e2.ContainsComponent<Shared.Components.SnakeID>())
+                {
+                    RemoveSnake(e1);
+                    Server.MessageQueueServer.instance.sendMessage(e1.GetComponent<Shared.Components.SnakeID>().id, new Shared.Messages.GameOver());
+                    RemoveSnake(e2);
+                    Server.MessageQueueServer.instance.sendMessage(e2.GetComponent<Shared.Components.SnakeID>().id, new Shared.Messages.GameOver());
+                }
+                else if (e1Linkable.chain != e2Linkable.chain)
+                {
+                    // Ensure it isn't itself
+                    // Find the head of the snake by checking which one has SnakeID
+                    Shared.Entities.Entity snake = e1.ContainsComponent<Shared.Components.SnakeID>() ? e1 : e2;
+                    RemoveSnake(snake);
+                }
+            }
+            else if (e1.ContainsComponent<Shared.Components.Consumable>() || e2.ContainsComponent<Shared.Components.Consumable>())
+            {
+                // Hits Consumable
                 if (e1.ContainsComponent<Shared.Components.Consumable>())
                 {
+
                     Shared.Components.Consumable consumable = e1.GetComponent<Shared.Components.Consumable>();
                     Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(e1.id));
                     removeThese.Add(e1);
@@ -163,6 +174,33 @@ namespace Systems
                         growthComponent.growth += consumable.growth;
                     }
                 }
+            }
+            else
+            {
+                // Hits wall
+                Shared.Entities.Entity currEntity = e1.ContainsComponent<Shared.Components.Linkable>() ? e1 : e2;
+                Server.MessageQueueServer.instance.sendMessage(snakeId, new Shared.Messages.GameOver());
+                RemoveSnake(currEntity);
+            }
+        }
+
+        private void RemoveSnake(Shared.Entities.Entity snake)
+        {
+            List<Shared.Entities.Entity> toRemove = new List<Shared.Entities.Entity>();
+            Shared.Entities.Entity currEntity = snake;
+            while (!toRemove.Contains(currEntity))
+            {
+                toRemove.Add(currEntity);
+                currEntity = currEntity.GetComponent<Shared.Components.Linkable>().prevEntity;
+                Shared.Components.Positionable currEntityPos = currEntity.GetComponent<Shared.Components.Positionable>();
+                Shared.Entities.Entity food = Shared.Entities.Food.Create("Images/food", new Rectangle((int)currEntityPos.pos.X, (int)currEntityPos.pos.Y, 32, 32));
+                Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(food));
+            }
+
+            foreach (Shared.Entities.Entity entity in toRemove)
+            {
+                Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(entity.id));
+                removeThese.Add(entity);
             }
         }
     }

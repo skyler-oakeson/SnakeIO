@@ -13,10 +13,14 @@ namespace Systems
         public delegate void Handler(TimeSpan elapsedTime, Shared.Messages.Message message);
         public delegate void RemoveEntityHandler(RemoveEntity message);
         public delegate void NewEntityHandler(NewEntity message);
+        public delegate void GameOverHandler(GameOver message);
+        public delegate void CollisionHandler(Shared.Messages.Collision message);
 
         private Dictionary<Shared.Messages.Type, Handler> commandMap = new Dictionary<Shared.Messages.Type, Handler>();
         private RemoveEntityHandler removeEntityHandler;
         private NewEntityHandler newEntityHandler;
+        private GameOverHandler gameOverHandler;
+        private CollisionHandler collisionHandler;
         private uint lastMessageId = 0;
         private HashSet<uint> updatedEntities = new HashSet<uint>();
 
@@ -29,7 +33,7 @@ namespace Systems
         {
 
             registerHandler(Shared.Messages.Type.ConnectAck, (TimeSpan elapsedTime, Message message) =>
-            { 
+            {
                 handleConnectAck(elapsedTime, (ConnectAck)message);
             });
 
@@ -46,6 +50,16 @@ namespace Systems
             registerHandler(Shared.Messages.Type.RemoveEntity, (TimeSpan elapsedTime, Message message) =>
             {
                 removeEntityHandler((RemoveEntity)message);
+            });
+
+            registerHandler(Shared.Messages.Type.GameOver, (TimeSpan elapsedTime, Message message) =>
+            {
+                gameOverHandler((GameOver)message);
+            });
+
+            registerHandler(Shared.Messages.Type.Collision, (TimeSpan elapsedTime, Message message) =>
+            {
+                collisionHandler((Shared.Messages.Collision)message);
             });
         }
 
@@ -113,12 +127,22 @@ namespace Systems
             removeEntityHandler = handler;
         }
 
+        public void registerGameOverHandler(GameOverHandler handler)
+        {
+            gameOverHandler = handler;
+        }
+
+        public void registerCollisionHandler(CollisionHandler handler)
+        {
+            collisionHandler = handler;
+        }
+
         /// <summary>
         /// Handler for the ConnectAck message.  This records the clientId
         /// assigned to it by the server, it also sends a request to the server
         /// to join the game.
         /// </summary>
-        private void handleConnectAck(TimeSpan elapsedTime, ConnectAck message) 
+        private void handleConnectAck(TimeSpan elapsedTime, ConnectAck message)
         {
             SnakeIO.MessageQueueClient.instance.sendMessage(new Join());
         }
@@ -128,8 +152,8 @@ namespace Systems
         /// actually has the entity, and if it does, updates the components
         /// that are in common between the message and the entity.
         /// </summary>
-        private void handleUpdateEntity(TimeSpan elapsedTime, UpdateEntity message) 
-        { 
+        private void handleUpdateEntity(TimeSpan elapsedTime, UpdateEntity message)
+        {
             if (entities.ContainsKey(message.id))
             {
                 var entity = entities[message.id];

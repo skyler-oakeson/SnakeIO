@@ -56,6 +56,8 @@ namespace SnakeIO
             m_messageCommand[Shared.Messages.Type.NewEntity] = () => { return new NewEntity(); };
             m_messageCommand[Shared.Messages.Type.UpdateEntity] = () => { return new UpdateEntity(); };
             m_messageCommand[Shared.Messages.Type.RemoveEntity] = () => { return new RemoveEntity(); };
+            m_messageCommand[Shared.Messages.Type.GameOver] = () => { return new GameOver(); };
+            m_messageCommand[Shared.Messages.Type.Collision] = () => { return new Collision(); };
 
             try
             {
@@ -208,7 +210,7 @@ namespace SnakeIO
         // to the server.  If there is something to receive, the message is
         // read, parsed, and added to the queue of received messages.
         /// </summary>
-        private void initializeReceiver() 
+        private void initializeReceiver()
         {
             m_threadReceiver = new Thread(() =>
             {

@@ -25,6 +25,8 @@ namespace Server
         public delegate void RemoveDelegate(Shared.Entities.Entity entity);
         private RemoveDelegate removeEntity;
 
+        private List<Shared.Entities.Entity> players = new List<Shared.Entities.Entity>();
+
         private List<Shared.Entities.Entity> toRemove = new List<Shared.Entities.Entity>();
         private List<Shared.Entities.Entity> toAdd = new List<Shared.Entities.Entity>();
 
@@ -152,8 +154,9 @@ namespace Server
             reportAllEntities(clientId);
 
             Rectangle playerRect = new Rectangle(0, 0, 50, 50); //TODO: update width and height
-            Shared.Entities.Entity player = Shared.Entities.Player.Create(clientId, "Images/head", Color.Blue, "Audio/bass-switch", playerRect, $"{clientId}");
+            Shared.Entities.Entity player = Shared.Entities.Player.Create(clientId, "Images/head", Color.Blue, playerRect, $"{clientId}");
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
+            players.Add(player);
 
             // for (int i = 0; i < 20; i++)
             // {
@@ -162,7 +165,7 @@ namespace Server
             //     AddEntity(body);
             // }
 
-            Shared.Entities.Entity tail = Shared.Entities.Body.Create("Images/tail", Color.OrangeRed, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Tail);
+            Shared.Entities.Entity tail = Shared.Entities.Body.Create("Images/tail", Color.Red, playerRect, $"{clientId}", Shared.Components.LinkPosition.Tail);
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(tail));
             AddEntity(tail);
 
