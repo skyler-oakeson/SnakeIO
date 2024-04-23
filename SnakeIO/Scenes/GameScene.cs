@@ -92,7 +92,7 @@ namespace Scenes
 
         public void StartGame(string name)
         {
-            this.gameModel = new SnakeIO.GameModel(screenHeight, screenWidth);
+            this.gameModel = new SnakeIO.GameModel(screenHeight, screenWidth, name);
             gameModel.Initialize(controlManager, spriteBatch, contentManager);
         }
 

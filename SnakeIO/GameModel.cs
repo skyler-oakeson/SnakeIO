@@ -24,6 +24,7 @@ namespace SnakeIO
         private Shared.Systems.Linker linker;
         private Shared.Systems.Movement movement;
         private Systems.Audio audio;
+        private string playerName;
 
         private ContentManager contentManager;
         private Shared.Controls.ControlManager controlManager;
@@ -35,10 +36,11 @@ namespace SnakeIO
         private List<Entity> toRemove = new List<Entity>();
         private List<Entity> toAdd = new List<Entity>();
 
-        public GameModel(int height, int width)
+        public GameModel(int height, int width, string playerName)
         {
             this.HEIGHT = height;
             this.WIDTH = width;
+            this.playerName = playerName;
             addEntity = AddEntity;
         }
 
@@ -143,7 +145,7 @@ namespace SnakeIO
             {
                 entity.Add(new Shared.Components.SnakeID(message.snakeIDMessage.id));
                 SpriteFont font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
-                entity.Add(new Shared.Components.NameTag(font, message.snakeIDMessage.id.ToString()));
+                entity.Add(new Shared.Components.NameTag(font, playerName));
             }
 
             if (message.hasAppearance)

@@ -143,7 +143,7 @@ namespace Systems
             {
                 sb.Begin();
             }
-            DrawOutlineText(sb, nameTag.font, nameTag.name, Color.Black, Color.White, 4, new Vector2(positionable.pos.X, positionable.pos.Y-50), .5f);
+            DrawOutlineText(sb, nameTag.font, nameTag.name, Color.Black, Color.White, 4, new Vector2(positionable.pos.X-50, positionable.pos.Y-75), .5f);
             sb.End();
         }
 
