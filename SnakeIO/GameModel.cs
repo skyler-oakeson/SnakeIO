@@ -60,8 +60,8 @@ namespace SnakeIO
             network.update(elapsedTime, MessageQueueClient.instance.getMessages());
             keyboardInput.Update(elapsedTime);
             mouseInput.Update(elapsedTime);
-            linker.Update(elapsedTime);
             movement.Update(elapsedTime);
+            linker.Update(elapsedTime);
             interpolation.Update(elapsedTime);
             audio.Update(elapsedTime);
         }
