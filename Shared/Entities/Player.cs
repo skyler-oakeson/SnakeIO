@@ -82,7 +82,7 @@ namespace Shared.Entities
                         Vector2 pos = entity.GetComponent<Shared.Components.Positionable>().pos;
                         Vector2 dir = new Vector2(x, y) - pos;
                         dir.Normalize();
-                        movable.velocity += dir * .2f; //direction * by speed
+                        movable.velocity += dir * .1f; //direction * by speed
                         })
             }
         };
