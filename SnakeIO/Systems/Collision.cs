@@ -8,43 +8,61 @@ namespace Systems
     /// entities with Collidable, & Positionable components.
     /// This system handles entites with Movable components (Not Required).
     /// </summary>
-    public class Collision : System
+    public class Collision : Shared.Systems.System
     {
         public Collision()
             : base(
-                    typeof(Components.Collidable),
-                    typeof(Components.Positionable)
+                    typeof(Shared.Components.Collidable),
+                    typeof(Shared.Components.Positionable)
                     )
         {
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(TimeSpan elapsedTime)
         {
-            Entities.Entity[] entityArr = new Entities.Entity[entities.Values.Count];
+            Shared.Entities.Entity[] entityArr = new Shared.Entities.Entity[entities.Values.Count];
             entities.Values.CopyTo(entityArr, 0);
             for (int i = 0; i < entityArr.Length; i++)
             {
-                Entities.Entity e1 = entityArr[i];
+                Shared.Entities.Entity e1 = entityArr[i];
                 for (int j = i; j < entityArr.Length; j++)
                 {
-                    Entities.Entity e2 = entityArr[j];
-                    bool res = DidCollide(e1, e2);
-                    if (res) HandleCollision(e1, e2);
+                    Shared.Entities.Entity e2 = entityArr[j];
+                    // if e1 and e2 are not movable, we should not check
+                    bool shouldCheck = !(!e1.ContainsComponent<Shared.Components.Movable>() && !e2.ContainsComponent<Shared.Components.Movable>());
+                    if (shouldCheck)
+                    {
+                        bool e1IsCircle = (e1.GetComponent<Shared.Components.Collidable>().Data.Shape == Shared.Components.CollidableShape.Circle);
+                        bool e2IsCircle = (e1.GetComponent<Shared.Components.Collidable>().Data.Shape == Shared.Components.CollidableShape.Circle);
+                        bool res = false;
+                        if (e1IsCircle && e2IsCircle)
+                        {
+                            res = CircleCollision(e1, e2);
+                        }
+                        else if (!e1IsCircle || !e2IsCircle)
+                        {
+                            res = RectangleCircleCollision(e1, e2);
+                        }
+                        if (res)
+                        {
+                            HandleCollision(e1, e2);
+                        }
+                    }
                 }
             }
         }
 
-        private bool DidCollide(Entities.Entity e1, Entities.Entity e2)
+        private bool CircleCollision(Shared.Entities.Entity e1, Shared.Entities.Entity e2)
         {
             if (e1 == e2)
             {
                 return false;
             }
 
-            Components.Collidable e1Col = e1.GetComponent<Components.Collidable>();
-            Components.Collidable e2Col = e2.GetComponent<Components.Collidable>();
-            double hitDist = Math.Pow(e1Col.HitBox.Z + e2Col.HitBox.Z, 2);
-            double dist = Math.Pow(Math.Abs(e1Col.HitBox.X - e2Col.HitBox.X), 2) + Math.Pow(Math.Abs(e1Col.HitBox.Y - e2Col.HitBox.Y), 2);
+            Shared.Components.Collidable e1Col = e1.GetComponent<Shared.Components.Collidable>();
+            Shared.Components.Collidable e2Col = e2.GetComponent<Shared.Components.Collidable>();
+            double hitDist = Math.Pow(e1Col.Data.CircleData.radius + e2Col.Data.CircleData.radius, 2);
+            double dist = Math.Pow(Math.Abs(e1Col.Data.CircleData.x - e2Col.Data.CircleData.x), 2) + Math.Pow(Math.Abs(e1Col.Data.CircleData.y - e2Col.Data.CircleData.y), 2);
 
             if (dist < hitDist)
             {
@@ -54,35 +72,44 @@ namespace Systems
             return false;
         }
 
-        private void HandleCollision(Entities.Entity e1, Entities.Entity e2)
+        private bool RectangleCircleCollision(Shared.Entities.Entity e1, Shared.Entities.Entity e2)
         {
-            Components.Positionable e1Pos = e1.GetComponent<Components.Positionable>();
-            Components.Positionable e2Pos = e2.GetComponent<Components.Positionable>();
-            Vector2 n = (e1Pos.Pos - e2Pos.Pos);
-            n.Normalize();
+            Shared.Components.Collidable e1Col = e1.GetComponent<Shared.Components.Collidable>();
+            Shared.Components.Collidable e2Col = e2.GetComponent<Shared.Components.Collidable>();
+            Shared.Components.CircleData circleHitBox = e1Col.Data.Shape == Shared.Components.CollidableShape.Circle ? e1Col.Data.CircleData : e2Col.Data.CircleData;
+            Shared.Components.RectangleData rectangleHitBox = e1Col.Data.Shape == Shared.Components.CollidableShape.Rectangle ? e1Col.Data.RectangleData : e2Col.Data.RectangleData;
 
-            e1Pos.Pos = e1Pos.PrevPos;
-            e2Pos.Pos = e2Pos.PrevPos;
-
-            if (e1.ContainsComponent<Components.Audible>())
+            double circleDistanceX = Math.Abs(circleHitBox.x - rectangleHitBox.y);
+            double circleDistanceY = Math.Abs(circleHitBox.y - rectangleHitBox.x);
+            if (circleDistanceX > ((rectangleHitBox.width) / 2 + circleHitBox.radius))
             {
-                e1.GetComponent<Components.Audible>().Play = true;
+                return false;
             }
-
-            // Movables - Non-Movables
-            if (e1.ContainsComponent<Components.Movable>() && !e2.ContainsComponent<Components.Movable>())
+            if (circleDistanceY > ((rectangleHitBox.height) / 2 + circleHitBox.radius))
             {
-                Components.Movable e1Mov = e1.GetComponent<Components.Movable>();
-                e1Mov.Velocity += n;
+                return false;
             }
-
-            // Movables - Movables
-            if (e1.ContainsComponent<Components.Movable>() && e2.ContainsComponent<Components.Movable>())
+            if (circleDistanceX <= ((rectangleHitBox.width) / 2))
             {
-                Components.Movable e1Mov = e1.GetComponent<Components.Movable>();
-                Components.Movable e2Mov = e2.GetComponent<Components.Movable>();
-                e2Mov.Velocity -= n*.5f;
-                e1Mov.Velocity += n*.5f;
+                return true;
+            }
+            if (circleDistanceY <= ((rectangleHitBox.height) / 2))
+            {
+                return true;
+            }
+            double cornerDistanceSQ = (circleDistanceX - (rectangleHitBox.width) / 2) * (circleDistanceX - (rectangleHitBox.width) / 2) + (circleDistanceY - (rectangleHitBox.height) / 2) * (circleDistanceY - (rectangleHitBox.height) / 2);
+            return (cornerDistanceSQ <= (circleHitBox.radius * circleHitBox.radius));
+        }
+
+        private void HandleCollision(Shared.Entities.Entity e1, Shared.Entities.Entity e2)
+        {
+            if (e1.ContainsComponent<Shared.Components.Audible>())
+            {
+                e1.GetComponent<Shared.Components.Audible>().play = true;
+            }
+            else if (e2.ContainsComponent<Shared.Components.Audible>())
+            {
+                e2.GetComponent<Shared.Components.Audible>().play = true;
             }
         }
     }

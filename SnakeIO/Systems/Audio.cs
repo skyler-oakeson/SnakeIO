@@ -3,23 +3,24 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using System.Collections.Generic;
 
+
 namespace Systems
 {
     /// <summary>
     /// This system is responsible for handling playing soundeffects of any
     /// entity with an Audible component.
     /// </summary>
-    public class Audio : System
+    public class Audio : Shared.Systems.System
     {
         private Queue<SoundEffect> Sounds;
         public Audio()
             : base(
-                    typeof(Components.Audible)
-                    )
+                    typeof(Shared.Components.Audible)
+                  )
         {
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(TimeSpan elapsedTime)
         {
             foreach (var entity in entities.Values)
             {
@@ -27,14 +28,15 @@ namespace Systems
             }
         }
 
-        private void PlaySound(Entities.Entity entity)
+        private void PlaySound(Shared.Entities.Entity entity)
         {
-            Components.Audible audible = entity.GetComponent<Components.Audible>();
-            if (audible.Play)
+            Shared.Components.Audible audible = entity.GetComponent<Shared.Components.Audible>();
+            if (audible.play)
             {
-                audible.Sound.Play();
-                audible.Play = false;
+                audible.sound.Play();
+                audible.play = false;
             }
         }
     }
 }
+

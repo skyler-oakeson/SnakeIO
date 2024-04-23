@@ -1,13 +1,14 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using System;
 
 namespace Scenes
 {
     public class ScoreScene : Scene
     {
 
-        public ScoreScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Controls.ControlManager controlManager)
+        public ScoreScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
 
@@ -23,12 +24,12 @@ namespace Scenes
             return SceneContext.Game;
         }
 
-        override public void Render(GameTime gameTime)
+        override public void Render(TimeSpan elapsedTime)
         {
 
         }
 
-        override public void Update(GameTime gameTime)
+        override public void Update(TimeSpan elapsedTime)
         {
 
         }
