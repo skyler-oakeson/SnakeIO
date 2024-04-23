@@ -43,7 +43,7 @@ namespace SnakeIO
         public void Initialize(Shared.Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager)
         {
             this.renderer = new Systems.Renderer(spriteBatch);
-            this.network = new Systems.Network();
+            this.network = new Systems.Network(playerName);
             this.interpolation = new Systems.Interpolation();
             this.movement = new Shared.Systems.Movement();
             network.registerNewEntityHandler(handleNewEntity);
@@ -66,10 +66,10 @@ namespace SnakeIO
             network.update(elapsedTime, MessageQueueClient.instance.getMessages());
             keyboardInput.Update(elapsedTime);
             mouseInput.Update(elapsedTime);
-            linker.Update(elapsedTime);
             movement.Update(elapsedTime);
             interpolation.Update(elapsedTime);
             audio.Update(elapsedTime);
+            linker.Update(elapsedTime);
         }
 
         public void Render(TimeSpan elapsedTime)
@@ -171,9 +171,10 @@ namespace SnakeIO
 
             if (message.hasSnakeID)
             {
-                entity.Add(new Shared.Components.SnakeID(message.snakeIDMessage.id));
+                entity.Add(new Shared.Components.SnakeID(message.snakeIDMessage.id, message.snakeIDMessage.name));
                 SpriteFont font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
-                entity.Add(new Shared.Components.NameTag(font, playerName));
+                Console.WriteLine(message.snakeIDMessage.name);
+                entity.Add(new Shared.Components.NameTag(font, message.snakeIDMessage.name));
             }
 
             if (message.hasAppearance)

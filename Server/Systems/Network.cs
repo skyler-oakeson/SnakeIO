@@ -8,7 +8,7 @@ namespace Systems
 
     {
         public delegate void Handler(int clientId, TimeSpan elapsedTime, Shared.Messages.Message message);
-        public delegate void JoinHandler(int clientId);
+        public delegate void JoinHandler(int clientId, Shared.Messages.Join message);
         public delegate void DisconnectHandler(int clientId);
 
         private Dictionary<Shared.Messages.Type, Handler> commandMap = new Dictionary<Shared.Messages.Type, Handler>();
@@ -32,7 +32,7 @@ namespace Systems
             {
                 if (joinHandler != null)
                 {
-                    joinHandler(clientId);
+                    joinHandler(clientId, (Shared.Messages.Join)message);
                 }
             });
 

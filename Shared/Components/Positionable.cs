@@ -19,7 +19,7 @@ namespace Shared.Components
             this.orientation = orientation;
         }
 
-        public void UpdatePoistion(Vector2 pos)
+        public void UpdatePosition(Vector2 pos)
         {
             this.prevPos = this.pos;
             this.pos = pos;

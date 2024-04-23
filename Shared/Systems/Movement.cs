@@ -37,12 +37,19 @@ namespace Shared.Systems
                 return;
             }
 
+            if (entity.ContainsComponent<Shared.Components.Linkable>())
+            {
+                if (entity.GetComponent<Shared.Components.Linkable>().linkPos != LinkPosition.Head)
+                {
+                    return;
+                }
+            }
+
             // Cap velocity
             if (Math.Abs(movable.velocity.X) > .5f) { movable.velocity = new Vector2(movable.velocity.X > 0 ? .5f : -.5f, movable.velocity.Y); }
             if (Math.Abs(movable.velocity.Y) > .5f) { movable.velocity = new Vector2(movable.velocity.X, movable.velocity.Y > 0 ? .5f : -.5f); }
-
-            Vector2 newpos = movable.velocity * elapsedTime.Milliseconds + positionable.pos;
-            positionable.UpdatePoistion(newpos);
+            Vector2 newpos = (movable.velocity) * elapsedTime.Milliseconds + positionable.pos;
+            positionable.UpdatePosition(newpos);
 
             // if it has camera, update camera center
             if (entity.ContainsComponent<Shared.Components.Camera>())
@@ -54,7 +61,6 @@ namespace Shared.Systems
             }
 
             movable.velocity *= new Vector2(.80f, .80f);
-            positionable.orientation = (float)Math.Atan(movable.velocity.Y / movable.velocity.X);
 
             // If Collidable update the hitbox position
             if (entity.ContainsComponent<Shared.Components.Collidable>())

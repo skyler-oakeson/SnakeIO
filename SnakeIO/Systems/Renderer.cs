@@ -56,10 +56,6 @@ namespace Systems
                         if (camera.ShouldRender(entity))
                         {
                             RenderAnimatable(entity);
-                            if (entity.ContainsComponent<Shared.Components.NameTag>())
-                            {
-                                RenderTag(entity);
-                            }
                         }
                     }
                     else
@@ -78,6 +74,10 @@ namespace Systems
                             camera.LerpAmount = camera.LerpAmount >= 1f ? 1f : camera.LerpAmount;
                             if (camera.ShouldRender(entity))
                             {
+                                if (entity.ContainsComponent<Shared.Components.NameTag>())
+                                {
+                                    RenderTag(entity);
+                                }
                                 RenderEntity(entity);
                             }
                         }
