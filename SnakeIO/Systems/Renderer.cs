@@ -32,7 +32,6 @@ namespace Systems
 
         public override void Update(TimeSpan elapsedTime)
         {
-            sb.GraphicsDevice.Clear(Color.Black);
             foreach (var entity in entities.Values)
             {
                 if (entity.ContainsComponent<Shared.Components.Camera>())
@@ -125,7 +124,15 @@ namespace Systems
         private void RenderText(Shared.Entities.Entity entity)
         {
             Shared.Components.Readable readable = entity.GetComponent<Shared.Components.Readable>();
-            sb.Begin();
+            if (camera != null)
+            {
+                Matrix newMatrix = Matrix.Lerp(Matrix.Identity, camera.Transform, camera.LerpAmount);
+                sb.Begin(transformMatrix: newMatrix);
+            }
+            else
+            {
+                sb.Begin();
+            }
             DrawOutlineText(sb, readable.font, readable.text, readable.stroke, readable.color, 4, new Vector2(readable.rectangle.X, readable.rectangle.Y), 1.0f);
             sb.End();
         }

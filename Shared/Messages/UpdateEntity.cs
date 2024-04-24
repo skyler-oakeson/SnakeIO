@@ -11,11 +11,12 @@ namespace Shared.Messages
         {
             this.id = entity.id;
 
-            if (entity.ContainsComponent<Positionable>())
+            if (entity.ContainsComponent<Positionable>() && entity.ContainsComponent<Growable>())
             {
                 this.hasPosition = true;
                 this.position = entity.GetComponent<Positionable>().pos;
                 this.prevPosition = entity.GetComponent<Positionable>().prevPos;
+                this.growth = entity.GetComponent<Growable>().growth;
             }
 
             this.updateWindow = updateWindow;
@@ -32,6 +33,7 @@ namespace Shared.Messages
         public Vector2 position { get; private set; }
         public Vector2 prevPosition { get; private set; }
         public float orientation { get; private set; }
+        public float growth { get; private set; }
 
         // Only the milliseconds are used/serialized
         public TimeSpan updateWindow { get; private set; } = TimeSpan.Zero;
@@ -51,6 +53,7 @@ namespace Shared.Messages
                 data.AddRange(BitConverter.GetBytes(prevPosition.X));
                 data.AddRange(BitConverter.GetBytes(prevPosition.Y));
                 data.AddRange(BitConverter.GetBytes(orientation));
+                data.AddRange(BitConverter.GetBytes(growth));
             }
 
             data.AddRange(BitConverter.GetBytes(updateWindow.Milliseconds));
@@ -80,6 +83,8 @@ namespace Shared.Messages
                 this.position = new Vector2(positionX, positionY);
                 this.prevPosition = new Vector2(prevPositionX, prevPositionY);
                 this.orientation = BitConverter.ToSingle(data, offset);
+                offset += sizeof(Single);
+                this.growth = BitConverter.ToSingle(data, offset);
                 offset += sizeof(Single);
             }
 

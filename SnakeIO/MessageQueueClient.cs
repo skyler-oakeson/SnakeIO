@@ -57,6 +57,7 @@ namespace SnakeIO
             m_messageCommand[Shared.Messages.Type.UpdateEntity] = () => { return new UpdateEntity(); };
             m_messageCommand[Shared.Messages.Type.RemoveEntity] = () => { return new RemoveEntity(); };
             m_messageCommand[Shared.Messages.Type.GameOver] = () => { return new GameOver(); };
+            m_messageCommand[Shared.Messages.Type.Scores] = () => { return new Scores(); };
             m_messageCommand[Shared.Messages.Type.Collision] = () => { return new Collision(); };
 
             try

@@ -8,12 +8,14 @@ namespace Systems
 
     {
         public delegate void Handler(int clientId, TimeSpan elapsedTime, Shared.Messages.Message message);
+        public delegate void ScoresHandler(int clientId, TimeSpan elapsedTime, Shared.Messages.Scores message);
         public delegate void JoinHandler(int clientId, Shared.Messages.Join message);
         public delegate void DisconnectHandler(int clientId);
 
         private Dictionary<Shared.Messages.Type, Handler> commandMap = new Dictionary<Shared.Messages.Type, Handler>();
         private JoinHandler joinHandler;
         private DisconnectHandler disconnectHandler;
+        private ScoresHandler scoresHandler;
 
         private HashSet<uint> reportThese = new HashSet<uint>();
 
@@ -52,7 +54,13 @@ namespace Systems
                 handleInput((Shared.Messages.Input)message);
             });
 
-
+            registerHandler(Shared.Messages.Type.Scores, (int clientId, TimeSpan elapsedTime, Shared.Messages.Message message) =>
+            {
+                if (scoresHandler != null)
+                {
+                    scoresHandler(clientId, elapsedTime, (Shared.Messages.Scores)message);
+                }
+            });
         }
 
         // Have to implement this because it is abstract in the base class
