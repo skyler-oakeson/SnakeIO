@@ -17,6 +17,7 @@ namespace SnakeIO
         private Dictionary<uint, Entity> entities = new Dictionary<uint, Entity>(); // may not need
 
         private Systems.Renderer renderer;
+        private Systems.Renderer hudrenderer;
         private Systems.KeyboardInput keyboardInput;
         private Systems.Network network;
         private Systems.Interpolation interpolation;
@@ -25,6 +26,8 @@ namespace SnakeIO
         private Shared.Systems.Movement movement;
         private Systems.Audio audio;
         private string playerName;
+        private SpriteFont font;
+        private Shared.Entities.Entity hud;
 
         private ContentManager contentManager;
         private Shared.Controls.ControlManager controlManager;
@@ -43,6 +46,7 @@ namespace SnakeIO
         public void Initialize(Shared.Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager)
         {
             this.renderer = new Systems.Renderer(spriteBatch);
+            this.hudrenderer = new Systems.Renderer(spriteBatch);
             this.network = new Systems.Network(playerName);
             this.interpolation = new Systems.Interpolation();
             this.movement = new Shared.Systems.Movement();
@@ -59,6 +63,9 @@ namespace SnakeIO
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
             SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
+            this.font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
+            this.hud = StaticText.Create(font, "", Color.Black, Color.White, new Rectangle(30, 30, (int)font.MeasureString("TEST").X, (int)font.MeasureString("TEST").Y));
+            AddHud(hud);
         }
 
         public void Update(TimeSpan elapsedTime)
@@ -74,7 +81,18 @@ namespace SnakeIO
 
         public void Render(TimeSpan elapsedTime)
         {
+            if (clientPlayer != null)
+            {
+                Console.WriteLine(clientPlayer.GetComponent<Shared.Components.Growable>().growth.ToString());
+                hud.GetComponent<Shared.Components.Readable>().text = clientPlayer.GetComponent<Shared.Components.Growable>().growth.ToString();
+            }
             renderer.Update(elapsedTime);
+            hudrenderer.Update(elapsedTime);
+        }
+
+        private void AddHud(Entity entity)
+        {
+            hudrenderer.Add(entity);
         }
 
         private void AddEntity(Entity entity)
@@ -168,11 +186,9 @@ namespace SnakeIO
         private Entity createEntity(Shared.Messages.NewEntity message)
         {
             Entity entity = new Entity(message.id);
-
             if (message.hasSnakeID)
             {
                 entity.Add(new Shared.Components.SnakeID(message.snakeIDMessage.id, message.snakeIDMessage.name));
-                SpriteFont font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
                 Console.WriteLine(message.snakeIDMessage.name);
                 entity.Add(new Shared.Components.NameTag(font, message.snakeIDMessage.name));
             }

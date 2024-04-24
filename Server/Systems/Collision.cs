@@ -160,7 +160,7 @@ namespace Systems
                     if (e2.ContainsComponent<Shared.Components.Growable>())
                     {
                         Shared.Components.Growable growthComponent = e2.GetComponent<Shared.Components.Growable>();
-                        growthComponent.growth += consumable.growth;
+                        growthComponent.UpdateGrowth(consumable.growth);
                     }
                 }
                 else
@@ -171,7 +171,7 @@ namespace Systems
                     if (e1.ContainsComponent<Shared.Components.Growable>())
                     {
                         Shared.Components.Growable growthComponent = e1.GetComponent<Shared.Components.Growable>();
-                        growthComponent.growth += consumable.growth;
+                        growthComponent.UpdateGrowth(consumable.growth);
                     }
                 }
             }

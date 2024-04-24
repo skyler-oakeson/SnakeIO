@@ -160,9 +160,11 @@ namespace Systems
                 if (entity.ContainsComponent<Positionable>() && message.hasPosition)
                 {
                     Shared.Components.Positionable positionable = entity.GetComponent<Positionable>();
+                    Shared.Components.Growable growable = entity.GetComponent<Growable>();
                     positionable.pos = message.position;
                     positionable.prevPos = message.prevPosition;
                     positionable.orientation = message.orientation;
+                    growable.growth = message.growth;
                     updatedEntities.Add(entity.id);
                 }
             }
