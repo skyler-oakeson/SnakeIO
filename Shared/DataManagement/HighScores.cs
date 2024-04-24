@@ -9,7 +9,10 @@ namespace Shared
     {
         public HighScores() { }
 
-        public HighScores(List<ulong> scores) { }
+        public HighScores(List<ulong> scores) {
+            this.highScores = scores;
+
+        }
 
 
         [DataMember]

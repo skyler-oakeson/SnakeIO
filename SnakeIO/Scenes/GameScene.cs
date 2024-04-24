@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
@@ -20,9 +21,9 @@ namespace Scenes
         private Shared.Entities.Entity textBox;
         private ContentManager contentManager;
         private GameSceneState state = GameSceneState.Input;
-        private HighScores highScores;
+        private List<ulong> highScores;
 
-        public GameScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager, HighScores highScores)
+        public GameScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager, ref List<ulong> highScores)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
             this.controlManager = controlManager;
@@ -52,6 +53,8 @@ namespace Scenes
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
+
+
                 return SceneContext.MainMenu;
             }
 
@@ -97,6 +100,10 @@ namespace Scenes
         {
             this.gameModel = new SnakeIO.GameModel(screenHeight, screenWidth, name);
             gameModel.Initialize(controlManager, spriteBatch, contentManager);
+
+            //TODO Remove test
+            AddHighScore(highScores.Count >0 ? highScores[0] + 1 : 400);
+            
         }
 
         private void AddEntity(Shared.Entities.Entity entity)
@@ -120,6 +127,36 @@ namespace Scenes
             Input,
             Game
         }
+
+        private void AddHighScore(ulong score)
+        {
+            if(highScores.Count == 0)
+            {
+                highScores.Add(score);
+                return;
+            }
+
+            if(score > highScores[highScores.Count - 1])
+            {
+                if(highScores.Count == 5)
+                {
+                    highScores.Add(score);
+                    highScores.Sort();
+                    highScores.RemoveAt(0);
+                    highScores.Reverse();
+                }
+                else
+                {
+                    highScores.Add(score);
+                    highScores.Sort();
+                    highScores.Reverse();
+                }
+            }
+            
+           
+        }
+
+
     }
 }
 

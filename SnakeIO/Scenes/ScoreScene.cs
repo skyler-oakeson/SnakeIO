@@ -24,13 +24,13 @@ namespace Scenes
 
 
         private Shared.DataManager dataManager;
-        private Shared.HighScores scoreValues;
-        private List<ulong> scoresOld;
+        private List<ulong>? scoreValues;
+        private List<ulong>? scoresOld;
 
         private List< Shared.Entities.Entity> entityList = new List< Shared.Entities.Entity >();
 
 
-        public ScoreScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager, Shared.DataManager dataManager, HighScores scores)
+        public ScoreScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager, Shared.DataManager dataManager, ref List<ulong> scores)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
             this.controlManager = controlManager;
@@ -48,25 +48,34 @@ namespace Scenes
             int center = graphics.PreferredBackBufferWidth / 2;
             font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
-            AddEntity(Shared.Entities.Score.create(new Rectangle(center - (int)font.MeasureString("Scores").X/2, 50 + (int)font.MeasureString("Scores").Y / 2, 0, 0), font, "Scores"));
+            AddEntity(Shared.Entities.StaticText.Create(font, "Scores", Color.Black, Color.Orange, new Rectangle(center - (int)font.MeasureString("Scores").X / 2, 50 + (int)font.MeasureString("Scores").Y / 2, 0, 0)));
 
-            //scoreValues = dataManager.Load<Shared.HighScores>(scoreValues);
 
-            if (scoreValues == null || scoreValues.highScores.Count == 0)
+            // make a copy of the highscores to check for updates 
+
+            scoreValues.Sort(); // Ensure the highest is last and all in order 
+            scoreValues.Reverse(); // Ensure the highest is first 
+            scoresOld = new List<ulong>(scoreValues);
+            scoresOld.Sort();
+            scoresOld.Reverse();
+
+            if ( scoreValues.Count == 0)
             {
-                scoreValues = new Shared.HighScores(new List<ulong>());
-                entityList.Add( Score.create(new Rectangle(center - (int)font.MeasureString("No Scores Yet").X / 2, 100 + (int)font.MeasureString("No Scores Yet").Y / 2, 0, 0), font, "No Scores Yet"));
+
+                entityList.Add( Shared.Entities.StaticText.Create(font, "No Scores", Color.Black, Color.Orange, new Rectangle(center - (int)font.MeasureString("No Scores").X / 2, 50 + (int)font.MeasureString("No Scores").Y, 0, 0)));
+                
             }
             else
             {
-                scoreValues.highScores.Sort(); // Ensure the highest is last and all in order 
-                scoreValues.highScores.Reverse(); // Ensure the highest is first 
+                scoreValues.Sort(); // Ensure the highest is last and all in order 
+                scoreValues.Reverse(); // Ensure the highest is first 
 
-                scoresOld = new List<ulong>(scoreValues.highScores); // make a copy of the highscores to check for updates 
 
-                foreach (var value in scoreValues.highScores)
+
+                for (int i = 0; i < scoreValues.Count; i++)
                 {   // Value, entity to add 
-                    entityList.Add(Score.create(new Rectangle(center - (int)font.MeasureString(value.ToString()).X / 2, 50, 0, 0), font, value.ToString()));
+                    string value = scoreValues[i].ToString();
+                    entityList.Add(Shared.Entities.StaticText.Create(font, value, Color.Black, Color.Orange, new Rectangle(center - (int)font.MeasureString(value).X / 2, 50 + (50 * (i + 1)) + (int)font.MeasureString(value).Y, 0, 0)));
                 }
 
             }
@@ -95,8 +104,14 @@ namespace Scenes
 
         override public void Update(TimeSpan elapsedTime)
         {
+            
+            if(scoreValues.Count > 5)
+            {
+                backUpPrune();
+            }
 
-            if(scoreValues.highScores != scoresOld)
+
+            if (scoreValues != null && !scoreValues.Equals(scoresOld))
             {
                 int center = graphics.PreferredBackBufferWidth / 2;
                 foreach (var entity in entityList)
@@ -104,19 +119,28 @@ namespace Scenes
                     RemoveEntity(entity);
                 }
 
-                scoreValues.highScores.Sort();
-                scoreValues.highScores.Reverse();
-                scoresOld = new List<ulong>(scoreValues.highScores); // Remake the new list 
+                entityList.Clear();
 
-                foreach (var value in scoreValues.highScores)
-                {
-                    entityList.Add(Score.create(
-                        new Rectangle(center - (int)font.MeasureString(value.ToString()).X / 2, 50 + (50 * (scoreValues.highScores.IndexOf(value) + 1)) + (int)font.MeasureString(value.ToString()).Y / 2, 0, 0), 
-                        font, value.ToString()));
+                scoreValues.Sort();
+                scoreValues.Reverse();
+                scoresOld = new List<ulong>(scoreValues); // Remake the new list 
+
+                // new Rectangle(center - (int)font.MeasureString(value).X / 2, 50 + (50 * (i + 1)), 0, 0), font, value
+
+                for (int i = 0; i < scoreValues.Count; i++)
+                {   // Value, entity to add 
+                    string value = scoreValues[i].ToString();
+                    entityList.Add(Shared.Entities.StaticText.Create(font, value, Color.Black, Color.Orange, new Rectangle(center - (int)font.MeasureString(value).X / 2, 50 + (50 * (i + 1)) + (int)font.MeasureString(value).Y, 0, 0)));
                 }
 
-                
+                foreach (var entity in entityList)
+                {
+                    AddEntity(entity);
+                }
+
+
             }
+            
 
 
             renderer.Update(elapsedTime);
@@ -149,6 +173,14 @@ namespace Scenes
             audio.Remove(entity.id);
         }
 
+        private void backUpPrune()
+        {
+            scoreValues.Sort();
+            scoreValues.RemoveAt(0);
+            scoreValues.Reverse();
+
+        }
+        
 
     }
 }
