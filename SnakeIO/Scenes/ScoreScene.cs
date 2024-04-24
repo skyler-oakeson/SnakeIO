@@ -129,7 +129,7 @@ namespace Scenes
 
                 for (int i = 0; i < scoreValues.Count; i++)
                 {   // Value, entity to add 
-                    string value = scoreValues[i].ToString();
+                    string value =""+ (i+1) +"."+ scoreValues[i].ToString();
                     entityList.Add(Shared.Entities.StaticText.Create(font, value, Color.Black, Color.Orange, new Rectangle(center - (int)font.MeasureString(value).X / 2, 50 + (50 * (i + 1)) + (int)font.MeasureString(value).Y, 0, 0)));
                 }
 
