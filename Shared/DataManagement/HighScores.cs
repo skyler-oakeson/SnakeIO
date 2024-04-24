@@ -1,12 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
-namespace Shared.DataManagement
+namespace Shared
 {
-    internal class HighScores
+    [DataContract(Name ="HighScores")]
+    public class HighScores
     {
+        public HighScores() { }
+
+        public HighScores(List<ulong> scores) { }
+
+
+        [DataMember]
+        public List<ulong>? highScores {  get; set; }
+
     }
 }

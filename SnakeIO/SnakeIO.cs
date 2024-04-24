@@ -19,6 +19,9 @@ namespace SnakeIO
         private SceneContext currSceneContext;
         private Scene currScene;
 
+        //Shared Data for Scores and Game Scenes
+        private Shared.HighScores highScores; 
+
         public SnakeIO()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -35,8 +38,8 @@ namespace SnakeIO
             // graphics.ApplyChanges();
             scenes.Add(SceneContext.MainMenu, new MainMenuScene(graphics.GraphicsDevice, graphics, controlManager));
             scenes.Add(SceneContext.Options, new OptionScene(graphics.GraphicsDevice, graphics, controlManager));
-            scenes.Add(SceneContext.Scores, new ScoreScene(graphics.GraphicsDevice, graphics, controlManager));
-            scenes.Add(SceneContext.Game, new GameScene(graphics.GraphicsDevice, graphics, controlManager));
+            scenes.Add(SceneContext.Scores, new ScoreScene(graphics.GraphicsDevice, graphics, controlManager, dataManager, highScores));
+            scenes.Add(SceneContext.Game, new GameScene(graphics.GraphicsDevice, graphics, controlManager, highScores));
 
 
             foreach (Scene scene in scenes.Values)
@@ -58,6 +61,8 @@ namespace SnakeIO
             {
                 scene.LoadContent(this.Content);
             }
+            highScores = dataManager.Load<Shared.HighScores>(highScores);
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -78,8 +83,13 @@ namespace SnakeIO
             nextScene = currScene.ProcessInput(gameTime);
             if (nextScene == SceneContext.Exit)
             {
+                dataManager.Save<Shared.HighScores>(highScores); // save the scores.
                 MessageQueueClient.instance.sendMessage(new Shared.Messages.Disconnect());
                 MessageQueueClient.instance.shutdown();
+                while (dataManager.saving)
+                {
+                    //wait
+                }
                 Exit();
             }
             else if (currSceneContext != nextScene)

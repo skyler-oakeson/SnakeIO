@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
+using Shared;
 
 namespace Scenes
 {
@@ -19,8 +20,9 @@ namespace Scenes
         private Shared.Entities.Entity textBox;
         private ContentManager contentManager;
         private GameSceneState state = GameSceneState.Input;
+        private HighScores highScores;
 
-        public GameScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
+        public GameScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager, HighScores highScores)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
             this.controlManager = controlManager;
@@ -28,6 +30,7 @@ namespace Scenes
             this.selector = new Systems.Selector<string>();
             this.renderer = new Systems.Renderer(spriteBatch);
             this.audio = new Systems.Audio();
+            this.highScores = highScores;
         }
 
         override public void LoadContent(ContentManager contentManager)
