@@ -25,6 +25,7 @@ namespace SnakeIO
         private Shared.Systems.Linker linker;
         private Shared.Systems.Movement movement;
         private Systems.Audio audio;
+        private float[] scores;
         private string playerName;
         private SpriteFont font;
         private Shared.Entities.Entity hud;
@@ -54,11 +55,13 @@ namespace SnakeIO
             network.registerRemoveEntityHandler(handleRemoveEntity);
             network.registerGameOverHandler(HandleGameOver);
             network.registerCollisionHandler(HandleCollision);
+            network.registerScoreshandler(HandleScores);
             this.keyboardInput = new Systems.KeyboardInput(controlManager);
             this.mouseInput = new Systems.MouseInput(controlManager);
             this.audio = new Systems.Audio();
             this.linker = new Shared.Systems.Linker();
             this.contentManager = contentManager;
+            this.scores = new float[5];
 
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
@@ -83,7 +86,6 @@ namespace SnakeIO
         {
             if (clientPlayer != null)
             {
-                Console.WriteLine(clientPlayer.GetComponent<Shared.Components.Growable>().growth.ToString());
                 hud.GetComponent<Shared.Components.Readable>().text = clientPlayer.GetComponent<Shared.Components.Growable>().growth.ToString();
             }
             renderer.Update(elapsedTime);
@@ -154,6 +156,16 @@ namespace SnakeIO
             Console.WriteLine("Game over fool");
         }
 
+        private void HandleScores(Shared.Messages.Scores message)
+        {
+            foreach (float score in message.scores)
+            {
+                Console.Write(score);
+            }
+            Console.WriteLine();
+            this.scores = message.scores;
+        }
+
         private void HandleCollision(Shared.Messages.Collision message)
         {
             // check if any have snake id, if snake id is equal to clientPlayer id then play the sounds/particles
@@ -189,7 +201,6 @@ namespace SnakeIO
             if (message.hasSnakeID)
             {
                 entity.Add(new Shared.Components.SnakeID(message.snakeIDMessage.id, message.snakeIDMessage.name));
-                Console.WriteLine(message.snakeIDMessage.name);
                 entity.Add(new Shared.Components.NameTag(font, message.snakeIDMessage.name));
             }
 
