@@ -9,6 +9,7 @@ namespace SnakeIO
 {
     public class SnakeIO : Game
     {
+        public bool sceneSwapped = false;
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private Shared.DataManager dataManager;
@@ -32,17 +33,18 @@ namespace SnakeIO
             // graphics.PreferredBackBufferWidth = 1920;
             // graphics.PreferredBackBufferHeight = 1080;
             // graphics.ApplyChanges();
-            scenes.Add(SceneContext.Game, new GameScene(graphics.GraphicsDevice, graphics, controlManager));
             scenes.Add(SceneContext.MainMenu, new MainMenuScene(graphics.GraphicsDevice, graphics, controlManager));
             scenes.Add(SceneContext.Options, new OptionScene(graphics.GraphicsDevice, graphics, controlManager));
             scenes.Add(SceneContext.Scores, new ScoreScene(graphics.GraphicsDevice, graphics, controlManager));
+            scenes.Add(SceneContext.Game, new GameScene(graphics.GraphicsDevice, graphics, controlManager));
+
 
             foreach (Scene scene in scenes.Values)
             {
                 scene.Initialize(graphics.GraphicsDevice, graphics, controlManager);
             }
 
-            currSceneContext = SceneContext.Game;
+            currSceneContext = SceneContext.MainMenu;
             currScene = scenes[currSceneContext];
             nextScene = currSceneContext;
             base.Initialize();
@@ -60,19 +62,7 @@ namespace SnakeIO
 
         protected override void Update(GameTime gameTime)
         {
-            if (nextScene == SceneContext.Exit)
-            {
-                MessageQueueClient.instance.sendMessage(new Shared.Messages.Disconnect());
-                MessageQueueClient.instance.shutdown();
-                Exit();
-            }
-            else if (currSceneContext != nextScene)
-            {
-                currScene = scenes[nextScene];
-                currSceneContext = nextScene;
-            }
-
-            nextScene = currScene.ProcessInput(gameTime);
+            HandleSceneChange(gameTime);
             currScene.Update(gameTime.ElapsedGameTime);
             base.Update(gameTime);
         }
@@ -81,6 +71,24 @@ namespace SnakeIO
         {
             currScene.Render(gameTime.ElapsedGameTime);
             base.Draw(gameTime);
+        }
+
+        private void HandleSceneChange(GameTime gameTime)
+        {
+            nextScene = currScene.ProcessInput(gameTime);
+            if (nextScene == SceneContext.Exit)
+            {
+                MessageQueueClient.instance.sendMessage(new Shared.Messages.Disconnect());
+                MessageQueueClient.instance.shutdown();
+                Exit();
+            }
+            else if (currSceneContext != nextScene)
+            {
+                sceneSwapped = true;
+                currScene = scenes[nextScene];
+                currSceneContext = nextScene;
+                currScene.SwapScene();
+            }
         }
     }
 }

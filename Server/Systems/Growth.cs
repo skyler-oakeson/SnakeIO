@@ -20,7 +20,7 @@ namespace Systems
             foreach (var entity in entities.Values)
             {
                 Shared.Components.Growable growable = entity.GetComponent<Shared.Components.Growable>();
-                if (growable.growth != 0 && growable.growth % 5 == 0)
+                if (growable.growth != 0 && growable.growth % 2 == 0)
                 {
                     Shared.Components.SnakeID snakeID = entity.GetComponent<Shared.Components.SnakeID>();
                     Shared.Components.Linkable linkable = entity.GetComponent<Shared.Components.Linkable>();

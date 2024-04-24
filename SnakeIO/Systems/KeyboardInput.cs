@@ -41,8 +41,18 @@ namespace Systems
         /// </summary>
         public void KeyboardUpdate(Shared.Entities.Entity entity, TimeSpan elapsedTime)
         {
-            Shared.Components.KeyboardControllable kCon = entity.GetComponent<Shared.Components.KeyboardControllable>();
             KeyboardState state = Keyboard.GetState();
+
+            UpdateControllableEntities(entity, state, elapsedTime);
+            UpdateLastKeyPress(entity, state);
+
+            // Move the current state to the previous state for the next time around
+            statePrevious = state;
+        }
+
+        private void UpdateControllableEntities(Shared.Entities.Entity entity, KeyboardState state, TimeSpan elapsedTime)
+        {
+            Shared.Components.KeyboardControllable kCon = entity.GetComponent<Shared.Components.KeyboardControllable>();
             foreach (Shared.Controls.ControlContext control in kCon.controls.Keys)
             {
                 List<Shared.Controls.ControlContext> inputs = new List<Shared.Controls.ControlContext>();
@@ -64,9 +74,21 @@ namespace Systems
                     SnakeIO.MessageQueueClient.instance.sendMessageWithId(new Shared.Messages.Input(entity.id, inputs, elapsedTime));
                 }
             }
+        }
 
-            // Move the current state to the previous state for the next time around
-            statePrevious = state;
+        private void UpdateLastKeyPress(Shared.Entities.Entity entity, KeyboardState state)
+        {
+            // Saves only the keyboard presses to the KeyboardControllable allowing for text input
+            Shared.Components.KeyboardControllable kCon = entity.GetComponent<Shared.Components.KeyboardControllable>();
+            kCon.keyPress = null;
+            if (state.GetPressedKeys().Length > 0 && KeyPressed(state.GetPressedKeys()[0]))
+            {
+                Keys newKey = state.GetPressedKeys()[0];
+                if (KeyPressed(newKey))
+                {
+                    kCon.keyPress = newKey;
+                }
+            }
         }
 
         // <summary>
@@ -76,6 +98,11 @@ namespace Systems
         private bool KeyPressed(Keys key)
         {
             return (Keyboard.GetState().IsKeyDown(key) && !statePrevious.IsKeyDown(key));
+        }
+
+        public void PrevState(KeyboardState state)
+        {
+            this.statePrevious = state;
         }
     }
 }

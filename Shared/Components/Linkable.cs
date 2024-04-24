@@ -12,8 +12,8 @@ namespace Shared.Components
     /// </summary>
     public class Linkable : Component
     {
-        public Entities.Entity? nextEntity { get; set; } = null;
-        public Entities.Entity? prevEntity { get; set; } = null;
+        public Entities.Entity nextEntity { get; set; }
+        public Entities.Entity prevEntity { get; set; }
         public LinkPosition linkPos { get; set; }
         public LinkDelegate? linkDelegate { get; set; }
         public string chain { get; set; }

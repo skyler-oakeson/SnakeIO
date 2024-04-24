@@ -60,27 +60,27 @@ namespace Server
             DateTime startTime = DateTime.Now;
             systemNetwork.update(elapsedTime, MessageQueueServer.instance.getMessages());
             TimeSpan currentTime = DateTime.Now - startTime;
-            Console.WriteLine($"Network update time: {currentTime}");
+            //Console.WriteLine($"Network update time: {currentTime}");
             startTime = DateTime.Now;
             linker.Update(elapsedTime);
             currentTime = DateTime.Now - startTime;
-            Console.WriteLine($"Linker update time: {currentTime}");
+            //Console.WriteLine($"Linker update time: {currentTime}");
             startTime = DateTime.Now;
             movement.Update(elapsedTime);
             currentTime = DateTime.Now - startTime;
-            Console.WriteLine($"Movement update time: {currentTime}");
+            //Console.WriteLine($"Movement update time: {currentTime}");
             startTime = DateTime.Now;
             collision.Update(elapsedTime);
             currentTime = DateTime.Now - startTime;
-            Console.WriteLine($"Collision update time: {currentTime}");
+            //Console.WriteLine($"Collision update time: {currentTime}");
             startTime = DateTime.Now;
             spawner.Update(elapsedTime);
             currentTime = DateTime.Now - startTime;
-            Console.WriteLine($"Spawner update time: {currentTime}");
+            //Console.WriteLine($"Spawner update time: {currentTime}");
             startTime = DateTime.Now;
             growth.Update(elapsedTime);
             currentTime = DateTime.Now - startTime;
-            Console.WriteLine($"Growth update time: {currentTime}");
+            //Console.WriteLine($"Growth update time: {currentTime}");
         }
 
         public void Render(GameTime gameTime)
@@ -127,6 +127,7 @@ namespace Server
 
         private void handleConnect(int clientId)
         {
+            Console.WriteLine("Connect");
             clients.Add(clientId);
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.ConnectAck());
         }
@@ -148,12 +149,12 @@ namespace Server
             }
         }
 
-        private void handleJoin(int clientId)
+        private void handleJoin(int clientId, Shared.Messages.Join message)
         {
             reportAllEntities(clientId);
 
             Rectangle playerRect = new Rectangle(0, 0, 50, 50); //TODO: update width and height
-            Shared.Entities.Entity player = Shared.Entities.Player.Create(clientId, "Images/head", Color.Blue, playerRect, $"{clientId}");
+            Shared.Entities.Entity player = Shared.Entities.Player.Create(clientId, message.name, "Images/head", Color.Blue, playerRect, $"{clientId}");
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
             players.Add(player);
 

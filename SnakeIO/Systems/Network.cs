@@ -28,13 +28,13 @@ namespace Systems
         /// Primary activity in the constructor is to setup the command map
         // that maps from message types to their handlers.
         /// </summary>
-        public Network() :
+        public Network(string name) :
             base(typeof(Shared.Components.Positionable))
         {
 
             registerHandler(Shared.Messages.Type.ConnectAck, (TimeSpan elapsedTime, Message message) =>
             {
-                handleConnectAck(elapsedTime, (ConnectAck)message);
+                handleConnectAck(elapsedTime, (ConnectAck)message, name);
             });
 
             registerHandler(Shared.Messages.Type.NewEntity, (TimeSpan elapsedTime, Message message) =>
@@ -142,9 +142,9 @@ namespace Systems
         /// assigned to it by the server, it also sends a request to the server
         /// to join the game.
         /// </summary>
-        private void handleConnectAck(TimeSpan elapsedTime, ConnectAck message)
+        private void handleConnectAck(TimeSpan elapsedTime, ConnectAck message, string name)
         {
-            SnakeIO.MessageQueueClient.instance.sendMessage(new Join());
+            SnakeIO.MessageQueueClient.instance.sendMessage(new Join(name));
         }
 
         /// <summary>

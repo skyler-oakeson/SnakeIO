@@ -9,6 +9,7 @@ namespace Systems
     public class Selector<T> : Shared.Systems.System
     {
         public T selectedVal = default(T);
+        public bool hasSelected = false;
 
         public Selector()
             : base(
@@ -22,19 +23,32 @@ namespace Systems
         {
             foreach (var entity in entities.Values)
             {
+                // Runs once the first frame the entity is selected
                 Shared.Components.Selectable<T> sel = entity.GetComponent<Shared.Components.Selectable<T>>();
                 if (sel.prevState != sel.selected)
                 {
                     Select(entity);
                 }
+
+                // Runs every loop entity is selected
+                if (sel.selected)
+                {
+                    if (sel.selectableDelegate != null)
+                    {
+                        sel.selected = sel.selectableDelegate(entity);
+                    }
+                }
+
+                // Runs once entity is interacted with 
                 if (sel.interacted)
                 {
                     sel.interacted = false;
-                    selectedVal = sel.value;
-                    if (sel.selectableDelegate != null)
+                    hasSelected = true;
+                    if (sel.interactableDelegate != null)
                     {
-                        sel.interacted = !sel.selectableDelegate();
+                        sel.interacted = !sel.interactableDelegate(entity);
                     }
+                    selectedVal = sel.value;
                 }
             }
         }
@@ -59,8 +73,13 @@ namespace Systems
                 entity.GetComponent<Shared.Components.KeyboardControllable>().enable = sel.selected;
             }
 
-
             sel.prevState = !sel.prevState;
+        }
+
+        public T ConsumeSelection()
+        {
+            hasSelected = false;
+            return selectedVal;
         }
     }
 }

@@ -6,6 +6,7 @@ namespace Scenes
     public enum SceneContext : UInt16
     {
         MainMenu,
+        Name,
         Game,
         Options,
         Scores,

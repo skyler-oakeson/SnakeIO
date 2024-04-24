@@ -13,6 +13,7 @@ namespace Scenes
         protected int screenWidth;
         protected int screenHeight;
         protected Shared.Controls.ControlManager controlManager;
+        protected bool sceneSwap = false;
 
         public void Initialize(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
         {
@@ -47,6 +48,9 @@ namespace Scenes
             spriteBatch.DrawString(font, text, position, frontColor, 0, Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
 
+        public void SwapScene()
+        {
+            this.sceneSwap = true;
+        }
     }
-
 }

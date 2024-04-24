@@ -15,9 +15,14 @@ namespace Shared.Parsers
         {
             int id  = BitConverter.ToInt32(data, offset);
             offset += sizeof(Int32);
+            int nameSize = BitConverter.ToInt32(data, offset);
+            offset += sizeof(Int32);
+            string name = Encoding.UTF8.GetString(data, offset, nameSize);
+            offset += nameSize;
             this.message = new SnakeIDMessage()
             {
                 id = id,
+                name = name
             };
         }
 
@@ -29,6 +34,7 @@ namespace Shared.Parsers
         public struct SnakeIDMessage
         {
             public int id { get; set; }
+            public string name { get; set; }
         }
     }
 }

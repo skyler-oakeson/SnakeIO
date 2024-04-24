@@ -12,8 +12,8 @@ namespace Systems
         public BasicEffect effect;
         private Shared.Components.Camera? camera = null;
 
-        public Renderer(SpriteBatch sb)
-            : base(typeof(Shared.Components.Appearance))
+        public Renderer(SpriteBatch sb) 
+            : base( typeof(Shared.Components.Appearance))
         {
             this.sb = sb;
 
@@ -74,6 +74,10 @@ namespace Systems
                             camera.LerpAmount = camera.LerpAmount >= 1f ? 1f : camera.LerpAmount;
                             if (camera.ShouldRender(entity))
                             {
+                                if (entity.ContainsComponent<Shared.Components.NameTag>())
+                                {
+                                    RenderTag(entity);
+                                }
                                 RenderEntity(entity);
                             }
                         }
@@ -87,6 +91,7 @@ namespace Systems
                     {
                         RenderText(entity);
                     }
+
                 }
             }
         }
@@ -95,36 +100,50 @@ namespace Systems
         {
             Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
             Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
+            if (camera != null)
             {
-                if (camera != null)
-                {
-                    Matrix newMatrix = Matrix.Lerp(Matrix.Identity, camera.Transform, camera.LerpAmount);
-                    sb.Begin(transformMatrix: newMatrix);
-                }
-                else
-                {
-                    sb.Begin();
-                }
-                sb.Draw(
-                        renderable.texture,
-                        new Rectangle(
-                            (int)(positionable.pos.X - renderable.rectangle.Width / 2),
-                            (int)(positionable.pos.Y - renderable.rectangle.Height / 2),
-                            renderable.rectangle.Width,
-                            renderable.rectangle.Height
-                            ),
-                        renderable.color
-                       );
-                sb.End();
+                Matrix newMatrix = Matrix.Lerp(Matrix.Identity, camera.Transform, camera.LerpAmount);
+                sb.Begin(transformMatrix: newMatrix);
             }
+            else
+            {
+                sb.Begin();
+            }
+            sb.Draw(
+                    renderable.texture,
+                    new Rectangle(
+                        (int)(positionable.pos.X - renderable.rectangle.Width / 2),
+                        (int)(positionable.pos.Y - renderable.rectangle.Height / 2),
+                        renderable.rectangle.Width,
+                        renderable.rectangle.Height
+                        ),
+                    renderable.color
+                   );
+            sb.End();
         }
 
         private void RenderText(Shared.Entities.Entity entity)
         {
             Shared.Components.Readable readable = entity.GetComponent<Shared.Components.Readable>();
-            Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
             sb.Begin();
-            DrawOutlineText(sb, readable.font, readable.text, readable.stroke, readable.color, 4, positionable.pos, 1.0f);
+            DrawOutlineText(sb, readable.font, readable.text, readable.stroke, readable.color, 4, new Vector2(readable.rectangle.X, readable.rectangle.Y), 1.0f);
+            sb.End();
+        }
+
+        private void RenderTag(Shared.Entities.Entity entity)
+        {
+            Shared.Components.NameTag nameTag = entity.GetComponent<Shared.Components.NameTag>();
+            Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
+            if (camera != null)
+            {
+                Matrix newMatrix = Matrix.Lerp(Matrix.Identity, camera.Transform, camera.LerpAmount);
+                sb.Begin(transformMatrix: newMatrix);
+            }
+            else
+            {
+                sb.Begin();
+            }
+            DrawOutlineText(sb, nameTag.font, nameTag.name, Color.Black, Color.White, 4, new Vector2(positionable.pos.X-50, positionable.pos.Y-75), .5f);
             sb.End();
         }
 

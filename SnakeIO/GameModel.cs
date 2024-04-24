@@ -24,6 +24,7 @@ namespace SnakeIO
         private Shared.Systems.Linker linker;
         private Shared.Systems.Movement movement;
         private Systems.Audio audio;
+        private string playerName;
 
         private ContentManager contentManager;
         private Shared.Controls.ControlManager controlManager;
@@ -32,16 +33,17 @@ namespace SnakeIO
         private List<Entity> toRemove = new List<Entity>();
         private List<Entity> toAdd = new List<Entity>();
 
-        public GameModel(int height, int width)
+        public GameModel(int height, int width, string playerName)
         {
             this.HEIGHT = height;
             this.WIDTH = width;
+            this.playerName = playerName;
         }
 
         public void Initialize(Shared.Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager)
         {
             this.renderer = new Systems.Renderer(spriteBatch);
-            this.network = new Systems.Network();
+            this.network = new Systems.Network(playerName);
             this.interpolation = new Systems.Interpolation();
             this.movement = new Shared.Systems.Movement();
             network.registerNewEntityHandler(handleNewEntity);
@@ -53,6 +55,10 @@ namespace SnakeIO
             this.audio = new Systems.Audio();
             this.linker = new Shared.Systems.Linker();
             this.contentManager = contentManager;
+
+            Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
+            Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
+            SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
         }
 
         public void Update(TimeSpan elapsedTime)
@@ -64,6 +70,7 @@ namespace SnakeIO
             linker.Update(elapsedTime);
             interpolation.Update(elapsedTime);
             audio.Update(elapsedTime);
+            linker.Update(elapsedTime);
         }
 
         public void Render(TimeSpan elapsedTime)
@@ -111,8 +118,11 @@ namespace SnakeIO
 
         private void handleNewEntity(Shared.Messages.NewEntity message)
         {
-            Entity entity = createEntity(message);
-            AddEntity(entity);
+            if (!entities.ContainsKey(message.id))
+            {
+                Entity entity = createEntity(message);
+                AddEntity(entity);
+            }
         }
 
         private void handleRemoveEntity(Shared.Messages.RemoveEntity message)
@@ -162,7 +172,10 @@ namespace SnakeIO
 
             if (message.hasSnakeID)
             {
-                entity.Add(new Shared.Components.SnakeID(message.snakeIDMessage.id));
+                entity.Add(new Shared.Components.SnakeID(message.snakeIDMessage.id, message.snakeIDMessage.name));
+                SpriteFont font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
+                Console.WriteLine(message.snakeIDMessage.name);
+                entity.Add(new Shared.Components.NameTag(font, message.snakeIDMessage.name));
             }
 
             if (message.hasAppearance)
