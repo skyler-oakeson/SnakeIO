@@ -69,6 +69,7 @@ namespace SnakeIO
             this.hud = new Scenes.HudScene(spriteBatch.GraphicsDevice, graphics, controlManager);
             hud.LoadContent(contentManager);
 
+            this.font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
             SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
@@ -92,8 +93,8 @@ namespace SnakeIO
 
         public void Render(TimeSpan elapsedTime)
         {
-            hud.Render(elapsedTime);
             renderer.Update(elapsedTime);
+            hud.Render(elapsedTime);
         }
 
         private void AddEntity(Entity entity)
