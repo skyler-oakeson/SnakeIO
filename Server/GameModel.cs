@@ -17,6 +17,7 @@ namespace Server
         private Systems.Collision collision;
         private Systems.Spawner spawner;
         private Systems.Growth growth;
+        private Systems.ParticleSystem particleSystem;
         private Shared.Systems.Linker linker;
         private Shared.Controls.ControlManager controlManager = new Shared.Controls.ControlManager(new Shared.DataManager());
 
@@ -39,11 +40,12 @@ namespace Server
         public bool Initialize()
         {
             this.movement = new Shared.Systems.Movement();
-            this.collision = new Systems.Collision(removeEntity);
+            this.collision = new Systems.Collision(addEntity, removeEntity);
             this.spawner = new Systems.Spawner(addEntity);
             this.systemNetwork = new Systems.Network();
             this.linker = new Shared.Systems.Linker();
             this.growth = new Systems.Growth(addEntity);
+            this.particleSystem = new Systems.ParticleSystem(addEntity, removeEntity);
 
             systemNetwork.registerJoinHandler(handleJoin);
             systemNetwork.registerDisconnectHandler(handleDisconnect);
@@ -81,6 +83,7 @@ namespace Server
             growth.Update(elapsedTime);
             currentTime = DateTime.Now - startTime;
             //Console.WriteLine($"Growth update time: {currentTime}");
+            particleSystem.Update(elapsedTime);
         }
 
         public void Render(GameTime gameTime)
@@ -95,6 +98,7 @@ namespace Server
             linker.Add(entity);
             growth.Add(entity);
             systemNetwork.Add(entity);
+            particleSystem.Add(entity);
             entities[entity.id] = entity;
         }
 
@@ -106,6 +110,7 @@ namespace Server
             linker.Remove(entity.id);
             growth.Remove(entity.id);
             systemNetwork.Remove(entity.id);
+            particleSystem.Remove(entity.id);
             entities.Remove(entity.id);
         }
 
@@ -117,6 +122,7 @@ namespace Server
             linker.Remove(id);
             growth.Remove(id);
             systemNetwork.Remove(id);
+            particleSystem.Remove(id);
             entities.Remove(id);
         }
 

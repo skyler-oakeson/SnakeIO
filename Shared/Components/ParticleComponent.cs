@@ -14,6 +14,14 @@ namespace Shared.Components
         public TimeSpan alive { get; set; } = TimeSpan.Zero;
         public Vector2 direction { get; set; }
 
+        // component used for particle kickoff
+        public ParticleComponent(ParticleType type, Vector2 center, bool shouldCreate = false)
+        {
+            this.type = type;
+            this.center = center;
+            this.shouldCreate = shouldCreate;
+        }
+
         public ParticleComponent(ParticleType type, Vector2 center, Vector2 direction, float speed, Vector2 size, TimeSpan lifetime, bool shouldCreate = false)
         {
             this.type = type;
