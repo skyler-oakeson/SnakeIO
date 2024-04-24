@@ -48,7 +48,7 @@ namespace Scenes
             int center = graphics.PreferredBackBufferWidth / 2;
             font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
-            AddEntity(Shared.Entities.StaticText.Create(font, "Scores", Color.Black, Color.Orange, new Rectangle(center - (int)font.MeasureString("Scores").X / 2, 50 + (int)font.MeasureString("Scores").Y / 2, 0, 0)));
+            AddEntity(Shared.Entities.StaticText.Create(font, "High Scores", Color.Black, Color.Orange, new Rectangle(center - (int)font.MeasureString("High Scores").X / 2, 50 + (int)font.MeasureString("High Scores").Y / 2, 0, 0)));
 
 
             // make a copy of the highscores to check for updates 
@@ -129,7 +129,7 @@ namespace Scenes
 
                 for (int i = 0; i < scoreValues.Count; i++)
                 {   // Value, entity to add 
-                    string value =""+ (i+1) +"."+ scoreValues[i].ToString();
+                    string value =""+ (i+1) +".  "+ scoreValues[i].ToString();
                     entityList.Add(Shared.Entities.StaticText.Create(font, value, Color.Black, Color.Orange, new Rectangle(center - (int)font.MeasureString(value).X / 2, 50 + (50 * (i + 1)) + (int)font.MeasureString(value).Y, 0, 0)));
                 }
 
