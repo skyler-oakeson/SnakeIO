@@ -27,7 +27,7 @@ namespace Shared.Entities
         {
             id = nextId++;
         }
-        
+
         public Entity(uint id)
         {
             this.id = id;
@@ -89,7 +89,7 @@ namespace Shared.Entities
 
         /// <summary>
         /// Returns the component in this entity that is of the given type,
-        /// </summary>        
+        /// </summary>
         public TComponent GetComponent<TComponent>()
             where TComponent : Component
         {
