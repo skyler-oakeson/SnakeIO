@@ -25,7 +25,7 @@ namespace SnakeIO
         private Shared.Systems.Linker linker;
         private Shared.Systems.Movement movement;
         private Systems.Audio audio;
-        private float[] scores;
+        private (string, float)[] scores;
         private string playerName;
         private SpriteFont font;
         private Shared.Entities.Entity hud;
@@ -61,7 +61,6 @@ namespace SnakeIO
             this.audio = new Systems.Audio();
             this.linker = new Shared.Systems.Linker();
             this.contentManager = contentManager;
-            this.scores = new float[5];
 
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
@@ -158,9 +157,9 @@ namespace SnakeIO
 
         private void HandleScores(Shared.Messages.Scores message)
         {
-            foreach (float score in message.scores)
+            foreach ((string name, float score) in message.scores)
             {
-                Console.Write(score);
+                Console.Write($"{name}: {score}");
             }
             Console.WriteLine();
             this.scores = message.scores;
