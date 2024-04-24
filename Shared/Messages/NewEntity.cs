@@ -80,6 +80,11 @@ namespace Shared.Messages
                 this.linkable = entity.GetComponent<Linkable>();
             }
 
+            if (entity.ContainsComponent<Components.ParticleComponent>())
+            {
+                this.particleComponent = entity.GetComponent<ParticleComponent>();
+            }
+
             if (entity.ContainsComponent<Components.KeyboardControllable>())
             {
                 this.keyboardControllable = entity.GetComponent<Components.KeyboardControllable>();
@@ -161,6 +166,11 @@ namespace Shared.Messages
         public bool hasLinkable { get; private set; }
         public Components.Linkable? linkable { get; private set; } = null;
         public Parsers.LinkableParser.LinkableMessage linkableMessage { get; private set; }
+
+        // Particle
+        public bool hasParticle { get; private set; }
+        public Components.ParticleComponent? particleComponent { get; private set; } = null;
+        public Parsers.ParticleParser.ParticleMessage particleMessage { get; private set; }
 
         // Keyboard Input
         // TODO: Fix this when new input
@@ -269,6 +279,13 @@ namespace Shared.Messages
             if (linkable != null)
             {
                 linkable.Serialize(ref data);
+            }
+
+            // Particle
+            data.AddRange(BitConverter.GetBytes(particleComponent != null));
+            if (particleComponent != null)
+            {
+                particleComponent.Serialize(ref data);
             }
 
             // Keyboard
@@ -422,6 +439,16 @@ namespace Shared.Messages
                 Parsers.LinkableParser parser = new Parsers.LinkableParser();
                 parser.Parse(ref data, ref offset);
                 this.linkableMessage = parser.GetMessage();
+            }
+
+            // Particle
+            this.hasParticle = BitConverter.ToBoolean(data, offset);
+            offset += sizeof(bool);
+            if (hasParticle)
+            {
+                Parsers.ParticleParser parser = new Parsers.ParticleParser();
+                parser.Parse(ref data, ref offset);
+                this.particleMessage = parser.GetMessage();
             }
 
             // Keyboard

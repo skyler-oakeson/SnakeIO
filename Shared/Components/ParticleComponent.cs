@@ -37,7 +37,16 @@ namespace Shared.Components
 
         public override void Serialize(ref List<byte> data)
         {
-
+            data.AddRange(BitConverter.GetBytes((UInt16) type));
+            data.AddRange(BitConverter.GetBytes(center.X));
+            data.AddRange(BitConverter.GetBytes(center.Y));
+            data.AddRange(BitConverter.GetBytes(direction.X));
+            data.AddRange(BitConverter.GetBytes(direction.Y));
+            data.AddRange(BitConverter.GetBytes(speed));
+            data.AddRange(BitConverter.GetBytes(size.X));
+            data.AddRange(BitConverter.GetBytes(size.Y));
+            data.AddRange(BitConverter.GetBytes((int) lifetime.TotalMilliseconds));
+            data.AddRange(BitConverter.GetBytes(shouldCreate));
         }
 
         public enum ParticleType : UInt16
