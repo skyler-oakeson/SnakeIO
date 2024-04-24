@@ -17,7 +17,6 @@ namespace SnakeIO
         private Dictionary<uint, Entity> entities = new Dictionary<uint, Entity>(); // may not need
 
         private Systems.Renderer renderer;
-        private Systems.Renderer hudrenderer;
         private Systems.KeyboardInput keyboardInput;
         private Systems.Network network;
         private Systems.Interpolation interpolation;
@@ -28,8 +27,6 @@ namespace SnakeIO
         private (string, float)[] scores;
         private string playerName;
         private SpriteFont font;
-        private List<Shared.Entities.Entity> scoreDisplay;
-        private Shared.Entities.Entity playerStats;
         private Scenes.HudScene hud;
 
         private ContentManager contentManager;
@@ -56,7 +53,6 @@ namespace SnakeIO
             network.registerScoreshandler(HandleScores);
 
             this.renderer = new Systems.Renderer(spriteBatch);
-            this.hudrenderer = new Systems.Renderer(spriteBatch);
             this.interpolation = new Systems.Interpolation();
             this.movement = new Shared.Systems.Movement();
             this.keyboardInput = new Systems.KeyboardInput(controlManager);
