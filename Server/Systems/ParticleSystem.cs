@@ -50,16 +50,17 @@ namespace Systems
                 }
             }
 
-            foreach (var entity in entitiesToAdd)
-            {
-                addEntity(entity);
-                //TODO: broadcast message
-            }
-
             foreach (var entity in entitiesToRemove)
             {
                 removeEntity(entity);
-                //TODO: broadcast message
+                Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(entity.id));
+            }
+
+            foreach (var entity in entitiesToAdd)
+            {
+                Console.WriteLine(entity.id);
+                addEntity(entity);
+                Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(entity));
             }
         }
 
@@ -103,9 +104,7 @@ namespace Systems
             for (int i = 0; i < 30; i++)
             {
                 Shared.Entities.Entity particle = CreateParticle(rand.nextCircleVector(), entity);
-                addEntity(particle);
-                Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(entity));
-                Console.WriteLine("BROADCASTING -----------------------------------");
+                entitiesToAdd.Add(particle);
             }
         }
     }

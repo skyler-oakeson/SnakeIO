@@ -157,9 +157,9 @@ namespace Systems
                 {
                     Shared.Components.Consumable consumable = e1.GetComponent<Shared.Components.Consumable>();
                     Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(e1.id));
-                    removeThese.Add(e1);
                     Shared.Entities.Entity particle = Shared.Entities.Particle.Create("Images/player", new Rectangle((int)e1Pos.pos.X, (int)e1Pos.pos.Y, 25, 25), Color.White, Shared.Components.ParticleComponent.ParticleType.FoodParticle);
                     addEntity(particle);
+                    removeThese.Add(e1);
                     if (e2.ContainsComponent<Shared.Components.Growable>())
                     {
                         Shared.Components.Growable growthComponent = e2.GetComponent<Shared.Components.Growable>();
@@ -170,9 +170,9 @@ namespace Systems
                 {
                     Shared.Components.Consumable consumable = e2.GetComponent<Shared.Components.Consumable>();
                     Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(e2.id));
-                    removeThese.Add(e2);
                     Shared.Entities.Entity particle = Shared.Entities.Particle.Create("Images/player", new Rectangle((int)e1Pos.pos.X, (int)e1Pos.pos.Y, 25, 25), Color.White, Shared.Components.ParticleComponent.ParticleType.FoodParticle);
                     addEntity(particle);
+                    removeThese.Add(e2);
                     if (e1.ContainsComponent<Shared.Components.Growable>())
                     {
                         Shared.Components.Growable growthComponent = e1.GetComponent<Shared.Components.Growable>();

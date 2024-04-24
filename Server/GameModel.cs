@@ -74,6 +74,7 @@ namespace Server
             startTime = DateTime.Now;
             collision.Update(elapsedTime);
             currentTime = DateTime.Now - startTime;
+            particleSystem.Update(elapsedTime);
             //Console.WriteLine($"Collision update time: {currentTime}");
             startTime = DateTime.Now;
             spawner.Update(elapsedTime);
@@ -83,7 +84,6 @@ namespace Server
             growth.Update(elapsedTime);
             currentTime = DateTime.Now - startTime;
             //Console.WriteLine($"Growth update time: {currentTime}");
-            particleSystem.Update(elapsedTime);
         }
 
         public void Render(GameTime gameTime)

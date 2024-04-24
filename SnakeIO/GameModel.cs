@@ -293,7 +293,6 @@ namespace SnakeIO
 
             if (message.hasParticle)
             {
-                Console.WriteLine("RECEIVED PARTICLE ENTITY");
                 entity.Add(new Shared.Components.ParticleComponent(
                             message.particleMessage.type,
                             message.particleMessage.center,
