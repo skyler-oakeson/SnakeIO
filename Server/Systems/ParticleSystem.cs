@@ -62,6 +62,8 @@ namespace Systems
                 addEntity(entity);
                 Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(entity));
             }
+            entitiesToRemove.Clear();
+            entitiesToAdd.Clear();
         }
 
         private Shared.Entities.Entity CreateParticle(Vector2 direction, Shared.Entities.Entity entity)
