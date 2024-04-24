@@ -153,24 +153,24 @@ namespace SnakeIO
         {
             //TODO: handle game over
             contentManager.Load<SoundEffect>("Audio/negative").Play();
-            Console.WriteLine("Game over fool");
         }
 
         private void HandleScores(Shared.Messages.Scores message)
         {
             foreach (float score in message.scores)
             {
-                Console.Write(score);
+                // Console.Write(score);
             }
-            Console.WriteLine();
             this.scores = message.scores;
         }
 
         private void HandleCollision(Shared.Messages.Collision message)
         {
             // check if any have snake id, if snake id is equal to clientPlayer id then play the sounds/particles
-            if (message.e1HasSnakeID) {
-                if (message.e1SnakeIDMessage.id == this.clientPlayer.GetComponent<Shared.Components.SnakeID>().id) {
+            if (message.e1HasSnakeID)
+            {
+                if (message.e1SnakeIDMessage.id == this.clientPlayer.GetComponent<Shared.Components.SnakeID>().id)
+                {
                     if (message.e1HasSound)
                     {
                         contentManager.Load<SoundEffect>(message.e1SoundMessage.soundPath).Play();
@@ -181,8 +181,10 @@ namespace SnakeIO
                     }
                 }
             }
-            else if (message.e2HasSnakeID) {
-                if (message.e2SnakeIDMessage.id == this.clientPlayer.GetComponent<Shared.Components.SnakeID>().id) {
+            else if (message.e2HasSnakeID)
+            {
+                if (message.e2SnakeIDMessage.id == this.clientPlayer.GetComponent<Shared.Components.SnakeID>().id)
+                {
                     if (message.e1HasSound)
                     {
                         contentManager.Load<SoundEffect>(message.e1SoundMessage.soundPath).Play();
@@ -287,6 +289,19 @@ namespace SnakeIO
                 {
                     entity.GetComponent<Shared.Components.Linkable>().linkDelegate = Shared.Entities.Body.BodyLinking;
                 }
+            }
+
+            if (message.hasParticle)
+            {
+                Console.WriteLine("RECEIVED PARTICLE ENTITY");
+                entity.Add(new Shared.Components.ParticleComponent(
+                            message.particleMessage.type,
+                            message.particleMessage.center,
+                            message.particleMessage.direction,
+                            message.particleMessage.speed,
+                            message.particleMessage.size,
+                            message.particleMessage.lifetime
+                            ));
             }
 
             if (message.hasKeyboardControllable)

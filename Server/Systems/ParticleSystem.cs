@@ -94,10 +94,18 @@ namespace Systems
 
         private void EatFood(Shared.Entities.Entity entity)
         {
-            //TODO: set values (stdDevs, means, etc.)
+            sizeMean = 10;
+            sizeStdDev = 4;
+            speedMean = .2f;
+            speedStdDev = .05f;
+            lifetimeMean = 300;
+            lifetimeStdDev = 50;
             for (int i = 0; i < 30; i++)
             {
                 Shared.Entities.Entity particle = CreateParticle(rand.nextCircleVector(), entity);
+                addEntity(particle);
+                Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(entity));
+                Console.WriteLine("BROADCASTING -----------------------------------");
             }
         }
     }

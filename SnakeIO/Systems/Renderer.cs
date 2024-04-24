@@ -12,8 +12,8 @@ namespace Systems
         public BasicEffect effect;
         private Shared.Components.Camera? camera = null;
 
-        public Renderer(SpriteBatch sb) 
-            : base( typeof(Shared.Components.Appearance))
+        public Renderer(SpriteBatch sb)
+            : base(typeof(Shared.Components.Appearance))
         {
             this.sb = sb;
 
@@ -76,6 +76,10 @@ namespace Systems
                                 if (entity.ContainsComponent<Shared.Components.NameTag>())
                                 {
                                     RenderTag(entity);
+                                }
+                                if (entity.ContainsComponent<Shared.Components.ParticleComponent>())
+                                {
+                                    RenderParticle(entity);
                                 }
                                 RenderEntity(entity);
                             }
@@ -150,7 +154,7 @@ namespace Systems
             {
                 sb.Begin();
             }
-            DrawOutlineText(sb, nameTag.font, nameTag.name, Color.Black, Color.White, 4, new Vector2(positionable.pos.X-50, positionable.pos.Y-75), .5f);
+            DrawOutlineText(sb, nameTag.font, nameTag.name, Color.Black, Color.White, 4, new Vector2(positionable.pos.X - 50, positionable.pos.Y - 75), .5f);
             sb.End();
         }
 
@@ -224,6 +228,38 @@ namespace Systems
 
             // inside
             spriteBatch.DrawString(font, text, position, frontColor, 0, Vector2.Zero, scale, SpriteEffects.None, 0f);
+        }
+
+        private void RenderParticle(Shared.Entities.Entity entity)
+        {
+            if (camera != null)
+            {
+                Matrix newMatrix = Matrix.Lerp(Matrix.Identity, camera.Transform, camera.LerpAmount);
+                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, transformMatrix: newMatrix);
+            }
+            else
+            {
+                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            }
+            Shared.Components.ParticleComponent pComponent = entity.GetComponent<Shared.Components.ParticleComponent>();
+            Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
+
+            sb.Draw(
+                    renderable.texture,
+                    new Rectangle(
+                        (int)(pComponent.center.X),
+                        (int)(pComponent.center.Y),
+                        (int)pComponent.size.X,
+                        (int)pComponent.size.Y
+                        ),
+                    null,
+                    renderable.color,
+                    pComponent.rotation,
+                    new Vector2(renderable.texture.Width / 2, renderable.texture.Height / 2),
+                    SpriteEffects.None,
+                    0
+                   );
+            sb.End();
         }
     }
 }
