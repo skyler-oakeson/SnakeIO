@@ -104,7 +104,7 @@ namespace Systems
             while (sent.Count > 0)
             {
                 var message = (Shared.Messages.Input)sent.Dequeue();
-                if (message.type == Shared.Messages.Type.Input)
+                if (message.type == Shared.Messages.Type.Input && entities.ContainsKey(message.entityId))
                 {
                     var entity = entities[message.entityId];
                     if (updatedEntities.Contains(entity.id))

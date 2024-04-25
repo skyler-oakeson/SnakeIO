@@ -80,6 +80,7 @@ namespace SnakeIO
             interpolation.Update(elapsedTime);
             audio.Update(elapsedTime);
             linker.Update(elapsedTime);
+
             if (clientPlayer != null)
             {
                 hud.UpdatePlayerStats(clientPlayer.GetComponent<Shared.Components.Growable>().growth.ToString());
