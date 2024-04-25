@@ -139,6 +139,10 @@ namespace Systems
                 // Heads both collide, kill everyone
                 Shared.Components.Linkable e1Linkable = e1.GetComponent<Shared.Components.Linkable>();
                 Shared.Components.Linkable e2Linkable = e2.GetComponent<Shared.Components.Linkable>();
+                Console.WriteLine(e1Linkable.chain != e2Linkable.chain);
+                Console.WriteLine(e1Linkable.chain);
+                Console.WriteLine(e2Linkable.chain);
+
                 if (e1.ContainsComponent<Shared.Components.SnakeID>() && e2.ContainsComponent<Shared.Components.SnakeID>())
                 {
                     RemoveSnake(e1);
@@ -157,7 +161,7 @@ namespace Systems
                     // Find the head of the snake by checking which one has SnakeID
                     Shared.Entities.Entity snake = e1.ContainsComponent<Shared.Components.SnakeID>() ? e1 : e2;
                     RemoveSnake(snake);
-                    Server.MessageQueueServer.instance.sendMessage(e2.GetComponent<Shared.Components.SnakeID>().id, new Shared.Messages.GameOver());
+                    Server.MessageQueueServer.instance.sendMessage(snake.GetComponent<Shared.Components.SnakeID>().id, new Shared.Messages.GameOver());
                     Shared.Components.Positionable snakePos = snake.GetComponent<Shared.Components.Positionable>();
                     Shared.Components.SnakeID id = snake.GetComponent<Shared.Components.SnakeID>();
                     Shared.Entities.Entity particle = Shared.Entities.Particle.Create(id.id, "", new Rectangle((int)snakePos.pos.X, (int)snakePos.pos.Y, 0, 0), Color.Green, Shared.Components.ParticleComponent.ParticleType.PlayerDeathParticle, snakePos.orientation);
@@ -204,6 +208,7 @@ namespace Systems
                 snake = snake.GetComponent<Shared.Components.Linkable>().prevEntity;
                 Shared.Components.Positionable snakePos = snake.GetComponent<Shared.Components.Positionable>();
                 Shared.Entities.Entity food = Shared.Entities.Food.Create("Images/food", new Rectangle((int)snakePos.pos.X, (int)snakePos.pos.Y, 32, 32));
+                addEntity(food);
                 Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(food));
                 Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(snake.id));
             }
