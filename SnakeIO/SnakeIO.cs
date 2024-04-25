@@ -81,6 +81,7 @@ namespace SnakeIO
 
         protected override void Draw(GameTime gameTime)
         {
+            spriteBatch.GraphicsDevice.Clear(Color.Black);
             currScene.Render(gameTime.ElapsedGameTime);
             base.Draw(gameTime);
         }

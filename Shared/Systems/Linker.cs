@@ -65,7 +65,7 @@ namespace Shared.Systems
                     entityLink.prevEntity = tailLink.prevEntity;
                     entityLink.nextEntity = tail;
                     tailLink.prevEntity = entity;
-                    chain.Add(entity.id);
+                    chain.Insert(chain.Count-2, entity.id);
                 }
                 else
                 {
@@ -115,6 +115,7 @@ namespace Shared.Systems
                     entityLink.prevEntity = prev;
                     prevLink.nextEntity = entity;
                     startLink.prevEntity = entity;
+                    chain.Add(entity.id);
                 }
                 else
                 {

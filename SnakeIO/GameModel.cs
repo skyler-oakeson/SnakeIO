@@ -24,7 +24,10 @@ namespace SnakeIO
         private Shared.Systems.Linker linker;
         private Shared.Systems.Movement movement;
         private Systems.Audio audio;
+        private (string, float)[] scores;
         private string playerName;
+        private SpriteFont font;
+        private Scenes.HudScene hud;
 
         private ContentManager contentManager;
         private Shared.Controls.ControlManager controlManager;
@@ -40,22 +43,29 @@ namespace SnakeIO
             this.playerName = playerName;
         }
 
-        public void Initialize(Shared.Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager)
+        public void Initialize(Shared.Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager, GraphicsDeviceManager graphics)
         {
-            this.renderer = new Systems.Renderer(spriteBatch);
             this.network = new Systems.Network(playerName);
-            this.interpolation = new Systems.Interpolation();
-            this.movement = new Shared.Systems.Movement();
             network.registerNewEntityHandler(handleNewEntity);
             network.registerRemoveEntityHandler(handleRemoveEntity);
             network.registerGameOverHandler(HandleGameOver);
             network.registerCollisionHandler(HandleCollision);
+            network.registerScoreshandler(HandleScores);
+
+            this.renderer = new Systems.Renderer(spriteBatch);
+            this.interpolation = new Systems.Interpolation();
+            this.movement = new Shared.Systems.Movement();
             this.keyboardInput = new Systems.KeyboardInput(controlManager);
             this.mouseInput = new Systems.MouseInput(controlManager);
             this.audio = new Systems.Audio();
             this.linker = new Shared.Systems.Linker();
             this.contentManager = contentManager;
+            
+            // Initialize HUD
+            this.hud = new Scenes.HudScene(spriteBatch.GraphicsDevice, graphics, controlManager);
+            hud.LoadContent(contentManager);
 
+            this.font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
             SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
@@ -71,11 +81,18 @@ namespace SnakeIO
             interpolation.Update(elapsedTime);
             audio.Update(elapsedTime);
             linker.Update(elapsedTime);
+
+            if (clientPlayer != null)
+            {
+                hud.UpdatePlayerStats(clientPlayer.GetComponent<Shared.Components.Growable>().growth.ToString());
+                hud.UpdateScores(scores);
+            }
         }
 
         public void Render(TimeSpan elapsedTime)
         {
             renderer.Update(elapsedTime);
+            hud.Render(elapsedTime);
         }
 
         private void AddEntity(Entity entity)
@@ -137,6 +154,11 @@ namespace SnakeIO
             Console.WriteLine("Game over fool");
         }
 
+        private void HandleScores(Shared.Messages.Scores message)
+        {
+            this.scores = message.scores;
+        }
+
         private void HandleCollision(Shared.Messages.Collision message)
         {
             // check if any have snake id, if snake id is equal to clientPlayer id then play the sounds/particles
@@ -169,12 +191,9 @@ namespace SnakeIO
         private Entity createEntity(Shared.Messages.NewEntity message)
         {
             Entity entity = new Entity(message.id);
-
             if (message.hasSnakeID)
             {
                 entity.Add(new Shared.Components.SnakeID(message.snakeIDMessage.id, message.snakeIDMessage.name));
-                SpriteFont font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
-                Console.WriteLine(message.snakeIDMessage.name);
                 entity.Add(new Shared.Components.NameTag(font, message.snakeIDMessage.name));
             }
 
