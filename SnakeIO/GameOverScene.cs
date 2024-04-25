@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -7,18 +8,23 @@ using Systems;
 
 namespace Scenes
 {
-    public class MainMenuScene : Scene
+    public class GameOverScene : Scene
     {
         private Renderer renderer;
         private KeyboardInput keyboardInput;
         private Selector<SceneContext> selector;
         private Audio audio;
         private Shared.Systems.Linker linker;
+        private SpriteFont font;
+        private Shared.Entities.Entity playerKills;
+        private Shared.Entities.Entity playerPlace;
+        private Shared.Entities.Entity playerScore;
 
-        public MainMenuScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
+        public GameOverScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
 
+            this.renderer = new Renderer(spriteBatch);
             this.controlManager = controlManager;
             this.keyboardInput = new Systems.KeyboardInput(controlManager);
             this.selector = new Systems.Selector<SceneContext>();
@@ -29,23 +35,23 @@ namespace Scenes
 
         override public void LoadContent(ContentManager contentManager)
         {
-            SpriteFont font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
+            this.font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
-            AddEntity(Shared.Entities.StaticText.Create(
-                        font, "PAINTIO", Color.Black, 
-                        Color.White, new Rectangle((int)((screenWidth/2)-font.MeasureString("SNAKEIO").X/2), 100, 0, 0)));
+            this.playerPlace = Shared.Entities.StaticText.Create(font, "", Color.Black, Color.Red, new Rectangle((int)((screenWidth/2)-font.MeasureString("").X/2), 100, 0, 0));
+            this.playerScore = Shared.Entities.StaticText.Create(font, "", Color.Black, Color.Red, new Rectangle((int)((screenWidth/2)-font.MeasureString("").X/2), 100, 0, 0));
+            this.playerKills = Shared.Entities.StaticText.Create(font, "", Color.Black, Color.Red, new Rectangle((int)((screenWidth/2)-font.MeasureString("").X/2), 100, 0, 0));
+            AddEntity(playerPlace);
+            AddEntity(playerScore);
+            AddEntity(playerKills);
+            AddEntity(Shared.Entities.StaticText.Create(font, "GAME OVER", Color.Black, Color.Red, new Rectangle((int)((screenWidth/2)-font.MeasureString("GAME OVER").X/2), 100, 0, 0)));
             AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
-                        font, SceneContext.Game, "main", 
+                        font, SceneContext.MainMenu, "GameOver", 
                         true, sound, Shared.Components.LinkPosition.Head, 
                         controlManager, new Rectangle(50, screenHeight-200, 0, 0)));
-            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
-                        font, SceneContext.Options, "main", false,
-                        sound, Shared.Components.LinkPosition.Body,
-                        controlManager, new Rectangle(50, screenHeight-150, 0, 0)));
-            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
-                        font, SceneContext.Exit, "main",
-                        false, sound, Shared.Components.LinkPosition.Tail,
-                        controlManager, new Rectangle(50, screenHeight-100, 0, 0)));
+        }
+
+        public void UpdatePlayerStats(string score)
+        {
         }
 
         override public SceneContext ProcessInput(GameTime gameTime)
@@ -59,7 +65,7 @@ namespace Scenes
                 return selected;
             }
 
-            return SceneContext.MainMenu;
+            return SceneContext.Game;
         }
 
         override public void Render(TimeSpan elapsedTime)
@@ -95,3 +101,4 @@ namespace Scenes
         }
     }
 }
+

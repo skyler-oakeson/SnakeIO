@@ -79,7 +79,9 @@ namespace Systems
         public T ConsumeSelection()
         {
             hasSelected = false;
-            return selectedVal;
+            T selected = selectedVal;
+            selectedVal = default(T);
+            return selected;
         }
     }
 }

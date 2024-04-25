@@ -37,7 +37,7 @@ namespace Scenes
             Texture2D background = contentManager.Load<Texture2D>("Images/text-input-bkg");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
             string title = "ENTER YOUR NAME";
-            this.textBox = Shared.Entities.StaticText.Create(font, title, Color.Black, Color.Orange, new Rectangle((int)((screenWidth/2)-(font.MeasureString(title).X/2)), 50, 0, 0));
+            this.textBox = Shared.Entities.StaticText.Create(font, title, Color.Black, Color.White, new Rectangle((int)((screenWidth/2)-(font.MeasureString(title).X/2)), 50, 0, 0));
             this.textInput = Shared.Entities.TextInput.Create(font, background, sound, "", true, screenWidth/2, (screenHeight/2)-15);
             this.outline = Shared.Entities.StaticImage.Create(background, "Images/text-input-bkg", screenWidth/2, screenHeight/2);
             AddEntity(outline);
@@ -59,6 +59,11 @@ namespace Scenes
                 RemoveEntity(this.textBox);
                 state = GameSceneState.Game;
                 StartGame(selector.ConsumeSelection());
+            }
+
+            if (gameModel != null)
+            {
+                return gameModel.ProcessInput(gameTime);
             }
 
             return SceneContext.Game;

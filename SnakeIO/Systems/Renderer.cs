@@ -112,16 +112,54 @@ namespace Systems
             {
                 sb.Begin();
             }
-            sb.Draw(
-                    renderable.texture,
-                    new Rectangle(
-                        (int)(positionable.pos.X - renderable.rectangle.Width / 2),
-                        (int)(positionable.pos.Y - renderable.rectangle.Height / 2),
-                        renderable.rectangle.Width,
-                        renderable.rectangle.Height
-                        ),
-                    renderable.color
+            if (entity.ContainsComponent<Shared.Components.Linkable>())
+            {
+                Shared.Components.Linkable link = entity.GetComponent<Shared.Components.Linkable>();
+                if (link.linkPos == Shared.Components.LinkPosition.Head)
+                {
+                    sb.Draw(
+                        renderable.texture,
+                        new Rectangle(
+                            (int)(positionable.pos.X - renderable.rectangle.Width / 2),
+                            (int)(positionable.pos.Y - renderable.rectangle.Height / 2),
+                            renderable.rectangle.Width,
+                            renderable.rectangle.Height
+                            ),
+                        null,
+                        renderable.color,
+                        0f,
+                        new Vector2(0, 0),
+                        SpriteEffects.None,
+                        0f
+                    );
+                }
+                else
+                {
+                    sb.Draw(
+                        renderable.texture,
+                        new Rectangle(
+                            (int)(positionable.pos.X - renderable.rectangle.Width / 2),
+                            (int)(positionable.pos.Y - renderable.rectangle.Height / 2),
+                            renderable.rectangle.Width,
+                            renderable.rectangle.Height
+                            ),
+                        renderable.color
                    );
+                }
+            }
+            else
+            {
+                sb.Draw(
+                        renderable.texture,
+                        new Rectangle(
+                            (int)(positionable.pos.X - renderable.rectangle.Width / 2),
+                            (int)(positionable.pos.Y - renderable.rectangle.Height / 2),
+                            renderable.rectangle.Width,
+                            renderable.rectangle.Height
+                            ),
+                        renderable.color
+                       );
+            }
             sb.End();
         }
 

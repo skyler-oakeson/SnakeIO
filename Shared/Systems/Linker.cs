@@ -128,6 +128,13 @@ namespace Shared.Systems
             }
         }
 
+        public Shared.Entities.Entity GetHeadOfChain(string chain)
+        {
+            Debug.Assert(chainHooks.ContainsKey(chain), "Chain does not exist.");
+            Debug.Assert(chainHooks[chain].Count() > 0, "Chain is empty.");
+            return (entities[chainHooks[chain][0]]);
+        }
+
         //TODO: Linker Remove link function
         public List<int> ChainDeletion(Shared.Entities.Entity entity)
         {

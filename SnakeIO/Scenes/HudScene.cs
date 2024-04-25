@@ -11,10 +11,6 @@ namespace Scenes
     public class HudScene : Scene
     {
         private Renderer renderer;
-        private KeyboardInput keyboardInput;
-        private Selector<SceneContext> selector;
-        private Audio audio;
-        private Shared.Systems.Linker linker;
         private SpriteFont font;
         private List<Shared.Entities.Entity> scores;
         private Shared.Entities.Entity playerStats;

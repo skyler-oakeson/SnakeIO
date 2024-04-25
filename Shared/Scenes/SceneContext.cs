@@ -7,7 +7,9 @@ namespace Scenes
     {
         MainMenu,
         Name,
+        Hud,
         Game,
+        GameOver,
         Options,
         Scores,
         Credits,

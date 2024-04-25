@@ -11,6 +11,8 @@ namespace Server
         private HashSet<int> clients = new HashSet<int>();
         private Dictionary<uint, Shared.Entities.Entity> entities = new Dictionary<uint, Shared.Entities.Entity>(); // may not need
         private Dictionary<int, uint> clientToEntityId = new Dictionary<int, uint>();
+        private Color[] playerColors = {Color.Orange, Color.Red, Color.Blue, Color.Gold, Color.Pink, Color.Purple, Color.Green, Color.Yellow, Color.DarkRed, Color.OrangeRed};
+        private Shared.MyRandom random = new Shared.MyRandom();
 
         private Systems.Network systemNetwork;
         private Shared.Systems.Movement movement;
@@ -160,7 +162,7 @@ namespace Server
             reportAllEntities(clientId);
 
             Rectangle playerRect = new Rectangle(0, 0, 50, 50); //TODO: update width and height
-            Shared.Entities.Entity player = Shared.Entities.Player.Create(clientId, message.name, "Images/head", Color.Blue, playerRect, $"{clientId}");
+            Shared.Entities.Entity player = Shared.Entities.Player.Create(clientId, message.name, "Images/head", Color.White, playerRect, $"{clientId}");
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
             players.Add(player);
 
@@ -171,7 +173,8 @@ namespace Server
             //     AddEntity(body);
             // }
 
-            Shared.Entities.Entity tail = Shared.Entities.Body.Create("Images/tail", Color.Red, playerRect, $"{clientId}", Shared.Components.LinkPosition.Tail);
+            Color color = playerColors[random.Next(0, playerColors.Count())];
+            Shared.Entities.Entity tail = Shared.Entities.Body.Create("Images/body", color, playerRect, $"{clientId}", Shared.Components.LinkPosition.Tail);
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(tail));
             AddEntity(tail);
 

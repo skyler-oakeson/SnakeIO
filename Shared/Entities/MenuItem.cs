@@ -18,8 +18,8 @@ namespace Shared.Entities
                 Rectangle rectangle)
         {
             Entity menuItem = new Entity();
-            menuItem.Add(new Shared.Components.Appearance("Fonts/Micro5", typeof(SpriteFont), Color.Orange, Color.Black, rectangle));
-            menuItem.Add(new Shared.Components.Readable(font, "Fonts/Micro5", value.ToString(), Color.Orange, Color.Black, rectangle));
+            menuItem.Add(new Shared.Components.Appearance("Fonts/Micro5", typeof(SpriteFont), Color.White, Color.Black, rectangle));
+            menuItem.Add(new Shared.Components.Readable(font, "Fonts/Micro5", value.ToString(), Color.White, Color.Black, rectangle));
             menuItem.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
             menuItem.Add(new Shared.Components.Audible(sound));
             menuItem.Add(new Shared.Components.Selectable<T>(selected, value));
@@ -70,7 +70,6 @@ namespace Shared.Entities
                     if (link.prevEntity != null)
                     {
                         link.prevEntity.GetComponent<Components.Selectable<T>>().selected = true;
-                        Console.WriteLine("UP");
                         selectable.selected = false;
                         sound.play = true;
                     }
@@ -86,7 +85,6 @@ namespace Shared.Entities
                     if (link.prevEntity != null)
                     {
                         link.nextEntity.GetComponent<Components.Selectable<T>>().selected = true;
-                        Console.WriteLine("DOWN");
                         selectable.selected = false;
                         sound.play = true;
                     }
@@ -97,7 +95,6 @@ namespace Shared.Entities
                 new Shared.Controls.ControlDelegate((Entities.Entity entity, TimeSpan elapsedTime) =>
                 {
                     Shared.Components.Selectable<T> selectable = entity.GetComponent<Shared.Components.Selectable<T>>();
-                    Console.WriteLine("ENTER");
                     selectable.interacted = true;
                 })
             }
