@@ -70,9 +70,11 @@ namespace Systems
         private Shared.Entities.Entity CreateParticle(Vector2 direction, Shared.Entities.Entity entity)
         {
             float size = (float)rand.nextGaussian(sizeMean, sizeStdDev);
+            int? id = entity.ContainsComponent<Shared.Components.SnakeID>() ? entity.GetComponent<Shared.Components.SnakeID>().id : null;
             Shared.Components.ParticleComponent pComponent = entity.GetComponent<Shared.Components.ParticleComponent>();
             Shared.Components.Appearance appearance = entity.GetComponent<Shared.Components.Appearance>();
             Shared.Entities.Entity p = Shared.Entities.Particle.Create(
+                    id,
                     appearance.texturePath,
                     appearance.rectangle,
                     appearance.color,

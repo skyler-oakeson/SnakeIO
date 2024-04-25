@@ -120,13 +120,17 @@ namespace Systems
             n.Normalize();
 
             int snakeId = e1.ContainsComponent<Shared.Components.SnakeID>() ? e1.GetComponent<Shared.Components.SnakeID>().id : e2.GetComponent<Shared.Components.SnakeID>().id;
-            Server.MessageQueueServer.instance.sendMessage(snakeId, new Shared.Messages.Collision(e1, e2));
-
-            // Movables - Movables
-            if (e1.ContainsComponent<Shared.Components.Movable>() && e2.ContainsComponent<Shared.Components.Movable>())
+            int? e1SnakeId = null;
+            int? e2SnakeId = null;
+            if (e1.ContainsComponent<Shared.Components.SnakeID>())
             {
-                Shared.Components.Movable e1Mov = e1.GetComponent<Shared.Components.Movable>();
-                Shared.Components.Movable e2Mov = e2.GetComponent<Shared.Components.Movable>();
+                e1SnakeId = e1.GetComponent<Shared.Components.SnakeID>().id;
+                Server.MessageQueueServer.instance.sendMessage((int)e1SnakeId, new Shared.Messages.Collision(e1, e2));
+            }
+            if (e2.ContainsComponent<Shared.Components.SnakeID>())
+            {
+                e2SnakeId = e2.GetComponent<Shared.Components.SnakeID>().id;
+                Server.MessageQueueServer.instance.sendMessage((int)e2SnakeId, new Shared.Messages.Collision(e1, e2));
             }
 
             if (e1.ContainsComponent<Shared.Components.Linkable>() && e2.ContainsComponent<Shared.Components.Linkable>())
@@ -139,12 +143,12 @@ namespace Systems
                 {
                     RemoveSnake(e1);
                     Server.MessageQueueServer.instance.sendMessage(e1.GetComponent<Shared.Components.SnakeID>().id, new Shared.Messages.GameOver());
-                    Shared.Entities.Entity particle = Shared.Entities.Particle.Create("Images/death", new Rectangle((int)e1Pos.pos.X, (int)e1Pos.pos.Y, 0, 0), Color.Green, Shared.Components.ParticleComponent.ParticleType.PlayerDeathParticle, e1Pos.orientation);
+                    Shared.Entities.Entity particle = Shared.Entities.Particle.Create(e1SnakeId, "", new Rectangle((int)e1Pos.pos.X, (int)e1Pos.pos.Y, 0, 0), Color.Green, Shared.Components.ParticleComponent.ParticleType.PlayerDeathParticle, e1Pos.orientation);
                     addEntity(particle);
 
                     RemoveSnake(e2);
                     Server.MessageQueueServer.instance.sendMessage(e2.GetComponent<Shared.Components.SnakeID>().id, new Shared.Messages.GameOver());
-                    particle = Shared.Entities.Particle.Create("Images/death", new Rectangle((int)e2Pos.pos.X, (int)e2Pos.pos.Y, 0, 0), Color.Green, Shared.Components.ParticleComponent.ParticleType.PlayerDeathParticle, e2Pos.orientation);
+                    particle = Shared.Entities.Particle.Create(e2SnakeId, "", new Rectangle((int)e2Pos.pos.X, (int)e2Pos.pos.Y, 0, 0), Color.Green, Shared.Components.ParticleComponent.ParticleType.PlayerDeathParticle, e2Pos.orientation);
                     addEntity(particle);
                 }
                 else if (e1Linkable.chain != e2Linkable.chain)
@@ -155,39 +159,29 @@ namespace Systems
                     RemoveSnake(snake);
                     Server.MessageQueueServer.instance.sendMessage(e2.GetComponent<Shared.Components.SnakeID>().id, new Shared.Messages.GameOver());
                     Shared.Components.Positionable snakePos = snake.GetComponent<Shared.Components.Positionable>();
-                    Shared.Entities.Entity particle = Shared.Entities.Particle.Create("Images/death", new Rectangle((int)snakePos.pos.X, (int)snakePos.pos.Y, 0, 0), Color.Green, Shared.Components.ParticleComponent.ParticleType.PlayerDeathParticle, snakePos.orientation);
+                    Shared.Components.SnakeID id = snake.GetComponent<Shared.Components.SnakeID>();
+                    Shared.Entities.Entity particle = Shared.Entities.Particle.Create(id.id, "", new Rectangle((int)snakePos.pos.X, (int)snakePos.pos.Y, 0, 0), Color.Green, Shared.Components.ParticleComponent.ParticleType.PlayerDeathParticle, snakePos.orientation);
                 }
             }
             else if (e1.ContainsComponent<Shared.Components.Consumable>() || e2.ContainsComponent<Shared.Components.Consumable>())
             {
                 // Hits Consumable
-                if (e1.ContainsComponent<Shared.Components.Consumable>())
+                Shared.Entities.Entity food = e1.ContainsComponent<Shared.Components.Consumable>() ? e1 : e2;
+                Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(food.id));
+                Shared.Components.Appearance appearance = food.GetComponent<Shared.Components.Appearance>();
+                Shared.Components.Positionable foodPos = food.GetComponent<Shared.Components.Positionable>();
+                Shared.Entities.Entity particle = Shared.Entities.Particle.Create(null, "Images/glow", new Rectangle((int)e1Pos.pos.X, (int)e1Pos.pos.Y, 0, 0), appearance.color, Shared.Components.ParticleComponent.ParticleType.FoodParticle);
+                addEntity(particle);
+                removeThese.Add(food);
+                if (e1.ContainsComponent<Shared.Components.Growable>())
                 {
-                    Shared.Components.Consumable consumable = e1.GetComponent<Shared.Components.Consumable>();
-                    Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(e1.id));
-                    Shared.Components.Appearance appearance = e1.GetComponent<Shared.Components.Appearance>();
-                    Shared.Entities.Entity particle = Shared.Entities.Particle.Create("Images/glow", new Rectangle((int)e1Pos.pos.X, (int)e1Pos.pos.Y, 0, 0), appearance.color, Shared.Components.ParticleComponent.ParticleType.FoodParticle);
-                    addEntity(particle);
-                    removeThese.Add(e1);
-                    if (e2.ContainsComponent<Shared.Components.Growable>())
-                    {
-                        Shared.Components.Growable growthComponent = e2.GetComponent<Shared.Components.Growable>();
-                        growthComponent.UpdateGrowth(consumable.growth);
-                    }
+                    Shared.Components.Growable growthComponent = e1.GetComponent<Shared.Components.Growable>();
+                    growthComponent.UpdateGrowth(food.GetComponent<Shared.Components.Consumable>().growth);
                 }
-                else
+                if (e2.ContainsComponent<Shared.Components.Growable>())
                 {
-                    Shared.Components.Consumable consumable = e2.GetComponent<Shared.Components.Consumable>();
-                    Shared.Components.Appearance appearance = e2.GetComponent<Shared.Components.Appearance>();
-                    Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(e2.id));
-                    Shared.Entities.Entity particle = Shared.Entities.Particle.Create("Images/glow", new Rectangle((int)e1Pos.pos.X, (int)e1Pos.pos.Y, 0, 0), appearance.color, Shared.Components.ParticleComponent.ParticleType.FoodParticle);
-                    addEntity(particle);
-                    removeThese.Add(e2);
-                    if (e1.ContainsComponent<Shared.Components.Growable>())
-                    {
-                        Shared.Components.Growable growthComponent = e1.GetComponent<Shared.Components.Growable>();
-                        growthComponent.UpdateGrowth(consumable.growth);
-                    }
+                    Shared.Components.Growable growthComponent = e2.GetComponent<Shared.Components.Growable>();
+                    growthComponent.UpdateGrowth(food.GetComponent<Shared.Components.Consumable>().growth);
                 }
             }
             else
@@ -196,7 +190,7 @@ namespace Systems
                 Shared.Entities.Entity currEntity = e1.ContainsComponent<Shared.Components.Linkable>() ? e1 : e2;
                 Shared.Components.Positionable currEntityPos = currEntity.GetComponent<Shared.Components.Positionable>();
                 Server.MessageQueueServer.instance.sendMessage(snakeId, new Shared.Messages.GameOver());
-                Shared.Entities.Entity particle = Shared.Entities.Particle.Create("Images/death", new Rectangle((int)currEntityPos.pos.X, (int)currEntityPos.pos.Y, 0, 0), Color.Red, Shared.Components.ParticleComponent.ParticleType.PlayerDeathParticle, currEntityPos.orientation);
+                Shared.Entities.Entity particle = Shared.Entities.Particle.Create(snakeId, "Images/death", new Rectangle((int)currEntityPos.pos.X, (int)currEntityPos.pos.Y, 0, 0), Color.Red, Shared.Components.ParticleComponent.ParticleType.PlayerDeathParticle, currEntityPos.orientation);
                 addEntity(particle);
                 RemoveSnake(currEntity);
             }

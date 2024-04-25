@@ -201,15 +201,27 @@ namespace SnakeIO
 
             if (message.hasAppearance)
             {
+                string appearanceTex;
+                Color color;
+                if (message.hasParticle && message.hasSnakeID)
+                {
+                    appearanceTex = message.snakeIDMessage.id == this.clientPlayer.GetComponent<Shared.Components.SnakeID>().id ? "Images/death" : "Images/enemy-death";
+                    color = message.snakeIDMessage.id == this.clientPlayer.GetComponent<Shared.Components.SnakeID>().id ? Color.Red : Color.LightGreen;
+                }
+                else
+                {
+                    appearanceTex = message.appearanceMessage.texturePath;
+                    color = message.appearanceMessage.color;
+                }
                 Rectangle rectangle = new Rectangle(
                         message.appearanceMessage.rectangle.X,
                         message.appearanceMessage.rectangle.Y,
                         message.appearanceMessage.rectangle.Width,
                         message.appearanceMessage.rectangle.Height);
                 entity.Add(new Shared.Components.Appearance(
-                            message.appearanceMessage.texturePath,
+                            appearanceTex,
                             message.appearanceMessage.type,
-                            message.appearanceMessage.color,
+                            color,
                             message.appearanceMessage.stroke,
                             rectangle
                             ));

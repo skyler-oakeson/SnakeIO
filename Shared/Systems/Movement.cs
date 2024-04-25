@@ -87,7 +87,22 @@ namespace Shared.Systems
 
             Vector2 newpos = (movable.velocity) * elapsedTime.Milliseconds + positionable.pos;
             positionable.UpdatePosition(newpos);
-            positionable.orientation = (float)Math.Atan(movable.velocity.Y / movable.velocity.X);
+            if (movable.velocity.X < 0 && movable.velocity.Y < 0)
+            {
+                positionable.orientation = (float)Math.Atan(-movable.velocity.Y / -movable.velocity.X);
+                positionable.orientation = 180 + positionable.orientation;
+            }
+            else if (movable.velocity.X < 0)
+            {
+                positionable.orientation = (float)Math.Atan(movable.velocity.Y / -movable.velocity.X);
+                positionable.orientation = 180 - positionable.orientation;
+            }
+            else
+            {
+                positionable.orientation = (float)Math.Atan(movable.velocity.Y / movable.velocity.X);
+            }
+            // positionable.orientation = (float)Math.Acos((Vector2.Dot(movable.velocity, basisVector)) / (movable.velocity.Length() * basisVector.Length()));
+
         }
     }
 }
