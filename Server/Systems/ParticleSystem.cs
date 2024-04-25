@@ -48,6 +48,8 @@ namespace Systems
                 {
                     PlayerDeath(entity);
                 }
+                Shared.Messages.UpdateEntity message = new Shared.Messages.UpdateEntity(entity, elapsedTime);
+                Server.MessageQueueServer.instance.broadcastMessageWithLastId(message);
             }
 
             foreach (var entity in entitiesToRemove)
@@ -58,7 +60,6 @@ namespace Systems
 
             foreach (var entity in entitiesToAdd)
             {
-                Console.WriteLine(entity.id);
                 addEntity(entity);
                 Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(entity));
             }

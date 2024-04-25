@@ -18,11 +18,15 @@ namespace Shared.Messages
                 this.prevPosition = entity.GetComponent<Positionable>().prevPos;
                 this.growth = entity.GetComponent<Growable>().growth;
             }
+            if (entity.ContainsComponent<ParticleComponent>())
+            {
+                particleComponent = entity.GetComponent<ParticleComponent>();
+            }
 
             this.updateWindow = updateWindow;
         }
 
-        public UpdateEntity(): base(Type.UpdateEntity)
+        public UpdateEntity() : base(Type.UpdateEntity)
         {
         }
 
@@ -34,6 +38,12 @@ namespace Shared.Messages
         public Vector2 prevPosition { get; private set; }
         public float orientation { get; private set; }
         public float growth { get; private set; }
+
+        // Particle
+        // Particle
+        public bool hasParticle { get; private set; }
+        public Components.ParticleComponent? particleComponent { get; private set; } = null;
+        public Parsers.ParticleParser.ParticleMessage particleMessage { get; private set; }
 
         // Only the milliseconds are used/serialized
         public TimeSpan updateWindow { get; private set; } = TimeSpan.Zero;
@@ -54,6 +64,12 @@ namespace Shared.Messages
                 data.AddRange(BitConverter.GetBytes(prevPosition.Y));
                 data.AddRange(BitConverter.GetBytes(orientation));
                 data.AddRange(BitConverter.GetBytes(growth));
+            }
+
+            data.AddRange(BitConverter.GetBytes(particleComponent != null));
+            if (particleComponent != null)
+            {
+                particleComponent.Serialize(ref data);
             }
 
             data.AddRange(BitConverter.GetBytes(updateWindow.Milliseconds));
@@ -86,6 +102,15 @@ namespace Shared.Messages
                 offset += sizeof(Single);
                 this.growth = BitConverter.ToSingle(data, offset);
                 offset += sizeof(Single);
+            }
+
+            this.hasParticle = BitConverter.ToBoolean(data, offset);
+            offset += sizeof(bool);
+            if (hasParticle)
+            {
+                Parsers.ParticleParser parser = new Parsers.ParticleParser();
+                parser.Parse(ref data, ref offset);
+                this.particleMessage = parser.GetMessage();
             }
 
             this.updateWindow = new TimeSpan(0, 0, 0, 0, BitConverter.ToInt32(data, offset));

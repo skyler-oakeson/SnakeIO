@@ -1,6 +1,4 @@
-﻿using Shared.Entities;
-using Microsoft.Xna.Framework;
-using Shared.Messages;
+﻿using Shared.Messages;
 
 namespace Systems
 {
@@ -47,8 +45,6 @@ namespace Systems
                 }
             });
 
-            //TODO: Make work with our input
-            // Register our own input handler
             registerHandler(Shared.Messages.Type.Input, (int clientId, TimeSpan elapsedTime, Shared.Messages.Message message) =>
             {
                 handleInput((Shared.Messages.Input)message);

@@ -36,8 +36,8 @@ namespace Shared.Components
         public bool Update(TimeSpan elapsedTime)
         {
             alive += elapsedTime;
-            float newX = (float)(elapsedTime.TotalMilliseconds * speed * direction.X);
-            float newY = (float)(elapsedTime.TotalMilliseconds * speed * direction.Y);
+            float newX = center.X + (float)(elapsedTime.TotalMilliseconds * speed * direction.X);
+            float newY = center.Y + (float)(elapsedTime.TotalMilliseconds * speed * direction.Y);
             center = new Vector2(newX, newY);
             rotation += (speed / .5f);
             return alive < lifetime;

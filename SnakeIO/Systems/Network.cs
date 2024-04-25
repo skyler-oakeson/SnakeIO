@@ -179,6 +179,17 @@ namespace Systems
                     growable.growth = message.growth;
                     updatedEntities.Add(entity.id);
                 }
+                if (entity.ContainsComponent<ParticleComponent>() && message.hasParticle)
+                {
+                    Shared.Components.ParticleComponent pComponent = entity.GetComponent<ParticleComponent>();
+                    pComponent.type = message.particleMessage.type;
+                    pComponent.size = message.particleMessage.size;
+                    pComponent.direction = message.particleMessage.direction;
+                    pComponent.speed = message.particleMessage.speed;
+                    pComponent.center = message.particleMessage.center;
+                    pComponent.lifetime = message.particleMessage.lifetime;
+                    pComponent.shouldCreate = message.particleMessage.shouldCreate;
+                }
             }
         }
     }
