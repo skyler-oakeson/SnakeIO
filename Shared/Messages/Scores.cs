@@ -23,7 +23,6 @@ namespace Shared.Messages
             List<byte> data = new List<byte>();
             data.AddRange(base.serialize());
             data.AddRange(BitConverter.GetBytes(scores.Length));
-            Console.WriteLine(scores.Length);
             foreach ((string name, float score) in scores)
             {
                 data.AddRange(BitConverter.GetBytes(name.Length));

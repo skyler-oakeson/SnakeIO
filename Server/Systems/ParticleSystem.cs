@@ -88,12 +88,34 @@ namespace Systems
 
         private void PlayerDeath(Shared.Entities.Entity entity)
         {
-
+            sizeMean = 40;
+            sizeStdDev = 4;
+            speedMean = .2f;
+            speedStdDev = .05f;
+            lifetimeMean = 500;
+            lifetimeStdDev = 50;
+            Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
+            for (int i = 0; i < 5; i++)
+            {
+                Shared.Entities.Entity particle = CreateParticle(rand.nextVectorInDirection(180 - positionable.orientation, 0f, .2f), entity);
+                entitiesToAdd.Add(particle);
+            }
         }
 
         private void EnemyDeath(Shared.Entities.Entity entity)
         {
-
+            sizeMean = 40;
+            sizeStdDev = 4;
+            speedMean = .2f;
+            speedStdDev = .05f;
+            lifetimeMean = 500;
+            lifetimeStdDev = 50;
+            Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
+            for (int i = 0; i < 5; i++)
+            {
+                Shared.Entities.Entity particle = CreateParticle(rand.nextVectorInDirection(180 - positionable.orientation, 0f, .2f), entity);
+                entitiesToAdd.Add(particle);
+            }
         }
 
         private void EatFood(Shared.Entities.Entity entity)

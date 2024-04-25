@@ -3,10 +3,10 @@ using Microsoft.Xna.Framework;
 
 /// <summary>
 /// Expands upon some of the features the .NET Random class does:
-/// 
+///
 /// *NextRange : Generate a random number within some range
 /// *NextGaussian : Generate a normally distributed random number
-/// 
+///
 /// </summary>
 namespace Shared
 {
@@ -31,6 +31,28 @@ namespace Shared
             float y = (float)Math.Sin(angle);
 
             return new Vector2(x, y);
+        }
+
+        /// <summary>
+        /// Generate a new random vector that is in the direction of the specified parameter
+        /// </summary>
+        public Vector2 nextVectorInDirection(Vector2 direction, float mean, float stdDev)
+        {
+            direction.X += Convert.ToSingle(this.nextGaussian(mean, stdDev));
+            direction.Y += Convert.ToSingle(this.nextGaussian(mean, stdDev));
+            direction.Normalize();
+            return direction;
+        }
+
+        /// <summary>
+        /// Generate a new random vector that is in the direction of the specified parameter
+        /// </summary>
+        public Vector2 nextVectorInDirection(float direction, float mean, float stdDev)
+        {
+            double directionX = Math.Cos(direction / 180 * Math.PI);
+            double directionY = Math.Sin(direction / 180 * Math.PI);
+            Vector2 directionVector = new Vector2((float)directionX, (float)directionY);
+            return this.nextVectorInDirection(directionVector, mean, stdDev);
         }
 
         /// <summary>
