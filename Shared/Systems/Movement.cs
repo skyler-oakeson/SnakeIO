@@ -28,18 +28,12 @@ namespace Shared.Systems
 
         private void MoveEntity(Shared.Entities.Entity entity, TimeSpan elapsedTime)
         {
-            Shared.Components.Movable movable = entity.GetComponent<Shared.Components.Movable>();
-            Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
-
             MovePosition(entity, elapsedTime);
-
             // if it has camera, update camera center
             if (entity.ContainsComponent<Shared.Components.Camera>())
             {
                 MoveCamera(entity);
             }
-
-
             // If Collidable update the hitbox position
             if (entity.ContainsComponent<Shared.Components.Collidable>())
             {
@@ -62,11 +56,11 @@ namespace Shared.Systems
             Shared.Components.Collidable col = entity.GetComponent<Shared.Components.Collidable>();
             if (col.Data.Shape == Shared.Components.CollidableShape.Circle)
             {
-                col.Data.CircleData = new CircleData {x = positionable.pos.X, y = positionable.pos.Y, radius = col.Data.CircleData.radius};
+                col.Data.CircleData = new CircleData { x = positionable.pos.X, y = positionable.pos.Y, radius = col.Data.CircleData.radius };
             }
             if (col.Data.Shape == Shared.Components.CollidableShape.Rectangle)
             {
-                col.Data.RectangleData = new RectangleData {x = positionable.pos.X, y = positionable.pos.Y, width = col.Data.RectangleData.width, height = col.Data.RectangleData.height };
+                col.Data.RectangleData = new RectangleData { x = positionable.pos.X, y = positionable.pos.Y, width = col.Data.RectangleData.width, height = col.Data.RectangleData.height };
             }
         }
 
