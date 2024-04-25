@@ -77,6 +77,7 @@ namespace SnakeIO
             keyboardInput.Update(elapsedTime);
             mouseInput.Update(elapsedTime);
             movement.Update(elapsedTime);
+            linker.Update(elapsedTime);
             interpolation.Update(elapsedTime);
             audio.Update(elapsedTime);
             linker.Update(elapsedTime);
