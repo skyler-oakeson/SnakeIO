@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Shared.Components
 {
-    public class Growable : Component, IComparer<float>
+    public class Growable : Component, IComparable<Growable>
     {
         public float growth { get; set; }
         public float prevGrowth { get; set; }
@@ -25,9 +25,9 @@ namespace Shared.Components
             data.AddRange(BitConverter.GetBytes(growth));
         }
 
-        public int Compare(float a, float b)
+        public int CompareTo(Growable to)
         {
-            return a.CompareTo(b);
+            return to.growth.CompareTo(growth);
         }
     }
 }

@@ -191,21 +191,14 @@ namespace Systems
 
         private void RemoveSnake(Shared.Entities.Entity snake)
         {
-            List<Shared.Entities.Entity> toRemove = new List<Shared.Entities.Entity>();
-            Shared.Entities.Entity currEntity = snake;
-            while (!toRemove.Contains(currEntity))
+            while (!removeThese.Contains(snake))
             {
-                toRemove.Add(currEntity);
-                currEntity = currEntity.GetComponent<Shared.Components.Linkable>().prevEntity;
-                Shared.Components.Positionable currEntityPos = currEntity.GetComponent<Shared.Components.Positionable>();
-                Shared.Entities.Entity food = Shared.Entities.Food.Create("Images/food", new Rectangle((int)currEntityPos.pos.X, (int)currEntityPos.pos.Y, 32, 32));
+                removeThese.Add(snake);
+                snake = snake.GetComponent<Shared.Components.Linkable>().prevEntity;
+                Shared.Components.Positionable snakePos = snake.GetComponent<Shared.Components.Positionable>();
+                Shared.Entities.Entity food = Shared.Entities.Food.Create("Images/food", new Rectangle((int)snakePos.pos.X, (int)snakePos.pos.Y, 32, 32));
                 Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(food));
-            }
-
-            foreach (Shared.Entities.Entity entity in toRemove)
-            {
-                Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(entity.id));
-                removeThese.Add(entity);
+                Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(snake.id));
             }
         }
     }

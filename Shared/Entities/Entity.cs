@@ -9,7 +9,7 @@ namespace Shared.Entities
     /// <summary>
     /// A named entity that contains a collection of <see cref="Component"/> instances.
     /// </summary>
-    public sealed class Entity
+    public sealed class Entity : IEquatable<Entity>
     {
         /// <summary>
         /// This entity's components.
@@ -105,6 +105,23 @@ namespace Shared.Entities
         public override string ToString()
         {
             return string.Format("{0}: {1}", id, string.Join(", ", from c in components.Values select c.GetType().Name));
+        }
+
+        public bool Equals(Entity entity)
+        {
+            //
+            // See the full list of guidelines at
+            //   http://go.microsoft.com/fwlink/?LinkID=85237
+            // and also the guidance for operator== at
+            //   http://go.microsoft.com/fwlink/?LinkId=85238
+            //
+            
+            if (entity == null || GetType() != entity.GetType())
+            {
+                return false;
+            }
+            
+            return id.Equals (entity.id);
         }
     }
 }

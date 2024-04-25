@@ -17,7 +17,6 @@ namespace SnakeIO
         private Dictionary<uint, Entity> entities = new Dictionary<uint, Entity>(); // may not need
 
         private Systems.Renderer renderer;
-        private Systems.Renderer hudrenderer;
         private Systems.KeyboardInput keyboardInput;
         private Systems.Network network;
         private Systems.Interpolation interpolation;
@@ -25,10 +24,10 @@ namespace SnakeIO
         private Shared.Systems.Linker linker;
         private Shared.Systems.Movement movement;
         private Systems.Audio audio;
-        private float[] scores;
+        private (string, float)[] scores;
         private string playerName;
         private SpriteFont font;
-        private Shared.Entities.Entity hud;
+        private Scenes.HudScene hud;
 
         private ContentManager contentManager;
         private Shared.Controls.ControlManager controlManager;
@@ -44,31 +43,32 @@ namespace SnakeIO
             this.playerName = playerName;
         }
 
-        public void Initialize(Shared.Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager)
+        public void Initialize(Shared.Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager, GraphicsDeviceManager graphics)
         {
-            this.renderer = new Systems.Renderer(spriteBatch);
-            this.hudrenderer = new Systems.Renderer(spriteBatch);
             this.network = new Systems.Network(playerName);
-            this.interpolation = new Systems.Interpolation();
-            this.movement = new Shared.Systems.Movement();
             network.registerNewEntityHandler(handleNewEntity);
             network.registerRemoveEntityHandler(handleRemoveEntity);
             network.registerGameOverHandler(HandleGameOver);
             network.registerCollisionHandler(HandleCollision);
             network.registerScoreshandler(HandleScores);
+
+            this.renderer = new Systems.Renderer(spriteBatch);
+            this.interpolation = new Systems.Interpolation();
+            this.movement = new Shared.Systems.Movement();
             this.keyboardInput = new Systems.KeyboardInput(controlManager);
             this.mouseInput = new Systems.MouseInput(controlManager);
             this.audio = new Systems.Audio();
             this.linker = new Shared.Systems.Linker();
             this.contentManager = contentManager;
-            this.scores = new float[5];
 
+            // Initialize HUD
+            this.hud = new Scenes.HudScene(spriteBatch.GraphicsDevice, graphics, controlManager);
+            hud.LoadContent(contentManager);
+
+            this.font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
             SoundEffect playerSound = contentManager.Load<SoundEffect>("Audio/click");
-            this.font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
-            this.hud = StaticText.Create(font, "", Color.Black, Color.White, new Rectangle(30, 30, (int)font.MeasureString("TEST").X, (int)font.MeasureString("TEST").Y));
-            AddHud(hud);
         }
 
         public void Update(TimeSpan elapsedTime)
@@ -80,21 +80,18 @@ namespace SnakeIO
             interpolation.Update(elapsedTime);
             audio.Update(elapsedTime);
             linker.Update(elapsedTime);
+
+            if (clientPlayer != null)
+            {
+                hud.UpdatePlayerStats(clientPlayer.GetComponent<Shared.Components.Growable>().growth.ToString());
+                hud.UpdateScores(scores);
+            }
         }
 
         public void Render(TimeSpan elapsedTime)
         {
-            if (clientPlayer != null)
-            {
-                hud.GetComponent<Shared.Components.Readable>().text = clientPlayer.GetComponent<Shared.Components.Growable>().growth.ToString();
-            }
             renderer.Update(elapsedTime);
-            hudrenderer.Update(elapsedTime);
-        }
-
-        private void AddHud(Entity entity)
-        {
-            hudrenderer.Add(entity);
+            hud.Render(elapsedTime);
         }
 
         private void AddEntity(Entity entity)
@@ -157,10 +154,6 @@ namespace SnakeIO
 
         private void HandleScores(Shared.Messages.Scores message)
         {
-            foreach (float score in message.scores)
-            {
-                // Console.Write(score);
-            }
             this.scores = message.scores;
         }
 
