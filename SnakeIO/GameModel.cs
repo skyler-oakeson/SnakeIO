@@ -150,6 +150,7 @@ namespace SnakeIO
         {
             //TODO: handle game over
             contentManager.Load<SoundEffect>("Audio/negative").Play();
+            RemoveEntity(clientPlayer);
         }
 
         private void HandleScores(Shared.Messages.Scores message)

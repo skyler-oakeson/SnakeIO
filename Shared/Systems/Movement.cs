@@ -101,8 +101,6 @@ namespace Shared.Systems
             {
                 positionable.orientation = (float)Math.Atan(movable.velocity.Y / movable.velocity.X);
             }
-            // positionable.orientation = (float)Math.Acos((Vector2.Dot(movable.velocity, basisVector)) / (movable.velocity.Length() * basisVector.Length()));
-
         }
     }
 }
