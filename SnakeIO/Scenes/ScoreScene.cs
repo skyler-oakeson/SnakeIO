@@ -27,7 +27,7 @@ namespace Scenes
         private List<ulong>? scoreValues;
         private List<ulong>? scoresOld;
 
-        private List< Shared.Entities.Entity> entityList = new List< Shared.Entities.Entity >();
+        private List<Shared.Entities.Entity> entityList = new List<Shared.Entities.Entity>();
 
 
         public ScoreScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager, Shared.DataManager dataManager, ref List<ulong> scores)
@@ -59,11 +59,11 @@ namespace Scenes
             scoresOld.Sort();
             scoresOld.Reverse();
 
-            if ( scoreValues.Count == 0)
+            if (scoreValues.Count == 0)
             {
 
-                entityList.Add( Shared.Entities.StaticText.Create(font, "No Scores", Color.Black, Color.Orange, new Rectangle(center - (int)font.MeasureString("No Scores").X / 2, 50 + (int)font.MeasureString("No Scores").Y, 0, 0)));
-                
+                entityList.Add(Shared.Entities.StaticText.Create(font, "No Scores", Color.Black, Color.Orange, new Rectangle(center - (int)font.MeasureString("No Scores").X / 2, 50 + (int)font.MeasureString("No Scores").Y, 0, 0)));
+
             }
             else
             {
@@ -84,7 +84,7 @@ namespace Scenes
             {
                 AddEntity(entity);
             }
-            
+
         }
 
         override public SceneContext ProcessInput(GameTime gameTime)
@@ -104,8 +104,8 @@ namespace Scenes
 
         override public void Update(TimeSpan elapsedTime)
         {
-            
-            if(scoreValues.Count > 5)
+
+            if (scoreValues.Count > 5)
             {
                 backUpPrune();
             }
@@ -129,7 +129,7 @@ namespace Scenes
 
                 for (int i = 0; i < scoreValues.Count; i++)
                 {   // Value, entity to add 
-                    string value =""+ (i+1) +".  "+ scoreValues[i].ToString();
+                    string value = $"{(i + 1)}. {scoreValues[i].ToString()}";
                     entityList.Add(Shared.Entities.StaticText.Create(font, value, Color.Black, Color.Orange, new Rectangle(center - (int)font.MeasureString(value).X / 2, 50 + (50 * (i + 1)) + (int)font.MeasureString(value).Y, 0, 0)));
                 }
 
@@ -140,18 +140,12 @@ namespace Scenes
 
 
             }
-            
-
 
             renderer.Update(elapsedTime);
             selector.Update(elapsedTime);
             keyboardInput.Update(elapsedTime);
             audio.Update(elapsedTime);
-
-            
-
         }
-
 
         private void AddEntity(Shared.Entities.Entity entity)
         {
@@ -159,11 +153,8 @@ namespace Scenes
             selector.Add(entity);
             keyboardInput.Add(entity);
             audio.Add(entity);
-            
+
         }
-
-
-        
 
         private void RemoveEntity(Shared.Entities.Entity entity)
         {
@@ -180,8 +171,6 @@ namespace Scenes
             scoreValues.Reverse();
 
         }
-        
-
     }
 }
 
