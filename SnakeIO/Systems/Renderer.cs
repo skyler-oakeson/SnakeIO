@@ -133,7 +133,7 @@ namespace Systems
             {
                 sb.Begin();
             }
-            DrawOutlineText(sb, readable.font, readable.text, readable.stroke, readable.color, 4, new Vector2(readable.rectangle.X, readable.rectangle.Y), 1.0f);
+            DrawOutlineText(sb, readable.font, readable.text, readable.stroke, readable.color, 4, new Vector2(readable.rectangle.X, readable.rectangle.Y), readable.scale);
             sb.End();
         }
 

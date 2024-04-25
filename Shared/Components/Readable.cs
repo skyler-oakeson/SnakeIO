@@ -11,11 +11,13 @@ namespace Shared.Components
     {
         public SpriteFont font { get; set; }
         public string text { get; set; }
+        public float scale { get; set; }
 
-        public Readable(SpriteFont font, string texturePath, string text, Color color, Color stroke, Rectangle rectangle): base(texturePath, typeof(SpriteFont), color, stroke, rectangle)
+        public Readable(SpriteFont font, string texturePath, string text, Color color, Color stroke, Rectangle rectangle, float scale = 1.0f): base(texturePath, typeof(SpriteFont), color, stroke, rectangle)
         {
             this.font = font;
             this.text = text;
+            this.scale = scale;
         }
 
         // This will be handled in CreateEntity. These are just used as flags

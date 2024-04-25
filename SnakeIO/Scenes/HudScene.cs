@@ -32,8 +32,9 @@ namespace Scenes
             this.font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             for (int i = 0; i < 5; i++)
             {
+                float scale = .7f;
                 Shared.Entities.Entity hudElement = Shared.Entities.StaticText.Create(font, "", Color.Black, Color.White, 
-                        new Rectangle(30, 10*i, (int)font.MeasureString("").X, (int)font.MeasureString("").Y));
+                        new Rectangle(30, (int)(50*i*scale), (int)font.MeasureString("").X, (int)font.MeasureString("").Y), scale);
                 this.scores.Add(hudElement);
                 AddEntity(hudElement);
             }
@@ -42,9 +43,15 @@ namespace Scenes
             AddEntity(playerStats);
         }
 
-        public void UpdateScores((string, float)[] scores)
+        public void UpdateScores((string, float)[] updatedScores)
         {
-
+            int limit = updatedScores.Length <= 5 ? updatedScores.Length : 5;
+            for (int i = 0; i < limit; i++)
+            {
+                Shared.Entities.Entity curr = this.scores[i];
+                (string, float) entry = updatedScores[i];
+                curr.GetComponent<Shared.Components.Readable>().text = $"{entry.Item1} : {entry.Item2}";
+            }
         }
 
         public void UpdatePlayerStats(string score)
