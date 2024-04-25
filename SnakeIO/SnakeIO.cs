@@ -36,8 +36,7 @@ namespace SnakeIO
             // graphics.PreferredBackBufferHeight = 1080;
             // graphics.ApplyChanges();
 
-            highScores = dataManager.Load<List<ulong>>(highScores);
-            
+            highScores = dataManager.Load<List<ulong>>(highScores); 
             if (highScores == null)
             {
                 highScores = new List<ulong>();
@@ -46,7 +45,7 @@ namespace SnakeIO
             scenes.Add(SceneContext.MainMenu, new MainMenuScene(graphics.GraphicsDevice, graphics, controlManager));
             scenes.Add(SceneContext.Options, new OptionScene(graphics.GraphicsDevice, graphics, controlManager));
             scenes.Add(SceneContext.Scores, new ScoreScene(graphics.GraphicsDevice, graphics, controlManager, dataManager, ref highScores));
-            scenes.Add(SceneContext.Game, new GameScene(graphics.GraphicsDevice, graphics, controlManager, ref highScores));
+            scenes.Add(SceneContext.Game, new GameScene(graphics.GraphicsDevice, graphics, controlManager));
 
 
             foreach (Scene scene in scenes.Values)

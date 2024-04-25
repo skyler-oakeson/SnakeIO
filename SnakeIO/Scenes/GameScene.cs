@@ -23,7 +23,7 @@ namespace Scenes
         private GameSceneState state = GameSceneState.Input;
         private List<ulong> highScores;
 
-        public GameScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager, ref List<ulong> highScores)
+        public GameScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
             this.controlManager = controlManager;
@@ -100,9 +100,6 @@ namespace Scenes
         {
             this.gameModel = new SnakeIO.GameModel(screenHeight, screenWidth, name);
             gameModel.Initialize(controlManager, spriteBatch, contentManager);
-
-            //TODO Remove test
-            AddHighScore(highScores.Count >0 ? highScores[0] + 1 : 400);
             
         }
 
@@ -128,33 +125,6 @@ namespace Scenes
             Game
         }
 
-        private void AddHighScore(ulong score)
-        {
-            if(highScores.Count == 0)
-            {
-                highScores.Add(score);
-                return;
-            }
-
-            if(score > highScores[highScores.Count - 1])
-            {
-                if(highScores.Count == 5)
-                {
-                    highScores.Add(score);
-                    highScores.Sort();
-                    highScores.RemoveAt(0);
-                    highScores.Reverse();
-                }
-                else
-                {
-                    highScores.Add(score);
-                    highScores.Sort();
-                    highScores.Reverse();
-                }
-            }
-            
-           
-        }
 
 
     }

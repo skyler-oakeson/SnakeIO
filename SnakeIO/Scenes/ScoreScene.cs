@@ -29,6 +29,8 @@ namespace Scenes
 
         private List< Shared.Entities.Entity> entityList = new List< Shared.Entities.Entity >();
 
+        private bool updateState = false;
+
 
         public ScoreScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager, Shared.DataManager dataManager, ref List<ulong> scores)
         {
@@ -91,11 +93,16 @@ namespace Scenes
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
+                updateState = true;
                 return SceneContext.MainMenu;
             }
 
             return SceneContext.Scores;
         }
+
+
+
+
 
         override public void Render(TimeSpan elapsedTime)
         {
@@ -104,6 +111,12 @@ namespace Scenes
 
         override public void Update(TimeSpan elapsedTime)
         {
+
+            if (updateState)
+            {
+                updateState = false;
+                updateScores();
+            }
             
             if(scoreValues.Count > 5)
             {
@@ -120,7 +133,6 @@ namespace Scenes
                 }
 
                 entityList.Clear();
-
                 scoreValues.Sort();
                 scoreValues.Reverse();
                 scoresOld = new List<ulong>(scoreValues); // Remake the new list 
@@ -138,17 +150,12 @@ namespace Scenes
                     AddEntity(entity);
                 }
 
-
             }
-            
-
 
             renderer.Update(elapsedTime);
             selector.Update(elapsedTime);
             keyboardInput.Update(elapsedTime);
             audio.Update(elapsedTime);
-
-            
 
         }
 
@@ -163,8 +170,6 @@ namespace Scenes
         }
 
 
-        
-
         private void RemoveEntity(Shared.Entities.Entity entity)
         {
             renderer.Remove(entity.id);
@@ -173,6 +178,23 @@ namespace Scenes
             audio.Remove(entity.id);
         }
 
+        public void updateScores()
+        {
+            List<ulong> newScores = dataManager.Load<List<ulong>>(scoresOld);
+            while(dataManager.loading) { }
+            scoreValues.Clear();
+            foreach (var value in newScores)
+            {
+                scoreValues.Add(value);
+                
+            }
+            scoreValues.Sort();
+            scoreValues.Reverse();
+
+
+        }
+
+       
         private void backUpPrune()
         {
             scoreValues.Sort();
