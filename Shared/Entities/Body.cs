@@ -23,7 +23,10 @@ namespace Shared.Entities
             //                                                           40, 40, 40, 40, 40,
             //                                                           40, 40, 40, 40, 40,
             //                                                           40, 40, 40, 40, 40 }));
-            // body.Add(new Components.Collidable(new Vector3(pos.X, pos.Y, radius)));
+            int radius = rectangle.Width >= rectangle.Height ? rectangle.Width / 2 : rectangle.Height / 2;
+            Shared.Components.CircleData circleData = new Shared.Components.CircleData { x = rectangle.X, y = rectangle.Y, radius = radius };
+            Shared.Components.RectangleData rectangleData = new Shared.Components.RectangleData { };
+            body.Add(new Components.Collidable(Shared.Components.CollidableShape.Circle, rectangleData, circleData));
             // body.Add(new Components.Audible(sound));
 
             return body;

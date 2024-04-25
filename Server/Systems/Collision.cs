@@ -50,8 +50,6 @@ namespace Systems
                         }
                         if (res)
                         {
-                            // Thread collisionThread = new Thread(() => HandleCollision(e1, e2));
-                            // collisionThread.Start();
                             HandleCollision(e1, e2);
                         }
                     }
@@ -119,7 +117,6 @@ namespace Systems
             Vector2 n = (e1Pos.pos - e2Pos.pos);
             n.Normalize();
 
-            int snakeId = e1.ContainsComponent<Shared.Components.SnakeID>() ? e1.GetComponent<Shared.Components.SnakeID>().id : e2.GetComponent<Shared.Components.SnakeID>().id;
             int? e1SnakeId = null;
             int? e2SnakeId = null;
             if (e1.ContainsComponent<Shared.Components.SnakeID>())
@@ -139,9 +136,6 @@ namespace Systems
                 // Heads both collide, kill everyone
                 Shared.Components.Linkable e1Linkable = e1.GetComponent<Shared.Components.Linkable>();
                 Shared.Components.Linkable e2Linkable = e2.GetComponent<Shared.Components.Linkable>();
-                Console.WriteLine(e1Linkable.chain != e2Linkable.chain);
-                Console.WriteLine(e1Linkable.chain);
-                Console.WriteLine(e2Linkable.chain);
 
                 if (e1.ContainsComponent<Shared.Components.SnakeID>() && e2.ContainsComponent<Shared.Components.SnakeID>())
                 {
@@ -193,6 +187,7 @@ namespace Systems
                 // Hits wall
                 Shared.Entities.Entity currEntity = e1.ContainsComponent<Shared.Components.Linkable>() ? e1 : e2;
                 Shared.Components.Positionable currEntityPos = currEntity.GetComponent<Shared.Components.Positionable>();
+                int snakeId = currEntity.GetComponent<Shared.Components.SnakeID>().id;
                 Server.MessageQueueServer.instance.sendMessage(snakeId, new Shared.Messages.GameOver());
                 Shared.Entities.Entity particle = Shared.Entities.Particle.Create(snakeId, "Images/death", new Rectangle((int)currEntityPos.pos.X, (int)currEntityPos.pos.Y, 0, 0), Color.Red, Shared.Components.ParticleComponent.ParticleType.PlayerDeathParticle, currEntityPos.orientation);
                 addEntity(particle);
