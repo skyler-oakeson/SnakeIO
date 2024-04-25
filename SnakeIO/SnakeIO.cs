@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -18,6 +19,7 @@ namespace SnakeIO
         private SceneContext nextScene;
         private SceneContext currSceneContext;
         private Scene currScene;
+        private List<ulong> highScores; 
 
         public SnakeIO()
         {
@@ -33,8 +35,16 @@ namespace SnakeIO
             // graphics.PreferredBackBufferWidth = 1920;
             // graphics.PreferredBackBufferHeight = 1080;
             // graphics.ApplyChanges();
+
+            highScores = dataManager.Load<List<ulong>>(highScores); 
+            if (highScores == null)
+            {
+                highScores = new List<ulong>();
+            }
+
             scenes.Add(SceneContext.MainMenu, new MainMenuScene(graphics.GraphicsDevice, graphics, controlManager));
             scenes.Add(SceneContext.Options, new OptionScene(graphics.GraphicsDevice, graphics, controlManager));
+            scenes.Add(SceneContext.Scores, new ScoreScene(graphics.GraphicsDevice, graphics, controlManager, dataManager, ref highScores));
             scenes.Add(SceneContext.Game, new GameScene(graphics.GraphicsDevice, graphics, controlManager));
 
 
@@ -51,12 +61,15 @@ namespace SnakeIO
 
         protected override void LoadContent()
         {
+            
             spriteBatch = new SpriteBatch(GraphicsDevice);
             MessageQueueClient.instance.initialize("localhost", 3000);
             foreach (Scene scene in scenes.Values)
             {
                 scene.LoadContent(this.Content);
             }
+           
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -78,8 +91,12 @@ namespace SnakeIO
             nextScene = currScene.ProcessInput(gameTime);
             if (nextScene == SceneContext.Exit)
             {
+                
                 MessageQueueClient.instance.sendMessage(new Shared.Messages.Disconnect());
                 MessageQueueClient.instance.shutdown();
+
+                dataManager.Save<List<ulong>>(highScores); // save the scores.
+                lockout();
                 Exit();
             }
             else if (currSceneContext != nextScene)
@@ -88,6 +105,15 @@ namespace SnakeIO
                 currScene = scenes[nextScene];
                 currSceneContext = nextScene;
                 currScene.SwapScene();
+            }
+        }
+
+
+        private void lockout()
+        {
+            while (dataManager.saving)
+            {
+                //wait
             }
         }
     }
