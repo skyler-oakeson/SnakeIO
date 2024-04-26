@@ -294,6 +294,11 @@ namespace SnakeIO
                 entity.Add(new Shared.Components.Audible(sound));
             }
 
+            if (message.hasInvincible)
+            {
+                entity.Add(new Shared.Components.Invincible((int) message.invincibleMessage.time.TotalMilliseconds));
+            }
+
             if (message.hasCamera)
             {
                 Shared.Components.Positionable position = entity.GetComponent<Shared.Components.Positionable>();
