@@ -37,11 +37,18 @@ namespace Scenes
             AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
                         font, SceneContext.Game, "main", 
                         true, sound, Shared.Components.LinkPosition.Head, 
-                        controlManager, new Rectangle(50, screenHeight-200, 0, 0)));
+                        controlManager, new Rectangle(50, screenHeight-250, 0, 0)));
+
             AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
                         font, SceneContext.Options, "main", false,
                         sound, Shared.Components.LinkPosition.Body,
-                        controlManager, new Rectangle(50, screenHeight-150, 0, 0)));
+                        controlManager, new Rectangle(50, screenHeight-200, 0, 0)));
+
+            AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
+                        font, SceneContext.Scores, "main",
+                        false, sound, Shared.Components.LinkPosition.Body,
+                        controlManager, new Rectangle(50, screenHeight - 150, 0, 0)));
+
             AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
                         font, SceneContext.Exit, "main",
                         false, sound, Shared.Components.LinkPosition.Tail,

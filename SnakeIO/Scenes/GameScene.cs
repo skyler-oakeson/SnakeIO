@@ -1,9 +1,11 @@
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
+using Shared;
 
 namespace Scenes
 {
@@ -19,6 +21,7 @@ namespace Scenes
         private Shared.Entities.Entity textBox;
         private ContentManager contentManager;
         private GameSceneState state = GameSceneState.Input;
+        private List<ulong> highScores;
 
         public GameScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
         {
@@ -28,6 +31,7 @@ namespace Scenes
             this.selector = new Systems.Selector<string>();
             this.renderer = new Systems.Renderer(spriteBatch);
             this.audio = new Systems.Audio();
+            this.highScores = highScores;
         }
 
         override public void LoadContent(ContentManager contentManager)
@@ -49,6 +53,8 @@ namespace Scenes
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
+
+
                 return SceneContext.MainMenu;
             }
 
@@ -121,6 +127,9 @@ namespace Scenes
             Input,
             Game
         }
+
+
+
     }
 }
 
