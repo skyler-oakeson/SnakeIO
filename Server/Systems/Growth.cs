@@ -32,8 +32,9 @@ namespace Systems
                 {
                     Shared.Components.SnakeID snakeID = entity.GetComponent<Shared.Components.SnakeID>();
                     Shared.Components.Linkable linkable = entity.GetComponent<Shared.Components.Linkable>();
+                    Color color = linkable.nextEntity.GetComponent<Shared.Components.Appearance>().color;
                     Rectangle rect = new Rectangle(0, 0, 50, 50);
-                    Shared.Entities.Entity body = Shared.Entities.Body.Create("Images/body", Color.White, rect, $"{snakeID.id}", Shared.Components.LinkPosition.Body);
+                    Shared.Entities.Entity body = Shared.Entities.Body.Create("Images/body", color, rect, $"{snakeID.id}", Shared.Components.LinkPosition.Body);
                     addDelegate(body);
                     Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(body));
                 }

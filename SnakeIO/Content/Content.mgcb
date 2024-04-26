@@ -19,6 +19,12 @@
 /processorParam:Quality=Best
 /build:Audio/bass-hit.wav
 
+#begin Audio/beat.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/beat.wav
+
 #begin Audio/bass-switch.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -161,6 +167,17 @@
 /processorParam:TextureFormat=Color
 /build:images/Tile1.png
 
+#begin images/checkerboard_output.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:images/checkerboard_output.jpg
 
 #begin images/square.png
 /importer:TextureImporter
