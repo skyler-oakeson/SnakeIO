@@ -167,7 +167,6 @@
 /processorParam:TextureFormat=Color
 /build:images/Tile1.png
 
-<<<<<<< HEAD
 #begin images/checkerboard_output.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -227,6 +226,3 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:images/enemy-death.png
-
-=======
->>>>>>> 61c14c9647b01fc2018c40a731d8344e61e2342a
