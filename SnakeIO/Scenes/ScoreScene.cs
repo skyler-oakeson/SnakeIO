@@ -19,20 +19,19 @@ namespace Scenes
         private KeyboardInput keyboardInput;
         private Selector<SceneContext> selector;
         private Audio audio;
-
         private SpriteFont font;
-
-
         private Shared.DataManager dataManager;
         private List<ulong>? scoreValues;
         private List<ulong>? scoresOld;
 
         private List<Shared.Entities.Entity> entityList = new List<Shared.Entities.Entity>();
-
         private bool updateState = false;
 
-
-        public ScoreScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager, Shared.DataManager dataManager, ref List<ulong> scores)
+        public ScoreScene(GraphicsDevice graphicsDevice, 
+                          GraphicsDeviceManager graphics,
+                          Shared.Controls.ControlManager controlManager,
+                          Shared.DataManager dataManager, 
+                          ref List<ulong> scores)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
             this.controlManager = controlManager;
@@ -46,12 +45,10 @@ namespace Scenes
 
         override public void LoadContent(ContentManager contentManager)
         {
-
             int center = graphics.PreferredBackBufferWidth / 2;
             font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
             AddEntity(Shared.Entities.StaticText.Create(font, "High Scores", Color.Black, Color.White, new Rectangle(center - (int)font.MeasureString("High Scores").X / 2, 50 + (int)font.MeasureString("High Scores").Y / 2, 0, 0)));
-
 
             // make a copy of the highscores to check for updates 
 
@@ -71,8 +68,6 @@ namespace Scenes
             {
                 scoreValues.Sort(); // Ensure the highest is last and all in order 
                 scoreValues.Reverse(); // Ensure the highest is first 
-
-
 
                 for (int i = 0; i < scoreValues.Count; i++)
                 {   // Value, entity to add 
@@ -99,10 +94,6 @@ namespace Scenes
 
             return SceneContext.Scores;
         }
-
-
-
-
 
         override public void Render(TimeSpan elapsedTime)
         {
@@ -137,8 +128,6 @@ namespace Scenes
                 scoreValues.Reverse();
                 scoresOld = new List<ulong>(scoreValues); // Remake the new list 
 
-                // new Rectangle(center - (int)font.MeasureString(value).X / 2, 50 + (50 * (i + 1)), 0, 0), font, value
-
                 for (int i = 0; i < scoreValues.Count; i++)
                 {   // Value, entity to add 
                     string value = $"{(i + 1)}. {scoreValues[i].ToString()}";
@@ -164,7 +153,6 @@ namespace Scenes
             selector.Add(entity);
             keyboardInput.Add(entity);
             audio.Add(entity);
-
         }
 
         private void RemoveEntity(Shared.Entities.Entity entity)
@@ -178,26 +166,20 @@ namespace Scenes
         public void updateScores()
         {
             List<ulong> newScores = dataManager.Load<List<ulong>>(scoresOld);
-            while(dataManager.loading) { }
             scoreValues.Clear();
             foreach (var value in newScores)
             {
                 scoreValues.Add(value);
-                
             }
             scoreValues.Sort();
             scoreValues.Reverse();
-
-
         }
 
-       
         private void backUpPrune()
         {
             scoreValues.Sort();
             scoreValues.RemoveAt(0);
             scoreValues.Reverse();
-
         }
     }
 }

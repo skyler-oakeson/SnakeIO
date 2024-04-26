@@ -85,6 +85,11 @@ namespace Shared.Messages
                 this.particleComponent = entity.GetComponent<ParticleComponent>();
             }
 
+            if (entity.ContainsComponent<Components.Invincible>())
+            {
+                this.invincibleComponent = entity.GetComponent<Invincible>();
+            }
+
             if (entity.ContainsComponent<Components.KeyboardControllable>())
             {
                 this.keyboardControllable = entity.GetComponent<Components.KeyboardControllable>();
@@ -172,8 +177,12 @@ namespace Shared.Messages
         public Components.ParticleComponent? particleComponent { get; private set; } = null;
         public Parsers.ParticleParser.ParticleMessage particleMessage { get; private set; }
 
+        // Particle
+        public bool hasInvincible { get; private set; }
+        public Components.Invincible? invincibleComponent { get; private set; } = null;
+        public Parsers.InvincibleParser.InvincibleMessage invincibleMessage { get; private set; }
+
         // Keyboard Input
-        // TODO: Fix this when new input
         public bool hasKeyboardControllable { get; private set; }
         public Components.KeyboardControllable? keyboardControllable { get; private set; } = null;
         public Parsers.KeyboardControllableParser.KeyboardControllableMessage keyboardControllableMessage { get; private set; }
@@ -286,6 +295,13 @@ namespace Shared.Messages
             if (particleComponent != null)
             {
                 particleComponent.Serialize(ref data);
+            }
+
+            // Invincible
+            data.AddRange(BitConverter.GetBytes(invincibleComponent != null));
+            if (invincibleComponent != null)
+            {
+                invincibleComponent.Serialize(ref data);
             }
 
             // Keyboard
@@ -449,6 +465,16 @@ namespace Shared.Messages
                 Parsers.ParticleParser parser = new Parsers.ParticleParser();
                 parser.Parse(ref data, ref offset);
                 this.particleMessage = parser.GetMessage();
+            }
+
+            // Invincible
+            this.hasInvincible = BitConverter.ToBoolean(data, offset);
+            offset += sizeof(bool);
+            if (hasInvincible)
+            {
+                Parsers.InvincibleParser parser = new Parsers.InvincibleParser();
+                parser.Parse(ref data, ref offset);
+                this.invincibleMessage = parser.GetMessage();
             }
 
             // Keyboard

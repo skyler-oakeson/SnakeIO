@@ -35,6 +35,7 @@ namespace Systems
                     Color color = linkable.nextEntity.GetComponent<Shared.Components.Appearance>().color;
                     Rectangle rect = new Rectangle(0, 0, 50, 50);
                     Shared.Entities.Entity body = Shared.Entities.Body.Create("Images/body", color, rect, $"{snakeID.id}", Shared.Components.LinkPosition.Body);
+                    body.Remove<Shared.Components.Invincible>();
                     addDelegate(body);
                     Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(body));
                 }

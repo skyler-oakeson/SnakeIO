@@ -38,6 +38,8 @@ namespace SnakeIO
         private List<Entity> toRemove = new List<Entity>();
         private List<Entity> toAdd = new List<Entity>();
 
+        private List<ulong> highscores;
+
         public GameModel(int height, int width, string playerName)
         {
             this.HEIGHT = height;
@@ -45,7 +47,7 @@ namespace SnakeIO
             this.playerName = playerName;
         }
 
-        public void Initialize(Shared.Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager, GraphicsDeviceManager graphics)
+        public void Initialize(Shared.Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager, GraphicsDeviceManager graphics, ref List<ulong> highscores)
         {
             this.network = new Systems.Network(playerName);
             network.registerNewEntityHandler(handleNewEntity);
@@ -71,6 +73,8 @@ namespace SnakeIO
             // Initialize GameOver
             this.gameOver = new Scenes.GameOverScene(spriteBatch.GraphicsDevice, graphics, controlManager);
             gameOver.LoadContent(contentManager);
+
+            this.highscores = highscores;
 
             this.font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
@@ -167,6 +171,13 @@ namespace SnakeIO
             gameOver.UpdatePlayerStats(clientPlayer.GetComponent<Shared.Components.Growable>().growth.ToString());
             currHud = gameOver;
             RemoveEntity(clientPlayer);
+
+
+            //TODO
+            ulong finalScore = (ulong) clientPlayer.GetComponent<Shared.Components.Growable>().growth;
+            highscores.Add(finalScore);
+
+
         }
 
         private void HandleScores(Shared.Messages.Scores message)
@@ -292,6 +303,11 @@ namespace SnakeIO
             {
                 SoundEffect sound = contentManager.Load<SoundEffect>(message.soundMessage.soundPath);
                 entity.Add(new Shared.Components.Audible(sound));
+            }
+
+            if (message.hasInvincible)
+            {
+                entity.Add(new Shared.Components.Invincible((int) message.invincibleMessage.time.TotalMilliseconds));
             }
 
             if (message.hasCamera)

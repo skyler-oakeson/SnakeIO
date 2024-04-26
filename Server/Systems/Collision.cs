@@ -11,6 +11,7 @@ namespace Systems
     public class Collision : Shared.Systems.System
     {
         private List<Shared.Entities.Entity> removeThese = new List<Shared.Entities.Entity>();
+        private Dictionary<uint, TimeSpan> invincibleTimes = new Dictionary<uint, TimeSpan>();
         private Server.GameModel.RemoveDelegate removeEntity;
         private Server.GameModel.AddDelegate addEntity;
         public Collision(Server.GameModel.AddDelegate addEntity, Server.GameModel.RemoveDelegate removeEntity)
@@ -33,9 +34,12 @@ namespace Systems
                 for (int j = i; j < entityArr.Length; j++)
                 {
                     Shared.Entities.Entity e2 = entityArr[j];
+                    InitializeInvincibility(e1, e2);
                     // if e1 and e2 are not movable, we should not check
                     bool shouldCheck = !(!e1.ContainsComponent<Shared.Components.Movable>() && !e2.ContainsComponent<Shared.Components.Movable>());
-                    if (shouldCheck)
+                    //Make sure no one is Invincible
+                    bool isInvincible = IsInvincible(e1, e2);
+                    if (shouldCheck && !isInvincible)
                     {
                         bool e1IsCircle = (e1.GetComponent<Shared.Components.Collidable>().Data.Shape == Shared.Components.CollidableShape.Circle);
                         bool e2IsCircle = (e1.GetComponent<Shared.Components.Collidable>().Data.Shape == Shared.Components.CollidableShape.Circle);
@@ -58,6 +62,13 @@ namespace Systems
             foreach (Shared.Entities.Entity entity in removeThese)
             {
                 removeEntity(entity);
+            }
+            foreach (var id in invincibleTimes.Keys)
+            {
+                invincibleTimes[id] -= elapsedTime;
+                entities[id].GetComponent<Shared.Components.Invincible>().time = invincibleTimes[id];
+                Shared.Messages.UpdateEntity message = new Shared.Messages.UpdateEntity(entities[id], elapsedTime);
+                Server.MessageQueueServer.instance.broadcastMessageWithLastId(message);
             }
         }
 
@@ -149,7 +160,7 @@ namespace Systems
                     particle = Shared.Entities.Particle.Create(e2SnakeId, "", new Rectangle((int)e2Pos.pos.X, (int)e2Pos.pos.Y, 0, 0), Color.Green, Shared.Components.ParticleComponent.ParticleType.PlayerDeathParticle, e2Pos.orientation);
                     addEntity(particle);
                 }
-                else if (e1Linkable.chain != e2Linkable.chain)
+                else if (e1Linkable.chain != e2Linkable.chain && (e1.ContainsComponent<Shared.Components.SnakeID>() || e2.ContainsComponent<Shared.Components.SnakeID>()))
                 {
                     // Ensure it isn't itself
                     // Find the head of the snake by checking which one has SnakeID
@@ -187,11 +198,14 @@ namespace Systems
                 // Hits wall
                 Shared.Entities.Entity currEntity = e1.ContainsComponent<Shared.Components.Linkable>() ? e1 : e2;
                 Shared.Components.Positionable currEntityPos = currEntity.GetComponent<Shared.Components.Positionable>();
-                int snakeId = currEntity.GetComponent<Shared.Components.SnakeID>().id;
-                Server.MessageQueueServer.instance.sendMessage(snakeId, new Shared.Messages.GameOver());
-                Shared.Entities.Entity particle = Shared.Entities.Particle.Create(snakeId, "Images/death", new Rectangle((int)currEntityPos.pos.X, (int)currEntityPos.pos.Y, 0, 0), Color.Red, Shared.Components.ParticleComponent.ParticleType.PlayerDeathParticle, currEntityPos.orientation);
-                addEntity(particle);
-                RemoveSnake(currEntity);
+                if (currEntity.ContainsComponent<Shared.Components.SnakeID>())
+                {
+                    int snakeId = currEntity.GetComponent<Shared.Components.SnakeID>().id;
+                    Server.MessageQueueServer.instance.sendMessage(snakeId, new Shared.Messages.GameOver());
+                    Shared.Entities.Entity particle = Shared.Entities.Particle.Create(snakeId, "Images/death", new Rectangle((int)currEntityPos.pos.X, (int)currEntityPos.pos.Y, 0, 0), Color.Red, Shared.Components.ParticleComponent.ParticleType.PlayerDeathParticle, currEntityPos.orientation);
+                    addEntity(particle);
+                    RemoveSnake(currEntity);
+                }
             }
         }
 
@@ -206,6 +220,49 @@ namespace Systems
                 addEntity(food);
                 Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(food));
                 Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(snake.id));
+            }
+        }
+
+        private bool IsInvincible(Shared.Entities.Entity e1, Shared.Entities.Entity e2)
+        {
+            if (e1.ContainsComponent<Shared.Components.Invincible>())
+            {
+                Shared.Components.Invincible e1Invincible = e1.GetComponent<Shared.Components.Invincible>();
+                if (invincibleTimes[e1.id] < TimeSpan.Zero)
+                {
+                    invincibleTimes.Remove(e1.id);
+                    e1.Remove<Shared.Components.Invincible>();
+                }
+            }
+            if (e2.ContainsComponent<Shared.Components.Invincible>())
+            {
+                Shared.Components.Invincible e2Invincible = e2.GetComponent<Shared.Components.Invincible>();
+                if (invincibleTimes[e2.id] < TimeSpan.Zero)
+                {
+                    invincibleTimes.Remove(e2.id);
+                    e2.Remove<Shared.Components.Invincible>();
+                }
+            }
+            return (e1.ContainsComponent<Shared.Components.Invincible>() || e2.ContainsComponent<Shared.Components.Invincible>());
+        }
+
+        private void InitializeInvincibility(Shared.Entities.Entity e1, Shared.Entities.Entity e2)
+        {
+            if (e1.ContainsComponent<Shared.Components.Invincible>())
+            {
+                Shared.Components.Invincible e1Invincible = e1.GetComponent<Shared.Components.Invincible>();
+                if (!invincibleTimes.ContainsKey(e1.id))
+                {
+                    invincibleTimes[e1.id] = e1Invincible.time;
+                }
+            }
+            if (e2.ContainsComponent<Shared.Components.Invincible>())
+            {
+                Shared.Components.Invincible e2Invincible = e2.GetComponent<Shared.Components.Invincible>();
+                if (!invincibleTimes.ContainsKey(e2.id))
+                {
+                    invincibleTimes[e2.id] = e2Invincible.time;
+                }
             }
         }
     }

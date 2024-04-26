@@ -42,6 +42,10 @@ namespace Systems
                 {
                     camera = entity.GetComponent<Shared.Components.Camera>();
                 }
+                if (entity.ContainsComponent<Shared.Components.Invincible>())
+                {
+                    entity.GetComponent<Shared.Components.Invincible>().UpdateOpacity();
+                }
                 if (entity.ContainsComponent<Shared.Components.Animatable>())
                 {
                     Shared.Components.Animatable animatable = entity.GetComponent<Shared.Components.Animatable>();
@@ -109,6 +113,7 @@ namespace Systems
         {
             Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
             Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
+            Color color = entity.ContainsComponent<Shared.Components.Invincible>() ? renderable.color * entity.GetComponent<Shared.Components.Invincible>().opacity : renderable.color;
             if (camera != null)
             {
                 Matrix newMatrix = Matrix.Lerp(Matrix.Identity, camera.Transform, camera.LerpAmount);
@@ -134,7 +139,7 @@ namespace Systems
                         renderable.rectangle.Width,
                         renderable.rectangle.Height
                         ),
-                    renderable.color
+                    color
                    );
             sb.End();
         }
@@ -145,6 +150,7 @@ namespace Systems
             {
                 Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
                 Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
+                Color color = entity.ContainsComponent<Shared.Components.Invincible>() ? renderable.color * entity.GetComponent<Shared.Components.Invincible>().opacity : renderable.color;
                 if (camera != null)
                 {
                     Matrix newMatrix = Matrix.Lerp(Matrix.Identity, camera.Transform, camera.LerpAmount);
@@ -162,7 +168,7 @@ namespace Systems
                             renderable.rectangle.Width,
                             renderable.rectangle.Height
                             ),
-                        renderable.color
+                       color
                        );
                 sb.End();
             }
@@ -207,6 +213,7 @@ namespace Systems
             Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
             Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
             Shared.Components.Animatable animatable = entity.GetComponent<Shared.Components.Animatable>();
+            Color color = entity.ContainsComponent<Shared.Components.Invincible>() ? renderable.color * entity.GetComponent<Shared.Components.Invincible>().opacity : renderable.color;
             if (camera != null)
             {
                 Matrix newMatrix = Matrix.Lerp(Matrix.Identity, camera.Transform, camera.LerpAmount);
@@ -225,7 +232,7 @@ namespace Systems
                         renderable.rectangle.Height
                         ),
                     new Rectangle(animatable.subImageIndex * animatable.subImageWidth, 0, animatable.subImageWidth, animatable.spriteSheet.Height), // Source sub-texture
-                    renderable.color,
+                    color,
                     positionable.orientation, // Angular rotation
                     new Vector2(animatable.subImageWidth / 2, animatable.spriteSheet.Height / 2), // Center point of rotation
                     SpriteEffects.None, 0);

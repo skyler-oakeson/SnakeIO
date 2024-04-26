@@ -23,7 +23,7 @@ namespace Scenes
 
         private double interval = 3;
         private double timeSince = 0;
-        private List<Entity> entities = new List<Entity>();
+        private List<Shared.Entities.Entity> entities = new List<Shared.Entities.Entity>();
         private Texture2D fader;
         private float amountFade = 0.0f;
         private bool shouldFade = false;
@@ -42,8 +42,6 @@ namespace Scenes
                                            " C S 5410 ",
                                            " Thanks for Playing "
         };
-
-
         public CreditScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
@@ -51,26 +49,18 @@ namespace Scenes
             this.keyboardInput = new Systems.KeyboardInput(controlManager);
             this.renderer = new Renderer(spriteBatch);
             this.audio = new Audio();
-           
         }
 
         override public void LoadContent(ContentManager contentManager)
         {
-
             center = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
             font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             fader = contentManager.Load<Texture2D>("Images/square");
-           
-            //entities.Add(Shared.Entities.StaticText.Create(font, "Credits", Color.Black, Color.Orange, new Rectangle((int)center.X - (int)font.MeasureString("Credits").X / 2, (int)center.Y - (int)font.MeasureString("Credits").Y / 2, 0, 0)));
-            
+
             foreach (var credit in CREDITSEQUENCE)
             {
                 entities.Add(Shared.Entities.StaticText.Create(font, credit, Color.Black, Color.Orange, new Rectangle((int)center.X - (int)font.MeasureString(credit).X / 2, (int)center.Y - (int)font.MeasureString(credit).Y / 2, 0, 0)));
-                
             }
-
-            //AddEntity(Shared.Entities.StaticText.Create(font, "Created By:");
-
         }
 
         override public SceneContext ProcessInput(GameTime gameTime)
@@ -88,7 +78,6 @@ namespace Scenes
         override public void Render(TimeSpan elapsedTime)
         {
             renderer.Update(elapsedTime); // Make whatever Renderer wants to do first
-
             drawFade(elapsedTime);
         }
 
@@ -102,12 +91,11 @@ namespace Scenes
 
         private void AddEntity(Shared.Entities.Entity entity)
         {
-            
             renderer.Add(entity);
             keyboardInput.Add(entity);
             audio.Add(entity);
-
         }
+
         private void RemoveEntity(Shared.Entities.Entity entity)
         {
             renderer.Remove(entity.id);
@@ -116,28 +104,18 @@ namespace Scenes
         }
 
         private void drawFade(TimeSpan elapsedTime)
-        { 
-
+        {
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-
             spriteBatch.Draw(fader, new Rectangle(0,0,graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.Black * amountFade);
-
             spriteBatch.End();
-
         }
 
         private void animation(TimeSpan elapsedTime)
         {
-
-            if(stage == CREDITSEQUENCE.Length -1 && playing)
+            if (stage == CREDITSEQUENCE.Length - 1 && playing)
             {
                 playing = false;
-                /*RemoveEntity(entities[stage -1]);
-                AddEntity(entities[stage]);*/
-     
             }
-
-            
 
             if (playing)
             {
@@ -177,11 +155,8 @@ namespace Scenes
             else
             {
                 if (amountFade > 0) { amountFade -= 0.01f; }
-                else {  amountFade = 0.0f; }
+                else { amountFade = 0.0f; }
             }
-            
-
-            //Debug.WriteLine(timeSince.ToString());
         }
 
         public void reset()
@@ -192,10 +167,7 @@ namespace Scenes
             RemoveEntity(entities[stage]);
             stage = 0;
             timeSince = 0f;
-
-
         }
-       
     }
 }
 
