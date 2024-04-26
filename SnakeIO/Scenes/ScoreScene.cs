@@ -180,6 +180,7 @@ namespace Scenes
             scoreValues.Sort();
             scoreValues.RemoveAt(0);
             scoreValues.Reverse();
+            dataManager.Save(scoreValues);
         }
     }
 }
