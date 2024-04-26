@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -11,12 +12,14 @@ namespace Systems
         public int[] indexCircleStrip;
         public BasicEffect effect;
         private Shared.Components.Camera? camera = null;
+        private List<Shared.Entities.Entity> renderLast;
 
         public Renderer(SpriteBatch sb)
             : base(typeof(Shared.Components.Appearance))
         {
             this.sb = sb;
 
+            this.renderLast = new List<Shared.Entities.Entity>();
             this.effect = new BasicEffect(sb.GraphicsDevice)
             {
                 VertexColorEnabled = true,
@@ -27,6 +30,7 @@ namespace Systems
                                            sb.GraphicsDevice.Viewport.Height, 0,   // doing this to get it to match the default of upper left of (0, 0)
                                            0.1f, 2)
             };
+
 
         }
 
@@ -97,6 +101,8 @@ namespace Systems
 
                 }
             }
+
+            RenderLast();
         }
 
         private void RenderEntity(Shared.Entities.Entity entity)
@@ -117,43 +123,37 @@ namespace Systems
                 Shared.Components.Linkable link = entity.GetComponent<Shared.Components.Linkable>();
                 if (link.linkPos == Shared.Components.LinkPosition.Head || link.linkPos == Shared.Components.LinkPosition.Tail)
                 {
-                    sb.Draw(
-                        renderable.texture,
-                        new Rectangle(
-                            (int)(positionable.pos.X - renderable.rectangle.Width / 2),
-                            (int)(positionable.pos.Y - renderable.rectangle.Height / 2),
-                            renderable.rectangle.Width,
-                            renderable.rectangle.Height
-                            ),
-                        null,
-                        renderable.color,
-                        0f,
-                        new Vector2(0, 0),
-                        SpriteEffects.None,
-                        0f
-                    );
+                    renderLast.Add(entity);
+                }
+            }
+            sb.Draw(
+                    renderable.texture,
+                    new Rectangle(
+                        (int)(positionable.pos.X - renderable.rectangle.Width / 2),
+                        (int)(positionable.pos.Y - renderable.rectangle.Height / 2),
+                        renderable.rectangle.Width,
+                        renderable.rectangle.Height
+                        ),
+                    renderable.color
+                   );
+            sb.End();
+        }
+
+        private void RenderLast()
+        {
+            foreach (Shared.Entities.Entity entity in renderLast)
+            {
+                Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
+                Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
+                if (camera != null)
+                {
+                    Matrix newMatrix = Matrix.Lerp(Matrix.Identity, camera.Transform, camera.LerpAmount);
+                    sb.Begin(transformMatrix: newMatrix);
                 }
                 else
                 {
-                    sb.Draw(
-                        renderable.texture,
-                        new Rectangle(
-                            (int)(positionable.pos.X - renderable.rectangle.Width / 2),
-                            (int)(positionable.pos.Y - renderable.rectangle.Height / 2),
-                            renderable.rectangle.Width,
-                            renderable.rectangle.Height
-                            ),
-                        null,
-                        renderable.color,
-                        0f,
-                        new Vector2(0, 0),
-                        SpriteEffects.None,
-                        .5f
-                    );
+                    sb.Begin();
                 }
-            }
-            else
-            {
                 sb.Draw(
                         renderable.texture,
                         new Rectangle(
@@ -164,8 +164,9 @@ namespace Systems
                             ),
                         renderable.color
                        );
+                sb.End();
             }
-            sb.End();
+            renderLast.Clear();
         }
 
         private void RenderText(Shared.Entities.Entity entity)
