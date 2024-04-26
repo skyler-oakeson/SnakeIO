@@ -35,7 +35,9 @@ namespace Systems
                     Shared.Entities.Entity e2 = entityArr[j];
                     // if e1 and e2 are not movable, we should not check
                     bool shouldCheck = !(!e1.ContainsComponent<Shared.Components.Movable>() && !e2.ContainsComponent<Shared.Components.Movable>());
-                    if (shouldCheck)
+                    //Make sure no one is Invincible
+                    bool isInvincible = IsInvincible(e1, e2, elapsedTime);
+                    if (shouldCheck && !isInvincible)
                     {
                         bool e1IsCircle = (e1.GetComponent<Shared.Components.Collidable>().Data.Shape == Shared.Components.CollidableShape.Circle);
                         bool e2IsCircle = (e1.GetComponent<Shared.Components.Collidable>().Data.Shape == Shared.Components.CollidableShape.Circle);
@@ -149,7 +151,7 @@ namespace Systems
                     particle = Shared.Entities.Particle.Create(e2SnakeId, "", new Rectangle((int)e2Pos.pos.X, (int)e2Pos.pos.Y, 0, 0), Color.Green, Shared.Components.ParticleComponent.ParticleType.PlayerDeathParticle, e2Pos.orientation);
                     addEntity(particle);
                 }
-                else if (e1Linkable.chain != e2Linkable.chain)
+                else if (e1Linkable.chain != e2Linkable.chain && (e1.ContainsComponent<Shared.Components.SnakeID>() || e2.ContainsComponent<Shared.Components.SnakeID>()))
                 {
                     // Ensure it isn't itself
                     // Find the head of the snake by checking which one has SnakeID
@@ -207,6 +209,39 @@ namespace Systems
                 Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.NewEntity(food));
                 Server.MessageQueueServer.instance.broadcastMessage(new Shared.Messages.RemoveEntity(snake.id));
             }
+        }
+
+        private bool IsInvincible(Shared.Entities.Entity e1, Shared.Entities.Entity e2, TimeSpan elapsedTime)
+        {
+            if (e1.ContainsComponent<Shared.Components.Invincible>())
+            {
+                Shared.Components.Invincible e1Invincible = e1.GetComponent<Shared.Components.Invincible>();
+                Console.WriteLine(e1Invincible.time.TotalMilliseconds - elapsedTime.TotalMilliseconds);
+                Console.WriteLine(elapsedTime.TotalMilliseconds);
+                if (e1Invincible.time > TimeSpan.Zero)
+                {
+                    e1Invincible.time -= elapsedTime;
+                }
+                else
+                {
+                    e1.Remove<Shared.Components.Invincible>();
+                }
+            }
+            if (e2.ContainsComponent<Shared.Components.Invincible>())
+            {
+                Shared.Components.Invincible e2Invincible = e2.GetComponent<Shared.Components.Invincible>();
+                Console.WriteLine(e2Invincible.time.TotalMilliseconds - elapsedTime.TotalMilliseconds);
+                Console.WriteLine(elapsedTime.TotalMilliseconds);
+                if (e2Invincible.time > TimeSpan.Zero)
+                {
+                    e2Invincible.time -= elapsedTime;
+                }
+                else
+                {
+                    e2.Remove<Shared.Components.Invincible>();
+                }
+            }
+            return (e1.ContainsComponent<Shared.Components.Invincible>() && e2.ContainsComponent<Shared.Components.Invincible>());
         }
     }
 }

@@ -23,6 +23,8 @@ namespace Shared.Entities
             Shared.Components.CircleData circleData = new Shared.Components.CircleData { x = rectangle.X, y = rectangle.Y, radius = radius };
             Shared.Components.RectangleData rectangleData = new Shared.Components.RectangleData { };
             body.Add(new Components.Collidable(Shared.Components.CollidableShape.Circle, rectangleData, circleData));
+            // body.Add(new Shared.Components.Invincible(10000));
+            // body.Add(new Components.Audible(sound));
 
             return body;
         }

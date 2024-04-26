@@ -5,12 +5,9 @@ using System;
 using Microsoft.Xna.Framework.Input;
 using Systems;
 using System.Collections.Generic;
-<<<<<<< HEAD
-=======
 using Shared.Entities;
 using Shared.Components;
 using System.Diagnostics;
->>>>>>> 7b4615027248c4ab944b4aaaa008ef6f21639cf1
 
 
 namespace Scenes
