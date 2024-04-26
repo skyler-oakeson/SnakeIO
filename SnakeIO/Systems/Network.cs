@@ -190,6 +190,15 @@ namespace Systems
                     pComponent.lifetime = message.particleMessage.lifetime;
                     pComponent.shouldCreate = message.particleMessage.shouldCreate;
                 }
+                if (entity.ContainsComponent<Invincible>())
+                {
+                    Shared.Components.Invincible invincible = entity.GetComponent<Invincible>();
+                    invincible.time = message.invincibleMessage.time;
+                    if (invincible.time < TimeSpan.Zero)
+                    {
+                        entity.Remove<Shared.Components.Invincible>();
+                    }
+                }
             }
         }
     }

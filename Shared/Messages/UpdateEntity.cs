@@ -22,6 +22,10 @@ namespace Shared.Messages
             {
                 particleComponent = entity.GetComponent<ParticleComponent>();
             }
+            if (entity.ContainsComponent<Invincible>())
+            {
+                invincible = entity.GetComponent<Invincible>();
+            }
 
             this.updateWindow = updateWindow;
         }
@@ -40,10 +44,14 @@ namespace Shared.Messages
         public float growth { get; private set; }
 
         // Particle
-        // Particle
         public bool hasParticle { get; private set; }
         public Components.ParticleComponent? particleComponent { get; private set; } = null;
         public Parsers.ParticleParser.ParticleMessage particleMessage { get; private set; }
+
+        // Invincible
+        public bool hasInvincible { get; private set; }
+        public Components.Invincible? invincible { get; private set; } = null;
+        public Parsers.InvincibleParser.InvincibleMessage invincibleMessage { get; private set; }
 
         // Only the milliseconds are used/serialized
         public TimeSpan updateWindow { get; private set; } = TimeSpan.Zero;
@@ -70,6 +78,12 @@ namespace Shared.Messages
             if (particleComponent != null)
             {
                 particleComponent.Serialize(ref data);
+            }
+
+            data.AddRange(BitConverter.GetBytes(invincible != null));
+            if (invincible != null)
+            {
+                invincible.Serialize(ref data);
             }
 
             data.AddRange(BitConverter.GetBytes(updateWindow.Milliseconds));
@@ -111,6 +125,15 @@ namespace Shared.Messages
                 Parsers.ParticleParser parser = new Parsers.ParticleParser();
                 parser.Parse(ref data, ref offset);
                 this.particleMessage = parser.GetMessage();
+            }
+
+            this.hasInvincible = BitConverter.ToBoolean(data, offset);
+            offset += sizeof(bool);
+            if (hasInvincible)
+            {
+                Parsers.InvincibleParser parser = new Parsers.InvincibleParser();
+                parser.Parse(ref data, ref offset);
+                this.invincibleMessage = parser.GetMessage();
             }
 
             this.updateWindow = new TimeSpan(0, 0, 0, 0, BitConverter.ToInt32(data, offset));

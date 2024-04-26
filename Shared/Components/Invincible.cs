@@ -21,7 +21,6 @@ namespace Shared.Components
 
         public void UpdateOpacity()
         {
-            Console.WriteLine(opacity);
             if (decreaseOpacity)
             {
                 opacity -= .01f;
@@ -34,7 +33,7 @@ namespace Shared.Components
             {
                 decreaseOpacity = true;
             }
-            else if (opacity < .5)
+            else if (opacity < .25)
             {
                 decreaseOpacity = false;
             }

@@ -67,6 +67,8 @@ namespace Systems
             {
                 invincibleTimes[id] -= elapsedTime;
                 entities[id].GetComponent<Shared.Components.Invincible>().time = invincibleTimes[id];
+                Shared.Messages.UpdateEntity message = new Shared.Messages.UpdateEntity(entities[id], elapsedTime);
+                Server.MessageQueueServer.instance.broadcastMessageWithLastId(message);
             }
         }
 
