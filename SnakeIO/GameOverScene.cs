@@ -37,13 +37,9 @@ namespace Scenes
         {
             this.font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
-            this.playerPlace = Shared.Entities.StaticText.Create(font, "", Color.Black, Color.Red, new Rectangle((int)((screenWidth/2)-font.MeasureString("").X/2), 100, 0, 0));
             this.playerScore = Shared.Entities.StaticText.Create(font, "", Color.Black, Color.Red, new Rectangle((int)((screenWidth/2)-font.MeasureString("").X/2), 100, 0, 0));
-            this.playerKills = Shared.Entities.StaticText.Create(font, "", Color.Black, Color.Red, new Rectangle((int)((screenWidth/2)-font.MeasureString("").X/2), 100, 0, 0));
-            AddEntity(playerPlace);
             AddEntity(playerScore);
-            AddEntity(playerKills);
-            AddEntity(Shared.Entities.StaticText.Create(font, "GAME OVER", Color.Black, Color.Red, new Rectangle((int)((screenWidth/2)-font.MeasureString("GAME OVER").X/2), 100, 0, 0)));
+            AddEntity(Shared.Entities.StaticText.Create(font, "GAMEOVER", Color.Black, Color.Red, new Rectangle((int)((screenWidth/2)-font.MeasureString("GAMEOVER").X/2), 100, 0, 0)));
             AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
                         font, SceneContext.MainMenu, "GameOver", 
                         true, sound, Shared.Components.LinkPosition.Head, 
@@ -52,6 +48,7 @@ namespace Scenes
 
         public void UpdatePlayerStats(string score)
         {
+            playerScore.GetComponent<Shared.Components.Readable>().text = score;
         }
 
         override public SceneContext ProcessInput(GameTime gameTime)
@@ -61,8 +58,8 @@ namespace Scenes
             // Return selected scene
             if (selector.selectedVal != default(SceneContext))
             {
-                SceneContext selected = selector.ConsumeSelection();
-                return selected;
+                Console.WriteLine("return");
+                return selector.ConsumeSelection();
             }
 
             return SceneContext.Game;

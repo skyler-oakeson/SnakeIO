@@ -174,7 +174,10 @@ namespace Server
             // }
 
             Color color = playerColors[random.Next(0, playerColors.Count())];
-            Shared.Entities.Entity tail = Shared.Entities.Body.Create("Images/body", color, playerRect, $"{clientId}", Shared.Components.LinkPosition.Tail);
+            Shared.Entities.Entity body = Shared.Entities.Body.Create("Images/body", color, playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
+            MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body));
+            AddEntity(body);
+            Shared.Entities.Entity tail = Shared.Entities.Body.Create("Images/tail", Color.White, playerRect, $"{clientId}", Shared.Components.LinkPosition.Tail);
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(tail));
             AddEntity(tail);
 

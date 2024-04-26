@@ -115,7 +115,7 @@ namespace Systems
             if (entity.ContainsComponent<Shared.Components.Linkable>())
             {
                 Shared.Components.Linkable link = entity.GetComponent<Shared.Components.Linkable>();
-                if (link.linkPos == Shared.Components.LinkPosition.Head)
+                if (link.linkPos == Shared.Components.LinkPosition.Head || link.linkPos == Shared.Components.LinkPosition.Tail)
                 {
                     sb.Draw(
                         renderable.texture,
@@ -143,8 +143,13 @@ namespace Systems
                             renderable.rectangle.Width,
                             renderable.rectangle.Height
                             ),
-                        renderable.color
-                   );
+                        null,
+                        renderable.color,
+                        0f,
+                        new Vector2(0, 0),
+                        SpriteEffects.None,
+                        .5f
+                    );
                 }
             }
             else
@@ -192,7 +197,7 @@ namespace Systems
             {
                 sb.Begin();
             }
-            DrawOutlineText(sb, nameTag.font, nameTag.name, Color.Black, Color.White, 4, new Vector2(positionable.pos.X - 50, positionable.pos.Y - 75), .5f);
+            DrawOutlineText(sb, nameTag.font, nameTag.name, Color.White, Color.Black, 4, new Vector2(positionable.pos.X - 50, positionable.pos.Y - 75), .5f);
             sb.End();
         }
 

@@ -55,8 +55,7 @@ namespace Scenes
             // Return selected scene
             if (selector.selectedVal != default(SceneContext))
             {
-                SceneContext selected = selector.ConsumeSelection();
-                return selected;
+                return selector.ConsumeSelection();
             }
 
             return SceneContext.MainMenu;

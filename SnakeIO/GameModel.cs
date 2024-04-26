@@ -163,6 +163,7 @@ namespace SnakeIO
         {
             //TODO: handle game over
             contentManager.Load<SoundEffect>("Audio/negative").Play();
+            gameOver.UpdatePlayerStats(clientPlayer.GetComponent<Shared.Components.Growable>().growth.ToString());
             currHud = gameOver;
         }
 

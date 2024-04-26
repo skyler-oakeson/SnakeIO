@@ -19,6 +19,12 @@
 /processorParam:Quality=Best
 /build:Audio/bass-hit.wav
 
+#begin Audio/beat.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/beat.wav
+
 #begin Audio/bass-switch.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using Scenes;
 
 namespace SnakeIO
@@ -18,6 +20,7 @@ namespace SnakeIO
         private SceneContext nextScene;
         private SceneContext currSceneContext;
         private Scene currScene;
+        private Song sickAssBeat;
 
         public SnakeIO()
         {
@@ -53,10 +56,24 @@ namespace SnakeIO
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             MessageQueueClient.instance.initialize("localhost", 3000);
+
+            this.sickAssBeat = Content.Load<Song>("Audio/beat");
+            MediaPlayer.Play(sickAssBeat);
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.MediaStateChanged += MediaPlayer_MediaStateChanged;
+
             foreach (Scene scene in scenes.Values)
             {
                 scene.LoadContent(this.Content);
             }
+        }
+
+        void MediaPlayer_MediaStateChanged(object sender, System.
+                                           EventArgs e)
+        {
+            // 0.0f is silent, 1.0f is full volume
+            MediaPlayer.Volume -= 0.1f;
+            MediaPlayer.Play(sickAssBeat);
         }
 
         protected override void Update(GameTime gameTime)
