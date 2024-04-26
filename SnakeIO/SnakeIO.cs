@@ -65,9 +65,8 @@ namespace SnakeIO
 
         protected override void LoadContent()
         {
-            
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            MessageQueueClient.instance.initialize("localhost", 3000);
+            // MessageQueueClient.instance.initialize("localhost", 3000);
 
             this.sickAssBeat = Content.Load<Song>("Audio/beat");
             MediaPlayer.Play(sickAssBeat);

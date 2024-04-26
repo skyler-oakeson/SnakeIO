@@ -168,24 +168,21 @@ namespace SnakeIO
 
         private void HandleGameOver(Shared.Messages.GameOver message)
         {
-            //TODO: handle game over
+            handleFinalScore();
             contentManager.Load<SoundEffect>("Audio/negative").Play();
             gameOver.UpdatePlayerStats(clientPlayer.GetComponent<Shared.Components.Growable>().growth.ToString());
             currHud = gameOver;
             RemoveEntity(clientPlayer);
-
-
-            //TODO
-            handleFinalScore();
-
-
         }
+
         public void handleFinalScore()
         {
-            
-            ulong finalScore = (ulong)clientPlayer.GetComponent<Shared.Components.Growable>().growth;
-            if(highscores.Count <= 0) { highscores.Add(finalScore); }
-            if (highscores[highscores.Count-1] != finalScore) { highscores.Add(finalScore); }
+            if (clientPlayer != null)
+            {
+                ulong finalScore = (ulong)clientPlayer.GetComponent<Shared.Components.Growable>().growth;
+                if (highscores.Count <= 0) { highscores.Add(finalScore); }
+                if (highscores[highscores.Count-1] != finalScore) { highscores.Add(finalScore); }
+            }
         }
 
         public void HandleScores(Shared.Messages.Scores message)

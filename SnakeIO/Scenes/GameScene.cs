@@ -62,7 +62,6 @@ namespace Scenes
             {
                 gameModel.handleFinalScore();
                 dm.Save(highScores);
-                while(dm.saving) { }
                 return SceneContext.MainMenu;
             }
 
@@ -76,7 +75,15 @@ namespace Scenes
 
             if (gameModel != null)
             {
-                return gameModel.ProcessInput(gameTime);
+                Scenes.SceneContext next = gameModel.ProcessInput(gameTime);
+                if (next != Scenes.SceneContext.Game)
+                {
+                    gameModel = null;
+                    SnakeIO.MessageQueueClient.instance.sendMessage(new Shared.Messages.Disconnect());
+                    SnakeIO.MessageQueueClient.instance.shutdown();
+                    state = GameSceneState.Input;
+                }
+                return next;
             }
 
             return SceneContext.Game;
@@ -110,6 +117,7 @@ namespace Scenes
 
         public void StartGame(string name)
         {
+            SnakeIO.MessageQueueClient.instance.initialize("localhost", 3000);
             this.gameModel = new SnakeIO.GameModel(screenHeight, screenWidth, name);
             gameModel.Initialize(controlManager, spriteBatch, contentManager, graphics, ref highScores);
         }

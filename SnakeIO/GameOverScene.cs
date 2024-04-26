@@ -47,7 +47,7 @@ namespace Scenes
             AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
                         font, SceneContext.MainMenu, "GameOver", 
                         true, sound, Shared.Components.LinkPosition.Body, 
-                        controlManager, new Rectangle(50, screenHeight-200, 0, 0)));
+                        controlManager, new Rectangle((int)((screenWidth/2) - font.MeasureString("Main Menu").X/2), screenHeight-200, 0, 0)));
         }
 
         public void UpdatePlayerStats(string score)
@@ -62,9 +62,7 @@ namespace Scenes
             // Return selected scene
             if (selector.selectedVal != default(SceneContext))
             {
-
                 dm.Save(highscores);
-                while (dm.saving) { }
                 return selector.selectedVal;
             }
 
