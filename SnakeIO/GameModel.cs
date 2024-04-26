@@ -70,12 +70,14 @@ namespace SnakeIO
             hud.LoadContent(contentManager);
             currHud = hud;
 
-            // Initialize GameOver
-            this.gameOver = new Scenes.GameOverScene(spriteBatch.GraphicsDevice, graphics, controlManager);
-            gameOver.LoadContent(contentManager);
-
             this.highscores = highscores;
 
+
+            // Initialize GameOver
+            this.gameOver = new Scenes.GameOverScene(spriteBatch.GraphicsDevice, graphics, controlManager, ref highscores);
+            gameOver.LoadContent(contentManager);
+
+          
             this.font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
@@ -174,13 +176,19 @@ namespace SnakeIO
 
 
             //TODO
-            ulong finalScore = (ulong) clientPlayer.GetComponent<Shared.Components.Growable>().growth;
-            highscores.Add(finalScore);
+            handleFinalScore();
 
 
         }
+        public void handleFinalScore()
+        {
+            
+            ulong finalScore = (ulong)clientPlayer.GetComponent<Shared.Components.Growable>().growth;
+            if(highscores.Count == 0) { highscores.Add(finalScore); }
+            if (highscores[highscores.Count-1] != finalScore) { highscores.Add(finalScore); }
+        }
 
-        private void HandleScores(Shared.Messages.Scores message)
+        public void HandleScores(Shared.Messages.Scores message)
         {
             this.scores = message.scores;
         }

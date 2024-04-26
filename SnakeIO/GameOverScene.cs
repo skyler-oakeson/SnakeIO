@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Systems;
+using Shared;
 
 namespace Scenes
 {
@@ -19,8 +20,10 @@ namespace Scenes
         private Shared.Entities.Entity playerKills;
         private Shared.Entities.Entity playerPlace;
         private Shared.Entities.Entity playerScore;
+        private DataManager dm = new DataManager();
+        private List<ulong> highscores;
 
-        public GameOverScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
+        public GameOverScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager, ref List<ulong> highscores )
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
 
@@ -31,6 +34,7 @@ namespace Scenes
             this.renderer = new Renderer(spriteBatch);
             this.audio = new Audio();
             this.linker = new Shared.Systems.Linker();
+            this.highscores = highscores;
         }
 
         override public void LoadContent(ContentManager contentManager)
@@ -58,6 +62,9 @@ namespace Scenes
             // Return selected scene
             if (selector.selectedVal != default(SceneContext))
             {
+
+                dm.Save(highscores);
+                while (dm.saving) { }
                 return selector.selectedVal;
             }
 

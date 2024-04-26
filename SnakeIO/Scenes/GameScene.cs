@@ -21,9 +21,12 @@ namespace Scenes
         private Shared.Entities.Entity textBox;
         private ContentManager contentManager;
         private GameSceneState state = GameSceneState.Input;
+        private DataManager dm;
+
+        private List<ulong> highScores;
        
 
-        public GameScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
+        public GameScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager, DataManager dm)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
             this.controlManager = controlManager;
@@ -31,6 +34,7 @@ namespace Scenes
             this.selector = new Systems.Selector<string>();
             this.renderer = new Systems.Renderer(spriteBatch);
             this.audio = new Systems.Audio();
+            this.dm = dm;
             
         }
 
@@ -47,14 +51,18 @@ namespace Scenes
             AddEntity(outline);
             AddEntity(textInput);
             AddEntity(textBox);
+            highScores = dm.Load<List<ulong>>(highScores);
+            if(highScores == null ) { highScores = new List<ulong>(); }
+
         }
 
         override public SceneContext ProcessInput(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
-
-
+                gameModel.handleFinalScore();
+                dm.Save(highScores);
+                while(dm.saving) { }
                 return SceneContext.MainMenu;
             }
 
@@ -103,7 +111,7 @@ namespace Scenes
         public void StartGame(string name)
         {
             this.gameModel = new SnakeIO.GameModel(screenHeight, screenWidth, name);
-            gameModel.Initialize(controlManager, spriteBatch, contentManager, graphics);
+            gameModel.Initialize(controlManager, spriteBatch, contentManager, graphics, ref highScores);
         }
 
         private void AddEntity(Shared.Entities.Entity entity)
