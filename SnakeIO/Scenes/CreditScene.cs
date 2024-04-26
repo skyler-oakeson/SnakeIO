@@ -30,9 +30,9 @@ namespace Scenes
         private bool playing = true;
         private int stage = 0;
         private String[] CREDITSEQUENCE = {"Credits" ,
-                                           "Programer : Skyler Oakeson",
-                                           "Programer : Zane Hirning",
-                                           "Programer : Robert Gordon",
+                                           "Programmer : Skyler Oakeson",
+                                           "Programmer : Zane Hirning",
+                                           "Programmer : Robert Gordon",
                                            "Art by : Dean Oakeson ",
                                            "Main song : Snake Song",
                                            "Music by : ",
