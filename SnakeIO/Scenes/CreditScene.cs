@@ -112,8 +112,7 @@ namespace Scenes
 
         private void animation(TimeSpan elapsedTime)
         {
-
-            if(stage == CREDITSEQUENCE.Length -1 && playing)
+            if (stage == CREDITSEQUENCE.Length - 1 && playing)
             {
                 playing = false;
             }
@@ -156,7 +155,7 @@ namespace Scenes
             else
             {
                 if (amountFade > 0) { amountFade -= 0.01f; }
-                else {  amountFade = 0.0f; }
+                else { amountFade = 0.0f; }
             }
         }
 
@@ -168,8 +167,6 @@ namespace Scenes
             RemoveEntity(entities[stage]);
             stage = 0;
             timeSince = 0f;
-
-
         }
     }
 }

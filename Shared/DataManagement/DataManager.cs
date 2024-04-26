@@ -60,9 +60,8 @@ namespace Shared
                                 Console.WriteLine($"ERROR LOADING: {e}");
                             }
                         }
-
-                        this.loading = false;
-                    });
+                this.loading = false;
+            });
         }
 
         /// <summary>
@@ -84,28 +83,28 @@ namespace Shared
         private async Task FinalizeSave<T>(Data<T> data)
         {
             await Task.Run(() =>
+                {
+                    using (IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication())
                     {
-                        using (IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication())
+                        try
                         {
-                            try
+                            using (IsolatedStorageFileStream fs = storage.OpenFile(data.filename, FileMode.Create))
                             {
-                                using (IsolatedStorageFileStream fs = storage.OpenFile(data.filename, FileMode.Create))
+                                if (fs != null)
                                 {
-                                    if (fs != null)
-                                    {
-                                        DataContractJsonSerializer mySerializer = new DataContractJsonSerializer(typeof(T));
-                                        mySerializer.WriteObject(fs, data.serializable);
-                                    }
+                                    DataContractJsonSerializer mySerializer = new DataContractJsonSerializer(typeof(T));
+                                    mySerializer.WriteObject(fs, data.serializable);
                                 }
                             }
-                            catch (IsolatedStorageException e)
-                            {
-                                Console.WriteLine($"ERROR SAVING: {e}");
-                            }
                         }
+                        catch (IsolatedStorageException e)
+                        {
+                            Console.WriteLine($"ERROR SAVING: {e}");
+                        }
+                    }
 
-                        this.saving = false;
-                    });
+                    this.saving = false;
+            });
         }
     }
 }
