@@ -32,8 +32,8 @@ namespace Scenes
             SpriteFont font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
             AddEntity(Shared.Entities.StaticText.Create(
-                        font, "SNAKEIO", Color.Black, 
-                        Color.Orange, new Rectangle((int)((screenWidth/2)-font.MeasureString("SNAKEIO").X/2), 100, 0, 0)));
+                        font, "PAINTIO", Color.Black, 
+                        Color.White, new Rectangle((int)((screenWidth/2)-font.MeasureString("SNAKEIO").X/2), 100, 0, 0)));
             AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
                         font, SceneContext.Game, "main", 
                         true, sound, Shared.Components.LinkPosition.Head, 
@@ -59,9 +59,7 @@ namespace Scenes
             // Return selected scene
             if (selector.selectedVal != default(SceneContext))
             {
-                SceneContext selected = selector.selectedVal;
-                selector.selectedVal = default(SceneContext);
-                return selected;
+                return selector.ConsumeSelection();
             }
 
             return SceneContext.MainMenu;
