@@ -142,7 +142,7 @@ namespace SnakeIO
 
         public Scenes.SceneContext ProcessInput(GameTime gameTime)
         {
-            return gameOver.ProcessInput(gameTime);
+            return currHud.ProcessInput(gameTime);
         }
 
         private void handleNewEntity(Shared.Messages.NewEntity message)

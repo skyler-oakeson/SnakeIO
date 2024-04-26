@@ -166,13 +166,6 @@ namespace Server
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));
             players.Add(player);
 
-            // for (int i = 0; i < 20; i++)
-            // {
-            //     Shared.Entities.Entity body = Shared.Entities.Body.Create("Images/body", Color.White, "Audio/bass-switch", playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
-            //     MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body));
-            //     AddEntity(body);
-            // }
-
             Color color = playerColors[random.Next(0, playerColors.Count())];
             Shared.Entities.Entity body = Shared.Entities.Body.Create("Images/body", color, playerRect, $"{clientId}", Shared.Components.LinkPosition.Body);
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(body));

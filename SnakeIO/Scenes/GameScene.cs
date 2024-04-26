@@ -56,7 +56,6 @@ namespace Scenes
 
             if (selector.hasSelected && selector.selectedVal != "")
             {
-                RemoveEntity(this.textBox);
                 state = GameSceneState.Game;
                 StartGame(selector.ConsumeSelection());
             }

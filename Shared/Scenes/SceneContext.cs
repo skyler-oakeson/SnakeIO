@@ -5,6 +5,7 @@ namespace Scenes
     [Flags]
     public enum SceneContext : UInt16
     {
+        Default,
         MainMenu,
         Name,
         Hud,

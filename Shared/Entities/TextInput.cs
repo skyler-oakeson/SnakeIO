@@ -18,7 +18,6 @@ namespace Shared.Entities
         {
             Entity textInput = new Entity();
             textInput.Add(new Shared.Components.Appearance("Fonts/Micro5", typeof(SpriteFont), Color.White, Color.White, new Rectangle(x, y, 0, 0)));
-            // textInput.Add(new Shared.Components.Renderable(background, "Images/text-input-bkg", Color.White, Color.White, new Rectangle(x, y, background.Width, background.Height)));
             textInput.Add(new Shared.Components.Readable(font, "Fonts/Micro5", value.ToString(), Color.White, Color.Black, new Rectangle(x, y-(int)(font.MeasureString("1").X), 0, 0)));
             textInput.Add(new Shared.Components.Audible(sound));
             textInput.Add(new Shared.Components.Positionable(new Vector2(x, y), 0f));

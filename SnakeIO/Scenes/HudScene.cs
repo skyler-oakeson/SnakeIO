@@ -70,7 +70,6 @@ namespace Scenes
 
         override public void Update(TimeSpan elapsedTime)
         {
-            renderer.Update(elapsedTime);
         }
 
         private void AddEntity(Shared.Entities.Entity entity)

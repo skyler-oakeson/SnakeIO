@@ -42,7 +42,7 @@ namespace Scenes
             AddEntity(Shared.Entities.StaticText.Create(font, "GAMEOVER", Color.Black, Color.Red, new Rectangle((int)((screenWidth/2)-font.MeasureString("GAMEOVER").X/2), 100, 0, 0)));
             AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
                         font, SceneContext.MainMenu, "GameOver", 
-                        true, sound, Shared.Components.LinkPosition.Head, 
+                        true, sound, Shared.Components.LinkPosition.Body, 
                         controlManager, new Rectangle(50, screenHeight-200, 0, 0)));
         }
 
@@ -58,8 +58,7 @@ namespace Scenes
             // Return selected scene
             if (selector.selectedVal != default(SceneContext))
             {
-                Console.WriteLine("return");
-                return selector.ConsumeSelection();
+                return selector.selectedVal;
             }
 
             return SceneContext.Game;
