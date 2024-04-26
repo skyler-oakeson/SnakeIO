@@ -28,6 +28,8 @@ namespace SnakeIO
         private string playerName;
         private SpriteFont font;
         private Scenes.HudScene hud;
+        private Scenes.GameOverScene gameOver;
+        private Scenes.Scene currHud;
 
         private ContentManager contentManager;
         private Shared.Controls.ControlManager controlManager;
@@ -60,10 +62,15 @@ namespace SnakeIO
             this.audio = new Systems.Audio();
             this.linker = new Shared.Systems.Linker();
             this.contentManager = contentManager;
-
+            this.scores = new (string, float)[0];
             // Initialize HUD
             this.hud = new Scenes.HudScene(spriteBatch.GraphicsDevice, graphics, controlManager);
             hud.LoadContent(contentManager);
+            currHud = hud;
+
+            // Initialize GameOver
+            this.gameOver = new Scenes.GameOverScene(spriteBatch.GraphicsDevice, graphics, controlManager);
+            gameOver.LoadContent(contentManager);
 
             this.font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
@@ -77,9 +84,11 @@ namespace SnakeIO
             keyboardInput.Update(elapsedTime);
             mouseInput.Update(elapsedTime);
             movement.Update(elapsedTime);
+            linker.Update(elapsedTime);
             interpolation.Update(elapsedTime);
             audio.Update(elapsedTime);
             linker.Update(elapsedTime);
+            currHud.Update(elapsedTime);
 
             if (clientPlayer != null)
             {
@@ -91,7 +100,7 @@ namespace SnakeIO
         public void Render(TimeSpan elapsedTime)
         {
             renderer.Update(elapsedTime);
-            hud.Render(elapsedTime);
+            currHud.Render(elapsedTime);
         }
 
         private void AddEntity(Entity entity)
@@ -132,6 +141,11 @@ namespace SnakeIO
             entities.Remove(id);
         }
 
+        public Scenes.SceneContext ProcessInput(GameTime gameTime)
+        {
+            return currHud.ProcessInput(gameTime);
+        }
+
         private void handleNewEntity(Shared.Messages.NewEntity message)
         {
             if (!entities.ContainsKey(message.id))
@@ -150,6 +164,8 @@ namespace SnakeIO
         {
             //TODO: handle game over
             contentManager.Load<SoundEffect>("Audio/negative").Play();
+            gameOver.UpdatePlayerStats(clientPlayer.GetComponent<Shared.Components.Growable>().growth.ToString());
+            currHud = gameOver;
             RemoveEntity(clientPlayer);
         }
 

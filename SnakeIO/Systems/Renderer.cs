@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -11,12 +12,14 @@ namespace Systems
         public int[] indexCircleStrip;
         public BasicEffect effect;
         private Shared.Components.Camera? camera = null;
+        private List<Shared.Entities.Entity> renderLast;
 
         public Renderer(SpriteBatch sb)
             : base(typeof(Shared.Components.Appearance))
         {
             this.sb = sb;
 
+            this.renderLast = new List<Shared.Entities.Entity>();
             this.effect = new BasicEffect(sb.GraphicsDevice)
             {
                 VertexColorEnabled = true,
@@ -27,6 +30,7 @@ namespace Systems
                                            sb.GraphicsDevice.Viewport.Height, 0,   // doing this to get it to match the default of upper left of (0, 0)
                                            0.1f, 2)
             };
+
 
         }
 
@@ -97,6 +101,8 @@ namespace Systems
 
                 }
             }
+
+            RenderLast();
         }
 
         private void RenderEntity(Shared.Entities.Entity entity)
@@ -112,6 +118,14 @@ namespace Systems
             {
                 sb.Begin();
             }
+            if (entity.ContainsComponent<Shared.Components.Linkable>())
+            {
+                Shared.Components.Linkable link = entity.GetComponent<Shared.Components.Linkable>();
+                if (link.linkPos == Shared.Components.LinkPosition.Head || link.linkPos == Shared.Components.LinkPosition.Tail)
+                {
+                    renderLast.Add(entity);
+                }
+            }
             sb.Draw(
                     renderable.texture,
                     new Rectangle(
@@ -123,6 +137,36 @@ namespace Systems
                     renderable.color
                    );
             sb.End();
+        }
+
+        private void RenderLast()
+        {
+            foreach (Shared.Entities.Entity entity in renderLast)
+            {
+                Shared.Components.Positionable positionable = entity.GetComponent<Shared.Components.Positionable>();
+                Shared.Components.Renderable renderable = entity.GetComponent<Shared.Components.Renderable>();
+                if (camera != null)
+                {
+                    Matrix newMatrix = Matrix.Lerp(Matrix.Identity, camera.Transform, camera.LerpAmount);
+                    sb.Begin(transformMatrix: newMatrix);
+                }
+                else
+                {
+                    sb.Begin();
+                }
+                sb.Draw(
+                        renderable.texture,
+                        new Rectangle(
+                            (int)(positionable.pos.X - renderable.rectangle.Width / 2),
+                            (int)(positionable.pos.Y - renderable.rectangle.Height / 2),
+                            renderable.rectangle.Width,
+                            renderable.rectangle.Height
+                            ),
+                        renderable.color
+                       );
+                sb.End();
+            }
+            renderLast.Clear();
         }
 
         private void RenderText(Shared.Entities.Entity entity)
@@ -154,7 +198,7 @@ namespace Systems
             {
                 sb.Begin();
             }
-            DrawOutlineText(sb, nameTag.font, nameTag.name, Color.Black, Color.White, 4, new Vector2(positionable.pos.X - 50, positionable.pos.Y - 75), .5f);
+            DrawOutlineText(sb, nameTag.font, nameTag.name, Color.White, Color.Black, 4, new Vector2(positionable.pos.X - 50, positionable.pos.Y - 75), .5f);
             sb.End();
         }
 

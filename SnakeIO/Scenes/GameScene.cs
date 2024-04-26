@@ -1,9 +1,11 @@
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
+using Shared;
 
 namespace Scenes
 {
@@ -19,6 +21,7 @@ namespace Scenes
         private Shared.Entities.Entity textBox;
         private ContentManager contentManager;
         private GameSceneState state = GameSceneState.Input;
+       
 
         public GameScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
         {
@@ -28,6 +31,7 @@ namespace Scenes
             this.selector = new Systems.Selector<string>();
             this.renderer = new Systems.Renderer(spriteBatch);
             this.audio = new Systems.Audio();
+            
         }
 
         override public void LoadContent(ContentManager contentManager)
@@ -37,7 +41,7 @@ namespace Scenes
             Texture2D background = contentManager.Load<Texture2D>("Images/text-input-bkg");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
             string title = "ENTER YOUR NAME";
-            this.textBox = Shared.Entities.StaticText.Create(font, title, Color.Black, Color.Orange, new Rectangle((int)((screenWidth/2)-(font.MeasureString(title).X/2)), 50, 0, 0));
+            this.textBox = Shared.Entities.StaticText.Create(font, title, Color.Black, Color.White, new Rectangle((int)((screenWidth/2)-(font.MeasureString(title).X/2)), 50, 0, 0));
             this.textInput = Shared.Entities.TextInput.Create(font, background, sound, "", true, screenWidth/2, (screenHeight/2)-15);
             this.outline = Shared.Entities.StaticImage.Create(background, "Images/text-input-bkg", screenWidth/2, screenHeight/2);
             AddEntity(outline);
@@ -49,6 +53,8 @@ namespace Scenes
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
+
+
                 return SceneContext.MainMenu;
             }
 
@@ -56,9 +62,13 @@ namespace Scenes
 
             if (selector.hasSelected && selector.selectedVal != "")
             {
-                RemoveEntity(this.textBox);
                 state = GameSceneState.Game;
                 StartGame(selector.ConsumeSelection());
+            }
+
+            if (gameModel != null)
+            {
+                return gameModel.ProcessInput(gameTime);
             }
 
             return SceneContext.Game;
@@ -117,6 +127,9 @@ namespace Scenes
             Input,
             Game
         }
+
+
+
     }
 }
 

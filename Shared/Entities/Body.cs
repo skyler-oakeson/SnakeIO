@@ -18,16 +18,11 @@ namespace Shared.Entities
             body.Add(new Components.Appearance(texture, typeof(Texture2D), color, Color.Black, rectangle));
             body.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
             body.Add(new Shared.Components.Movable(new Vector2(0, 0)));
-            // body.Add(new Shared.Components.Animatable(new int[25] { 40, 40, 40, 40, 40,
-            //                                                           40, 40, 40, 40, 40,
-            //                                                           40, 40, 40, 40, 40,
-            //                                                           40, 40, 40, 40, 40,
-            //                                                           40, 40, 40, 40, 40 }));
+
             int radius = rectangle.Width >= rectangle.Height ? rectangle.Width / 2 : rectangle.Height / 2;
             Shared.Components.CircleData circleData = new Shared.Components.CircleData { x = rectangle.X, y = rectangle.Y, radius = radius };
             Shared.Components.RectangleData rectangleData = new Shared.Components.RectangleData { };
             body.Add(new Components.Collidable(Shared.Components.CollidableShape.Circle, rectangleData, circleData));
-            // body.Add(new Components.Audible(sound));
 
             return body;
         }
@@ -43,9 +38,7 @@ namespace Shared.Entities
                 Components.Movable prevMov = rootLink.prevEntity.GetComponent<Components.Movable>();
 
                 Vector2 offset = prevMov.velocity;
-                // offset = offset * radius;
-                // rootPos.pos = prevPos.prevPos - offset;
-                rootPos.UpdatePosition(prevPos.prevPos - offset);
+                rootPos.UpdatePosition(prevPos.prevPos);
             }
         });
     }

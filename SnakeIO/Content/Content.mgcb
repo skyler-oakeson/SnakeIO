@@ -19,6 +19,12 @@
 /processorParam:Quality=Best
 /build:Audio/bass-hit.wav
 
+#begin Audio/beat.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/beat.wav
+
 #begin Audio/bass-switch.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -37,6 +43,32 @@
 /processorParam:Quality=Best
 /build:Audio/negative.wav
 
+#begin Fonts/Micro5-100.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Color
+/build:Fonts/Micro5-100.spritefont
+
+#begin Fonts/Micro5-50.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Color
+/build:Fonts/Micro5-50.spritefont
+
+#begin images/body.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:images/body.png
+
 #begin images/food.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -48,6 +80,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:images/food.png
+
+#begin images/head.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:images/head.png
 
 #begin images/player.png
 /importer:TextureImporter
@@ -97,22 +141,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/head.png
+/build:images/square.png
 
-#begin images/BodySS.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:images/body.png
-
-
-#begin images/TailSS.png
+#begin images/tail.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -123,7 +154,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:images/tail.png
-
 
 #begin images/Tile1.png
 /importer:TextureImporter
@@ -137,6 +167,17 @@
 /processorParam:TextureFormat=Color
 /build:images/Tile1.png
 
+#begin images/checkerboard_output.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:images/checkerboard_output.jpg
 
 #begin images/square.png
 /importer:TextureImporter
@@ -185,4 +226,3 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:images/enemy-death.png
-
