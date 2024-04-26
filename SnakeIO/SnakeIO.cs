@@ -106,12 +106,12 @@ namespace SnakeIO
             nextScene = currScene.ProcessInput(gameTime);
             if (nextScene == SceneContext.Exit)
             {
-                
+                dataManager.Save<List<ulong>>(highScores); // save the scores.
+                lockout();
                 MessageQueueClient.instance.sendMessage(new Shared.Messages.Disconnect());
                 MessageQueueClient.instance.shutdown();
 
-                dataManager.Save<List<ulong>>(highScores); // save the scores.
-                lockout();
+                
                 Exit();
             }
             else if (currSceneContext != nextScene)
