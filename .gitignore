@@ -9,6 +9,7 @@ Installers/Linux/tmp_run/
 *.deb
 
 #Visual Studio files
+.vs/
 *.pidb
 *.userprefs
 *.[Oo]bj
