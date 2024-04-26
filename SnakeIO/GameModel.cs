@@ -165,6 +165,7 @@ namespace SnakeIO
             contentManager.Load<SoundEffect>("Audio/negative").Play();
             gameOver.UpdatePlayerStats(clientPlayer.GetComponent<Shared.Components.Growable>().growth.ToString());
             currHud = gameOver;
+            RemoveEntity(clientPlayer);
         }
 
         private void HandleScores(Shared.Messages.Scores message)
