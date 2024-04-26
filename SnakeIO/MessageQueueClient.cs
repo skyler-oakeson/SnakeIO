@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -79,11 +80,17 @@ namespace SnakeIO
         /// </summary>
         public void shutdown()
         {
-            m_keepRunning = false;
-            m_eventSendMessages.Set();
-            m_socketServer.Shutdown(SocketShutdown.Both);
-            m_socketServer.Disconnect(false);
-            m_socketServer.Close();
+            try
+            {
+                m_keepRunning = false;
+                m_eventSendMessages.Set();
+                m_socketServer.Shutdown(SocketShutdown.Both);
+                m_socketServer.Disconnect(false);
+                m_socketServer.Close();
+            } catch (SocketException e)
+            {
+                Debug.WriteLine(e);
+            }
         }
 
         /// <summary>
