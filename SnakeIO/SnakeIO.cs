@@ -49,6 +49,7 @@ namespace SnakeIO
             scenes.Add(SceneContext.Options, new OptionScene(graphics.GraphicsDevice, graphics, controlManager));
             scenes.Add(SceneContext.Scores, new ScoreScene(graphics.GraphicsDevice, graphics, controlManager, dataManager, ref highScores));
             scenes.Add(SceneContext.Game, new GameScene(graphics.GraphicsDevice, graphics, controlManager));
+            scenes.Add(SceneContext.Credits, new CreditScene(graphics.GraphicsDevice, graphics, controlManager));
 
 
             foreach (Scene scene in scenes.Values)
