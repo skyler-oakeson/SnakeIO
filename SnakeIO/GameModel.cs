@@ -184,7 +184,7 @@ namespace SnakeIO
         {
             
             ulong finalScore = (ulong)clientPlayer.GetComponent<Shared.Components.Growable>().growth;
-            if(highscores.Count == 0) { highscores.Add(finalScore); }
+            if(highscores.Count <= 0) { highscores.Add(finalScore); }
             if (highscores[highscores.Count-1] != finalScore) { highscores.Add(finalScore); }
         }
 
