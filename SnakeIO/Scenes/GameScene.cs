@@ -26,7 +26,7 @@ namespace Scenes
         private List<ulong> highScores;
        
 
-        public GameScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager, DataManager dm)
+        public GameScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager, DataManager dm, ref List<ulong> highscores)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
             this.controlManager = controlManager;
@@ -35,6 +35,7 @@ namespace Scenes
             this.renderer = new Systems.Renderer(spriteBatch);
             this.audio = new Systems.Audio();
             this.dm = dm;
+            this.highScores = highscores;
             
         }
 
@@ -51,7 +52,6 @@ namespace Scenes
             AddEntity(outline);
             AddEntity(textInput);
             AddEntity(textBox);
-            highScores = dm.Load<List<ulong>>(highScores);
             if(highScores == null ) { highScores = new List<ulong>(); }
 
         }
