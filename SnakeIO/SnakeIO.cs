@@ -100,11 +100,8 @@ namespace SnakeIO
             if (nextScene == SceneContext.Exit)
             {
                 dataManager.Save<List<ulong>>(highScores); // save the scores.
-                lockout();
                 MessageQueueClient.instance.sendMessage(new Shared.Messages.Disconnect());
                 MessageQueueClient.instance.shutdown();
-
-                
                 Exit();
             }
             else if (currSceneContext != nextScene)
@@ -113,15 +110,6 @@ namespace SnakeIO
                 currScene = scenes[nextScene];
                 currSceneContext = nextScene;
                 currScene.SwapScene();
-            }
-        }
-
-
-        private void lockout()
-        {
-            while (dataManager.saving)
-            {
-                //wait
             }
         }
     }

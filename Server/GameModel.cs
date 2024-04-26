@@ -145,7 +145,6 @@ namespace Server
             clients.Remove(clientId);
             Shared.Messages.Message message = new Shared.Messages.RemoveEntity(clientToEntityId[clientId]);
             MessageQueueServer.instance.broadcastMessage(message);
-            RemoveEntity(entities[clientToEntityId[clientId]]);
             clientToEntityId.Remove(clientId);
         }
 
