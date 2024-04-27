@@ -89,6 +89,7 @@ namespace Scenes
                 {
                     scoreDisplays[i].GetComponent<Shared.Components.Readable>().text = $"{i}. {scores[i].score}";
                 }
+                scores.Sort(new Comparison<Shared.HighScores.HighScore>((h1, h2) => h2.score.CompareTo(h1.score)));
                 reload = false;
             }
         }
