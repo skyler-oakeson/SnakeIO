@@ -27,10 +27,10 @@ namespace Scenes
         private List<Shared.Entities.Entity> entityList = new List<Shared.Entities.Entity>();
         private bool updateState = false;
 
-        public ScoreScene(GraphicsDevice graphicsDevice, 
+        public ScoreScene(GraphicsDevice graphicsDevice,
                           GraphicsDeviceManager graphics,
                           Shared.Controls.ControlManager controlManager,
-                          Shared.DataManager dataManager, 
+                          Shared.DataManager dataManager,
                           ref List<ulong> scores)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
@@ -50,10 +50,10 @@ namespace Scenes
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
             AddEntity(Shared.Entities.StaticText.Create(font, "High Scores", Color.Black, Color.White, new Rectangle(center - (int)font.MeasureString("High Scores").X / 2, 50 + (int)font.MeasureString("High Scores").Y / 2, 0, 0)));
 
-            // make a copy of the highscores to check for updates 
+            // make a copy of the highscores to check for updates
 
-            scoreValues.Sort(); // Ensure the highest is last and all in order 
-            scoreValues.Reverse(); // Ensure the highest is first 
+            scoreValues.Sort(); // Ensure the highest is last and all in order
+            scoreValues.Reverse(); // Ensure the highest is first
             scoresOld = new List<ulong>(scoreValues);
             scoresOld.Sort();
             scoresOld.Reverse();
@@ -66,11 +66,11 @@ namespace Scenes
             }
             else
             {
-                scoreValues.Sort(); // Ensure the highest is last and all in order 
-                scoreValues.Reverse(); // Ensure the highest is first 
+                scoreValues.Sort(); // Ensure the highest is last and all in order
+                scoreValues.Reverse(); // Ensure the highest is first
 
                 for (int i = 0; i < scoreValues.Count; i++)
-                {   // Value, entity to add 
+                {   // Value, entity to add
                     string value = scoreValues[i].ToString();
                     entityList.Add(Shared.Entities.StaticText.Create(font, value, Color.Black, Color.White, new Rectangle(center - (int)font.MeasureString(value).X / 2, 50 + (50 * (i + 1)) + (int)font.MeasureString(value).Y, 0, 0)));
                 }
@@ -108,7 +108,7 @@ namespace Scenes
                 updateState = false;
                 updateScores();
             }
-            
+
             if(scoreValues.Count > 5)
             {
                 backUpPrune();
@@ -126,10 +126,10 @@ namespace Scenes
                 entityList.Clear();
                 scoreValues.Sort();
                 scoreValues.Reverse();
-                scoresOld = new List<ulong>(scoreValues); // Remake the new list 
+                scoresOld = new List<ulong>(scoreValues); // Remake the new list
 
                 for (int i = 0; i < scoreValues.Count; i++)
-                {   // Value, entity to add 
+                {   // Value, entity to add
                     string value = $"{(i + 1)}. {scoreValues[i].ToString()}";
                     entityList.Add(Shared.Entities.StaticText.Create(font, value, Color.Black, Color.White, new Rectangle(center - (int)font.MeasureString(value).X / 2, 50 + (50 * (i + 1)) + (int)font.MeasureString(value).Y, 0, 0)));
                 }

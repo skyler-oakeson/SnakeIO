@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -77,7 +78,7 @@ namespace SnakeIO
             this.gameOver = new Scenes.GameOverScene(spriteBatch.GraphicsDevice, graphics, controlManager, ref highscores);
             gameOver.LoadContent(contentManager);
 
-          
+
             this.font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             Texture2D foodTex = contentManager.Load<Texture2D>("Images/food");
             Texture2D playerTex = contentManager.Load<Texture2D>("Images/player");
@@ -149,6 +150,10 @@ namespace SnakeIO
 
         public Scenes.SceneContext ProcessInput(GameTime gameTime)
         {
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
+                return Scenes.SceneContext.MainMenu;
+            }
             return currHud.ProcessInput(gameTime);
         }
 

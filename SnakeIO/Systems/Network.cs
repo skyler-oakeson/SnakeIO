@@ -18,6 +18,7 @@ namespace Systems
         public delegate void ScoresHandler(Shared.Messages.Scores message);
 
         private Dictionary<Shared.Messages.Type, Handler> commandMap = new Dictionary<Shared.Messages.Type, Handler>();
+
         private RemoveEntityHandler removeEntityHandler;
         private NewEntityHandler newEntityHandler;
         private GameOverHandler gameOverHandler;
@@ -33,7 +34,6 @@ namespace Systems
         public Network(string name) :
             base(typeof(Shared.Components.Positionable))
         {
-
             registerHandler(Shared.Messages.Type.ConnectAck, (TimeSpan elapsedTime, Message message) =>
             {
                 handleConnectAck(elapsedTime, (ConnectAck)message, name);

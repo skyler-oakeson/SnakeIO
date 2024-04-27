@@ -24,7 +24,7 @@ namespace Scenes
         private DataManager dm;
 
         private List<ulong> highScores;
-       
+
 
         public GameScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager, DataManager dm, ref List<ulong> highscores)
         {
@@ -36,7 +36,7 @@ namespace Scenes
             this.audio = new Systems.Audio();
             this.dm = dm;
             this.highScores = highscores;
-            
+
         }
 
         override public void LoadContent(ContentManager contentManager)
@@ -46,25 +46,18 @@ namespace Scenes
             Texture2D background = contentManager.Load<Texture2D>("Images/text-input-bkg");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
             string title = "ENTER YOUR NAME";
-            this.textBox = Shared.Entities.StaticText.Create(font, title, Color.Black, Color.White, new Rectangle((int)((screenWidth/2)-(font.MeasureString(title).X/2)), 50, 0, 0));
-            this.textInput = Shared.Entities.TextInput.Create(font, background, sound, "", true, screenWidth/2, (screenHeight/2)-15);
-            this.outline = Shared.Entities.StaticImage.Create(background, "Images/text-input-bkg", screenWidth/2, screenHeight/2);
+            this.textBox = Shared.Entities.StaticText.Create(font, title, Color.Black, Color.White, new Rectangle((int)((screenWidth / 2) - (font.MeasureString(title).X / 2)), 50, 0, 0));
+            this.textInput = Shared.Entities.TextInput.Create(font, background, sound, "", true, screenWidth / 2, (screenHeight / 2) - 15);
+            this.outline = Shared.Entities.StaticImage.Create(background, "Images/text-input-bkg", screenWidth / 2, screenHeight / 2);
             AddEntity(outline);
             AddEntity(textInput);
             AddEntity(textBox);
-            if(highScores == null ) { highScores = new List<ulong>(); }
+            if (highScores == null) { highScores = new List<ulong>(); }
 
         }
 
         override public SceneContext ProcessInput(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
-                gameModel.handleFinalScore();
-                dm.Save(highScores);
-                return SceneContext.MainMenu;
-            }
-
             selector.Update(gameTime.ElapsedGameTime);
 
             if (selector.hasSelected && selector.selectedVal != "")
@@ -78,6 +71,8 @@ namespace Scenes
                 Scenes.SceneContext next = gameModel.ProcessInput(gameTime);
                 if (next != Scenes.SceneContext.Game)
                 {
+                    gameModel.handleFinalScore();
+                    dm.Save(highScores);
                     gameModel = null;
                     SnakeIO.MessageQueueClient.instance.sendMessage(new Shared.Messages.Disconnect());
                     SnakeIO.MessageQueueClient.instance.shutdown();
@@ -93,7 +88,10 @@ namespace Scenes
         {
             if (state == GameSceneState.Game)
             {
-                gameModel.Render(elapsedTime);
+                if (gameModel != null)
+                {
+                    gameModel.Render(elapsedTime);
+                }
             }
             else if (state == GameSceneState.Input)
             {
@@ -105,7 +103,10 @@ namespace Scenes
         {
             if (state == GameSceneState.Game)
             {
-                gameModel.Update(elapsedTime);
+                if (gameModel != null)
+                {
+                    gameModel.Update(elapsedTime);
+                }
             }
             else if (state == GameSceneState.Input)
             {
@@ -143,9 +144,6 @@ namespace Scenes
             Input,
             Game
         }
-
-
-
     }
 }
 

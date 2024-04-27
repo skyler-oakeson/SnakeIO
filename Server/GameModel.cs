@@ -160,6 +160,8 @@ namespace Server
         {
             reportAllEntities(clientId);
 
+            Console.WriteLine("HANDLE JOIN");
+
             Rectangle playerRect = new Rectangle(0, 0, 50, 50); //TODO: update width and height
             Shared.Entities.Entity player = Shared.Entities.Player.Create(clientId, message.name, "Images/head", Color.White, playerRect, $"{clientId}");
             MessageQueueServer.instance.sendMessage(clientId, new Shared.Messages.NewEntity(player));

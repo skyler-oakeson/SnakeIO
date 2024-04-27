@@ -23,7 +23,7 @@ namespace Scenes
         private DataManager dm = new DataManager();
         private List<ulong> highscores;
 
-        public GameOverScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager, ref List<ulong> highscores )
+        public GameOverScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager, ref List<ulong> highscores)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
 
@@ -41,13 +41,13 @@ namespace Scenes
         {
             this.font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
-            this.playerScore = Shared.Entities.StaticText.Create(font, "", Color.Black, Color.Red, new Rectangle((int)((screenWidth/2)-font.MeasureString("").X/2), 100, 0, 0));
+            this.playerScore = Shared.Entities.StaticText.Create(font, "", Color.Black, Color.Red, new Rectangle((int)((screenWidth / 2) - font.MeasureString("").X / 2), 100, 0, 0));
             AddEntity(playerScore);
-            AddEntity(Shared.Entities.StaticText.Create(font, "GAMEOVER", Color.Black, Color.Red, new Rectangle((int)((screenWidth/2)-font.MeasureString("GAMEOVER").X/2), 100, 0, 0)));
+            AddEntity(Shared.Entities.StaticText.Create(font, "GAMEOVER", Color.Black, Color.Red, new Rectangle((int)((screenWidth / 2) - font.MeasureString("GAMEOVER").X / 2), 100, 0, 0)));
             AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
-                        font, SceneContext.MainMenu, "GameOver", 
-                        true, sound, Shared.Components.LinkPosition.Body, 
-                        controlManager, new Rectangle((int)((screenWidth/2) - font.MeasureString("Main Menu").X/2), screenHeight-200, 0, 0)));
+                        font, SceneContext.MainMenu, "GameOver",
+                        true, sound, Shared.Components.LinkPosition.Body,
+                        controlManager, new Rectangle((int)((screenWidth / 2) - font.MeasureString("Main Menu").X / 2), screenHeight - 200, 0, 0)));
         }
 
         public void UpdatePlayerStats(string score)
