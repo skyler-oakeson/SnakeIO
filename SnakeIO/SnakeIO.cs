@@ -22,7 +22,6 @@ namespace SnakeIO
         private SceneContext currSceneContext;
         private Scene currScene;
         private Song sickAssBeat;
-        private List<ulong> highScores; 
 
         public SnakeIO()
         {
@@ -39,16 +38,15 @@ namespace SnakeIO
             // graphics.PreferredBackBufferHeight = 1080;
             // graphics.ApplyChanges();
 
-            highScores = dataManager.Load<List<ulong>>(highScores); 
-            if (highScores == null)
-            {
-                highScores = new List<ulong>();
-            }
-
             scenes.Add(SceneContext.MainMenu, new MainMenuScene(graphics.GraphicsDevice, graphics, controlManager));
             scenes.Add(SceneContext.Options, new OptionScene(graphics.GraphicsDevice, graphics, controlManager));
-            scenes.Add(SceneContext.Scores, new ScoreScene(graphics.GraphicsDevice, graphics, controlManager, dataManager, ref highScores));
-            scenes.Add(SceneContext.Game, new GameScene(graphics.GraphicsDevice, graphics, controlManager, dataManager, ref highScores));
+            scenes.Add(SceneContext.Scores, new ScoreScene(graphics.GraphicsDevice, graphics, controlManager, dataManager));
+            scenes.Add(SceneContext.Game, new GameScene(
+                        graphics.GraphicsDevice,
+                        graphics,
+                        controlManager,
+                        dataManager,
+                        ((Scenes.ScoreScene)scenes[SceneContext.Scores]).saveScore));
             scenes.Add(SceneContext.Credits, new CreditScene(graphics.GraphicsDevice, graphics, controlManager));
 
 
@@ -98,7 +96,6 @@ namespace SnakeIO
             nextScene = currScene.ProcessInput(gameTime);
             if (nextScene == SceneContext.Exit)
             {
-                dataManager.Save<List<ulong>>(highScores); // save the scores.
                 MessageQueueClient.instance.sendMessage(new Shared.Messages.Disconnect());
                 MessageQueueClient.instance.shutdown();
                 Exit();

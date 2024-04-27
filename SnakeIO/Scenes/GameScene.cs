@@ -22,11 +22,14 @@ namespace Scenes
         private ContentManager contentManager;
         private GameSceneState state = GameSceneState.Input;
         private DataManager dm;
+        private ScoreScene.SaveScores saveScores;
 
-        private List<ulong> highScores;
-
-
-        public GameScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager, DataManager dm, ref List<ulong> highscores)
+        public GameScene(
+                GraphicsDevice graphicsDevice,
+                GraphicsDeviceManager graphics,
+                Shared.Controls.ControlManager controlManager,
+                DataManager dm,
+                Scenes.ScoreScene.SaveScores saveScores)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
             this.controlManager = controlManager;
@@ -34,8 +37,8 @@ namespace Scenes
             this.selector = new Systems.Selector<string>();
             this.renderer = new Systems.Renderer(spriteBatch);
             this.audio = new Systems.Audio();
+            this.saveScores = saveScores;
             this.dm = dm;
-            this.highScores = highscores;
 
         }
 
@@ -52,7 +55,6 @@ namespace Scenes
             AddEntity(outline);
             AddEntity(textInput);
             AddEntity(textBox);
-            if (highScores == null) { highScores = new List<ulong>(); }
 
         }
 
@@ -71,8 +73,7 @@ namespace Scenes
                 Scenes.SceneContext next = gameModel.ProcessInput(gameTime);
                 if (next != Scenes.SceneContext.Game)
                 {
-                    gameModel.handleFinalScore();
-                    dm.Save(highScores);
+                    saveScores(gameModel.playerScore);
                     gameModel = null;
                     SnakeIO.MessageQueueClient.instance.sendMessage(new Shared.Messages.Disconnect());
                     SnakeIO.MessageQueueClient.instance.shutdown();
@@ -120,7 +121,7 @@ namespace Scenes
         {
             SnakeIO.MessageQueueClient.instance.initialize("localhost", 3000);
             this.gameModel = new SnakeIO.GameModel(screenHeight, screenWidth, name);
-            gameModel.Initialize(controlManager, spriteBatch, contentManager, graphics, ref highScores);
+            gameModel.Initialize(controlManager, spriteBatch, contentManager, graphics);
         }
 
         private void AddEntity(Shared.Entities.Entity entity)

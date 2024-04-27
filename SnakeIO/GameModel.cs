@@ -25,21 +25,21 @@ namespace SnakeIO
         private Shared.Systems.Linker linker;
         private Shared.Systems.Movement movement;
         private Systems.Audio audio;
-        private (string, float)[] scores;
+        public (string, float)[] scores;
         private string playerName;
         private SpriteFont font;
         private Scenes.HudScene hud;
         private Scenes.GameOverScene gameOver;
         private Scenes.Scene currHud;
+        public float playerScore = 0;
 
         private ContentManager contentManager;
         private Shared.Controls.ControlManager controlManager;
         private Shared.Entities.Entity clientPlayer;
+        private Shared.DataManager dm;
 
         private List<Entity> toRemove = new List<Entity>();
         private List<Entity> toAdd = new List<Entity>();
-
-        private List<ulong> highscores;
 
         public GameModel(int height, int width, string playerName)
         {
@@ -48,7 +48,11 @@ namespace SnakeIO
             this.playerName = playerName;
         }
 
-        public void Initialize(Shared.Controls.ControlManager controlManager, SpriteBatch spriteBatch, ContentManager contentManager, GraphicsDeviceManager graphics, ref List<ulong> highscores)
+        public void Initialize(
+                Shared.Controls.ControlManager controlManager,
+                SpriteBatch spriteBatch,
+                ContentManager contentManager,
+                GraphicsDeviceManager graphics)
         {
             this.network = new Systems.Network(playerName);
             network.registerNewEntityHandler(handleNewEntity);
@@ -57,6 +61,7 @@ namespace SnakeIO
             network.registerCollisionHandler(HandleCollision);
             network.registerScoreshandler(HandleScores);
 
+            this.dm = dm;
             this.renderer = new Systems.Renderer(spriteBatch);
             this.interpolation = new Systems.Interpolation();
             this.movement = new Shared.Systems.Movement();
@@ -71,11 +76,8 @@ namespace SnakeIO
             hud.LoadContent(contentManager);
             currHud = hud;
 
-            this.highscores = highscores;
-
-
             // Initialize GameOver
-            this.gameOver = new Scenes.GameOverScene(spriteBatch.GraphicsDevice, graphics, controlManager, ref highscores);
+            this.gameOver = new Scenes.GameOverScene(spriteBatch.GraphicsDevice, graphics, controlManager);
             gameOver.LoadContent(contentManager);
 
 
@@ -173,21 +175,12 @@ namespace SnakeIO
 
         private void HandleGameOver(Shared.Messages.GameOver message)
         {
-            handleFinalScore();
+            playerScore = clientPlayer.GetComponent<Shared.Components.Growable>().growth;
+            Console.WriteLine(playerScore);
             contentManager.Load<SoundEffect>("Audio/negative").Play();
             gameOver.UpdatePlayerStats(clientPlayer.GetComponent<Shared.Components.Growable>().growth.ToString());
             currHud = gameOver;
             RemoveEntity(clientPlayer);
-        }
-
-        public void handleFinalScore()
-        {
-            if (clientPlayer != null)
-            {
-                ulong finalScore = (ulong)clientPlayer.GetComponent<Shared.Components.Growable>().growth;
-                if (highscores.Count <= 0) { highscores.Add(finalScore); }
-                if (highscores[highscores.Count-1] != finalScore) { highscores.Add(finalScore); }
-            }
         }
 
         public void HandleScores(Shared.Messages.Scores message)

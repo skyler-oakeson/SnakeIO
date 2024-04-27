@@ -23,7 +23,7 @@ namespace Scenes
         private DataManager dm = new DataManager();
         private List<ulong> highscores;
 
-        public GameOverScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager, ref List<ulong> highscores)
+        public GameOverScene(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Shared.Controls.ControlManager controlManager)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
 
@@ -34,25 +34,30 @@ namespace Scenes
             this.renderer = new Renderer(spriteBatch);
             this.audio = new Audio();
             this.linker = new Shared.Systems.Linker();
-            this.highscores = highscores;
         }
 
         override public void LoadContent(ContentManager contentManager)
         {
             this.font = contentManager.Load<SpriteFont>("Fonts/Micro5-50");
             SoundEffect sound = contentManager.Load<SoundEffect>("Audio/click");
-            this.playerScore = Shared.Entities.StaticText.Create(font, "", Color.Black, Color.Red, new Rectangle((int)((screenWidth / 2) - font.MeasureString("").X / 2), 100, 0, 0));
+            AddEntity(Shared.Entities.StaticText.Create(
+                        font, "GAMEOVER", Color.Black, Color.Red,
+                        new Rectangle((int)((screenWidth / 2) - font.MeasureString("GAMEOVER").X / 2), 100, 0, 0)));
+            this.playerScore = Shared.Entities.StaticText.Create(
+                    font, "", Color.Black, Color.White, 
+                    new Rectangle((int)((screenWidth / 2) - font.MeasureString("Score : ").X / 2), 200, 0, 0));
+
             AddEntity(playerScore);
-            AddEntity(Shared.Entities.StaticText.Create(font, "GAMEOVER", Color.Black, Color.Red, new Rectangle((int)((screenWidth / 2) - font.MeasureString("GAMEOVER").X / 2), 100, 0, 0)));
             AddEntity(Shared.Entities.MenuItem<SceneContext>.Create(
                         font, SceneContext.MainMenu, "GameOver",
                         true, sound, Shared.Components.LinkPosition.Body,
-                        controlManager, new Rectangle((int)((screenWidth / 2) - font.MeasureString("Main Menu").X / 2), screenHeight - 200, 0, 0)));
+                        controlManager, new Rectangle(30, screenHeight - 100, 0, 0)));
         }
 
         public void UpdatePlayerStats(string score)
         {
-            playerScore.GetComponent<Shared.Components.Readable>().text = score;
+            playerScore.GetComponent<Shared.Components.Readable>().text = $"Score : {score}";
+            playerScore.GetComponent<Shared.Components.Readable>().rectangle = new Rectangle((int)((screenWidth / 2) - font.MeasureString("Score : ").X / 2), screenHeight-100, 0, 0);
         }
 
         override public SceneContext ProcessInput(GameTime gameTime)
