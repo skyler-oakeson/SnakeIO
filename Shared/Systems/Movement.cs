@@ -83,7 +83,7 @@ namespace Shared.Systems
             }
             // Cap velocity
             movable.velocity = new Vector2(Math.Clamp(movable.velocity.X, -1, 1), Math.Clamp(movable.velocity.Y, -1, 1));
-            movable.velocity = (movable.velocity / movable.velocity.Length()) * .5f; // multiple by .5f for speed, and some other oddities
+            movable.velocity = (movable.velocity / movable.velocity.Length()) * .35f; // multiple by .5f for speed, and some other oddities
 
             Vector2 newpos = (movable.velocity) * elapsedTime.Milliseconds + positionable.pos;
             positionable.UpdatePosition(newpos);
