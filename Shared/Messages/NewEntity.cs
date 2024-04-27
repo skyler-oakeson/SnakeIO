@@ -90,6 +90,11 @@ namespace Shared.Messages
                 this.invincibleComponent = entity.GetComponent<Invincible>();
             }
 
+            if (entity.ContainsComponent<Components.KillCount>())
+            {
+                this.killCount = entity.GetComponent<KillCount>();
+            }
+
             if (entity.ContainsComponent<Components.KeyboardControllable>())
             {
                 this.keyboardControllable = entity.GetComponent<Components.KeyboardControllable>();
@@ -177,10 +182,15 @@ namespace Shared.Messages
         public Components.ParticleComponent? particleComponent { get; private set; } = null;
         public Parsers.ParticleParser.ParticleMessage particleMessage { get; private set; }
 
-        // Particle
+        // Invincible
         public bool hasInvincible { get; private set; }
         public Components.Invincible? invincibleComponent { get; private set; } = null;
         public Parsers.InvincibleParser.InvincibleMessage invincibleMessage { get; private set; }
+
+        // KillCount
+        public bool hasKillCount { get; private set; }
+        public Components.KillCount? killCount { get; private set; } = null;
+        public Parsers.KillCountParser.KillCountMessage killCountMessage { get; private set; }
 
         // Keyboard Input
         public bool hasKeyboardControllable { get; private set; }
@@ -302,6 +312,13 @@ namespace Shared.Messages
             if (invincibleComponent != null)
             {
                 invincibleComponent.Serialize(ref data);
+            }
+
+            // Kill Count
+            data.AddRange(BitConverter.GetBytes(killCount != null));
+            if (killCount != null)
+            {
+                killCount.Serialize(ref data);
             }
 
             // Keyboard
@@ -475,6 +492,16 @@ namespace Shared.Messages
                 Parsers.InvincibleParser parser = new Parsers.InvincibleParser();
                 parser.Parse(ref data, ref offset);
                 this.invincibleMessage = parser.GetMessage();
+            }
+
+            // Kill Count
+            this.hasKillCount = BitConverter.ToBoolean(data, offset);
+            offset += sizeof(bool);
+            if (hasKillCount)
+            {
+                Parsers.KillCountParser parser = new Parsers.KillCountParser();
+                parser.Parse(ref data, ref offset);
+                this.killCountMessage = parser.GetMessage();
             }
 
             // Keyboard

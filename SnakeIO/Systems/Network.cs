@@ -199,6 +199,11 @@ namespace Systems
                         entity.Remove<Shared.Components.Invincible>();
                     }
                 }
+                if (entity.ContainsComponent<KillCount>())
+                {
+                    Shared.Components.KillCount killCount = entity.GetComponent<KillCount>();
+                    killCount.count = message.killCountMessage.count;
+                }
             }
         }
     }
