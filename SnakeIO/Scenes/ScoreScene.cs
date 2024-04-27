@@ -19,7 +19,9 @@ namespace Scenes
         private Shared.DataManager dm;
         private List<Shared.HighScores.HighScore> scores = new List<Shared.HighScores.HighScore>();
         private List<Shared.Entities.Entity> entityList = new List<Shared.Entities.Entity>();
+        private List<Shared.Entities.Entity> scoreDisplays = new List<Shared.Entities.Entity>();
         public SaveScores saveScore;
+        public bool reload;
 
         public ScoreScene(GraphicsDevice graphicsDevice, 
                           GraphicsDeviceManager graphics,
@@ -27,11 +29,14 @@ namespace Scenes
                           Shared.DataManager dataManager)
         {
             this.Initialize(graphicsDevice, graphics, controlManager);
+            this.scoreDisplays = new List<Shared.Entities.Entity>();
             this.dm = dataManager;
             this.renderer = new Renderer(spriteBatch);
             this.scores = dm.Load<List<Shared.HighScores.HighScore>>(scores);
+            this.reload = false;
             this.saveScore = new SaveScores(
                 (float score) => {
+                    reload = true;
                     scores.Add(new Shared.HighScores.HighScore((int)score));
                     dm.Save<List<Shared.HighScores.HighScore>>(scores);
                 });
@@ -52,8 +57,10 @@ namespace Scenes
             for (int i = 0; i < limit; i++)
             {
                 Shared.Entities.Entity hudElement = Shared.Entities.StaticText.Create(font, $"{i}. {scores[i].score}", Color.Black, Color.White, 
-                        new Rectangle(((screenWidth/2)-(int)font.MeasureString($"{i}. {scores[i].score}").X/2), (int)(50*i) + 200, (int)font.MeasureString($"{i}. {scores[i].score}").X, (int)font.MeasureString("").Y));
+                    new Rectangle(((screenWidth/2)-(int)font.MeasureString($"{i}. {scores[i].score}").X/2),
+                    (int)(50*i) + 200, (int)font.MeasureString($"{i}. {scores[i].score}").X, (int)font.MeasureString("").Y));
                 AddEntity(hudElement);
+                scoreDisplays.Add(hudElement);
             }
         }
 
@@ -73,6 +80,17 @@ namespace Scenes
 
         override public void Update(TimeSpan elapsedTime)
         {
+            if (reload)
+            {
+                Console.WriteLine("RELOAD");
+                this.scores = dm.Load<List<Shared.HighScores.HighScore>>(scores);
+                int limit = scores.Count <= 5 ? scores.Count : 5;
+                for (int i = 0; i < limit; i++)
+                {
+                    scoreDisplays[i].GetComponent<Shared.Components.Readable>().text = $"{i}. {scores[i].score}";
+                }
+                reload = false;
+            }
         }
 
         private void AddEntity(Shared.Entities.Entity entity)
