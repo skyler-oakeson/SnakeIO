@@ -313,6 +313,12 @@ namespace SnakeIO
                 entity.Add(new Shared.Components.Invincible((int) message.invincibleMessage.time.TotalMilliseconds));
             }
 
+            if (message.hasKillCount)
+            {
+                entity.Add(new Shared.Components.KillCount());
+                entity.GetComponent<Shared.Components.KillCount>().count = message.killCountMessage.count;
+            }
+
             if (message.hasCamera)
             {
                 Shared.Components.Positionable position = entity.GetComponent<Shared.Components.Positionable>();

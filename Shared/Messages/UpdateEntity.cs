@@ -26,6 +26,10 @@ namespace Shared.Messages
             {
                 invincible = entity.GetComponent<Invincible>();
             }
+            if (entity.ContainsComponent<KillCount>())
+            {
+                killCount = entity.GetComponent<KillCount>();
+            }
 
             this.updateWindow = updateWindow;
         }
@@ -52,6 +56,11 @@ namespace Shared.Messages
         public bool hasInvincible { get; private set; }
         public Components.Invincible? invincible { get; private set; } = null;
         public Parsers.InvincibleParser.InvincibleMessage invincibleMessage { get; private set; }
+
+        // Kill Count
+        public bool hasKillCount { get; private set; }
+        public Components.KillCount? killCount { get; private set; } = null;
+        public Parsers.KillCountParser.KillCountMessage killCountMessage { get; private set; }
 
         // Only the milliseconds are used/serialized
         public TimeSpan updateWindow { get; private set; } = TimeSpan.Zero;
@@ -84,6 +93,12 @@ namespace Shared.Messages
             if (invincible != null)
             {
                 invincible.Serialize(ref data);
+            }
+
+            data.AddRange(BitConverter.GetBytes(killCount != null));
+            if (killCount != null)
+            {
+                killCount.Serialize(ref data);
             }
 
             data.AddRange(BitConverter.GetBytes(updateWindow.Milliseconds));
@@ -134,6 +149,15 @@ namespace Shared.Messages
                 Parsers.InvincibleParser parser = new Parsers.InvincibleParser();
                 parser.Parse(ref data, ref offset);
                 this.invincibleMessage = parser.GetMessage();
+            }
+
+            this.hasKillCount = BitConverter.ToBoolean(data, offset);
+            offset += sizeof(bool);
+            if (hasKillCount)
+            {
+                Parsers.KillCountParser parser = new Parsers.KillCountParser();
+                parser.Parse(ref data, ref offset);
+                this.killCountMessage = parser.GetMessage();
             }
 
             this.updateWindow = new TimeSpan(0, 0, 0, 0, BitConverter.ToInt32(data, offset));

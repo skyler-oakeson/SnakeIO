@@ -54,7 +54,7 @@ namespace Systems
                         }
                         if (res)
                         {
-                            HandleCollision(e1, e2);
+                            HandleCollision(e1, e2, elapsedTime);
                         }
                     }
                 }
@@ -121,7 +121,7 @@ namespace Systems
             return (cornerDistanceSQ <= (circleHitBox.radius * circleHitBox.radius));
         }
 
-        private void HandleCollision(Shared.Entities.Entity e1, Shared.Entities.Entity e2)
+        private void HandleCollision(Shared.Entities.Entity e1, Shared.Entities.Entity e2, TimeSpan elapsedTime)
         {
             Shared.Components.Positionable e1Pos = e1.GetComponent<Shared.Components.Positionable>();
             Shared.Components.Positionable e2Pos = e2.GetComponent<Shared.Components.Positionable>();
@@ -159,6 +159,18 @@ namespace Systems
                     Server.MessageQueueServer.instance.sendMessage(e2.GetComponent<Shared.Components.SnakeID>().id, new Shared.Messages.GameOver());
                     particle = Shared.Entities.Particle.Create(e2SnakeId, "", new Rectangle((int)e2Pos.pos.X, (int)e2Pos.pos.Y, 0, 0), Color.Green, Shared.Components.ParticleComponent.ParticleType.PlayerDeathParticle, e2Pos.orientation);
                     addEntity(particle);
+                    if (e2.ContainsComponent<Shared.Components.KillCount>())
+                    {
+                        e2.GetComponent<Shared.Components.KillCount>().UpdateCount();
+                        Shared.Messages.UpdateEntity message = new Shared.Messages.UpdateEntity(e2, elapsedTime);
+                        Server.MessageQueueServer.instance.broadcastMessageWithLastId(message);
+                    }
+                    if (e1.ContainsComponent<Shared.Components.KillCount>())
+                    {
+                        e1.GetComponent<Shared.Components.KillCount>().UpdateCount();
+                        Shared.Messages.UpdateEntity message = new Shared.Messages.UpdateEntity(e1, elapsedTime);
+                        Server.MessageQueueServer.instance.broadcastMessageWithLastId(message);
+                    }
                 }
                 else if (e1Linkable.chain != e2Linkable.chain && (e1.ContainsComponent<Shared.Components.SnakeID>() || e2.ContainsComponent<Shared.Components.SnakeID>()))
                 {
@@ -170,6 +182,24 @@ namespace Systems
                     Shared.Components.Positionable snakePos = snake.GetComponent<Shared.Components.Positionable>();
                     Shared.Components.SnakeID id = snake.GetComponent<Shared.Components.SnakeID>();
                     Shared.Entities.Entity particle = Shared.Entities.Particle.Create(id.id, "", new Rectangle((int)snakePos.pos.X, (int)snakePos.pos.Y, 0, 0), Color.Green, Shared.Components.ParticleComponent.ParticleType.PlayerDeathParticle, snakePos.orientation);
+                    if (e1.ContainsComponent<Shared.Components.SnakeID>())
+                    {
+                        if (e2.ContainsComponent<Shared.Components.KillCount>())
+                        {
+                            e2.GetComponent<Shared.Components.KillCount>().UpdateCount();
+                            Shared.Messages.UpdateEntity message = new Shared.Messages.UpdateEntity(e2, elapsedTime);
+                            Server.MessageQueueServer.instance.broadcastMessageWithLastId(message);
+                        }
+                    }
+                    if (e2.ContainsComponent<Shared.Components.SnakeID>())
+                    {
+                        if (e1.ContainsComponent<Shared.Components.KillCount>())
+                        {
+                            e1.GetComponent<Shared.Components.KillCount>().UpdateCount();
+                            Shared.Messages.UpdateEntity message = new Shared.Messages.UpdateEntity(e1, elapsedTime);
+                            Server.MessageQueueServer.instance.broadcastMessageWithLastId(message);
+                        }
+                    }
                 }
             }
             else if (e1.ContainsComponent<Shared.Components.Consumable>() || e2.ContainsComponent<Shared.Components.Consumable>())

@@ -23,11 +23,7 @@ namespace Shared.Entities
             player.Add(new Shared.Components.Positionable(new Vector2(rectangle.X, rectangle.Y), 0f));
             player.Add(new Shared.Components.Movable(new Vector2(.5f, 0f)));
             player.Add(new Shared.Components.Growable());
-            // player.Add(new Shared.Components.Animatable(new int[25] { 40, 40, 40, 40, 40,
-            //                                                           40, 40, 40, 40, 40,
-            //                                                           40, 40, 40, 40, 40,
-            //                                                           40, 40, 40, 40, 40,
-            //                                                           40, 40, 40, 40, 40 }));
+            player.Add(new Shared.Components.KillCount());
             player.Add(new Shared.Components.KeyboardControllable(true, typeof(Shared.Entities.Player), PlayerKeyboardControls));
             player.Add(new Components.Camera(new Rectangle(rectangle.X, rectangle.Y, 1500, 1500)));
             player.Add(new Shared.Components.Invincible(4000));
