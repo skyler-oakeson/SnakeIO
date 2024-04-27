@@ -87,6 +87,7 @@ namespace SnakeIO
                 m_socketServer.Shutdown(SocketShutdown.Both);
                 m_socketServer.Disconnect(false);
                 m_socketServer.Close();
+                m_instance = null;
             } catch (SocketException e)
             {
                 Debug.WriteLine(e);

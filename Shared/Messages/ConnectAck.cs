@@ -3,8 +3,8 @@ namespace Shared.Messages
 {
     public class ConnectAck : Message
     {
-        public ConnectAck() : base(Type.ConnectAck) 
-        { 
+        public ConnectAck() : base(Type.ConnectAck)
+        {
         }
 
         /// <summary>
